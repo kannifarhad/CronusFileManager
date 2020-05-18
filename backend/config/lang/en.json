@@ -1,0 +1,12 @@
+{
+    "messages" : {
+        "errors": {
+            "userNotFound": "User with this id not exists" ,
+            "userTokenNotExists": "User with this token not exists",
+            "userTokenNotSeted": "User token not exists",
+            "userPassNotEqual": "Passwords are not equal",
+            "userLoginFields":"Please provide login and password!",
+            "userLoginWrong":"Incorrect login or password"
+        }
+    }
+}

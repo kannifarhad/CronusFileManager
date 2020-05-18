@@ -1,0 +1,115 @@
+@font-face {
+    font-family: 'cronus';
+    src: url('media/cronus.eot');
+    src: url('media/cronus.eot?#iefix') format('embedded-opentype'),
+         url('media/cronus.woff') format('woff'),
+         url('media/cronus.ttf') format('truetype'),
+         url('media/cronus.svg#cronus') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+[class*=" cronus-"], [class^=cronus-]  {
+    font-family: 'cronus' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    line-height: 1;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.cronus-headlg {
+      width: 40px !important;
+}
+.cronus-headlg span {
+      font-size: 40px !important;
+}
+
+.cronus-add:before{content:'\0041';}
+.cronus-adduser:before{content:'\0046';}
+.cronus-arrowdown:before{content:'\0047';}
+.cronus-arrowleft:before, .cronus-chevron-left:before{content:'\0048';}
+.cronus-arrowright:before, .cronus-chevron-right:before{content:'\0049';}
+.cronus-arrowup:before{content:'\004a';}
+.cronus-attachment:before{content:'\004b';}
+.cronus-banners:before{content:'\004c';}
+.cronus-calendar:before{content:'\004d';}
+.cronus-cancel:before{content:'\004e';}
+.cronus-categories:before{content:'\004f';}
+.cronus-comment:before{content:'\0050';}
+.cronus-compose:before{content:'\0051';}
+.cronus-confirm:before{content:'\0052';}
+.cronus-cronus:before{content:'\0053';}
+.cronus-edit:before{content:'\0054';}
+.cronus-export:before{content:'\0055';}
+.cronus-extrafields:before{content:'\0056';}
+.cronus-eye:before{content:'\0057';}
+.cronus-flag:before{content:'\0058';}
+.cronus-folder:before{content:'\0059';}
+.cronus-grid:before{content:'\005a';}
+.cronus-image:before{content:'\0061';}
+.cronus-inbox:before{content:'\0062';}
+.cronus-lang:before{content:'\0063';}
+.cronus-listview:before{content:'\0064';}
+.cronus-location:before{content:'\0065';}
+.cronus-logout:before{content:'\0066';}
+.cronus-mail:before{content:'\0067';}
+.cronus-mailat:before{content:'\0068';}
+.cronus-mailbox:before{content:'\0069';}
+.cronus-menu:before{content:'\006a';}
+.cronus-news:before{content:'\006b';}
+.cronus-no-eye:before{content:'\006c';}
+.cronus-noflag:before{content:'\006d';}
+.cronus-notepad:before{content:'\006e';}
+.cronus-outbox:before{content:'\006f';}
+.cronus-phone:before{content:'\0070';}
+.cronus-plus:before{content:'\0071';}
+.cronus-poll:before{content:'\0072';}
+.cronus-postslist:before{content:'\0073';}
+.cronus-refresh:before{content:'\0074';}
+.cronus-reply:before{content:'\0075';}
+.cronus-save:before{content:'\0076';}
+.cronus-settings:before{content:'\0077';}
+.cronus-sitemenu:before{content:'\0078';}
+.cronus-spam:before{content:'\0079';}
+.cronus-template:before{content:'\007a';}
+.cronus-text:before{content:'\0030';}
+.cronus-trash:before{content:'\0031';}
+.cronus-types:before{content:'\0032';}
+.cronus-userlist:before{content:'\0033';}
+.cronus-warning:before{content:'\0034';}
+.cronus-world:before{content:'\0035';}
+
+.cronusButton {
+    border-radius: 4px !important;
+    margin:10px 0px 10px 10px !important;
+    padding: 0px !important;
+    overflow: hidden;
+}
+.cronusButton .title {
+    text-transform: capitalize !important;
+    padding: 8px 20px;
+    font-weight: bold;
+}
+.cronusButton .MuiButton-startIcon {
+    border-right: 1px solid #DBE0E4;
+    background: #f7f7f7;
+    padding: 9px 10px;
+    margin:0px;
+    font-size: 20px;
+}
+.MuiTableRow-head th:first-child{
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    border-top-left-radius: 5px;
+}
+
+.MuiTableRow-head th:last-child{
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-right-radius: 5px;
+}
