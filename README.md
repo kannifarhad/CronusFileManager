@@ -6,8 +6,7 @@ Filemanager with React &amp; Nodejs
 React, Redux, Material UI, Nodejs, ExpressJs
 
 ### Basic usage
-Application has two parts: Front-end & Backend
-For initilasing application you have to install and run both of them from terminal with commands
+Plugin has two parts: Front-end & Back-end. For initialising file manager you have to install and run both of them from terminal with commands
 
 ```shell
 npm install
