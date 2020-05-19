@@ -14,7 +14,7 @@ npm install
 npm run start
 ```
 
-| [<img src="https://api.kanni.pro/uploads/projects/filemanager/demo.gif" width="100%;"/>]|
+| [<img src="http://api.kanni.pro/uploads/projects/filemanager/demo.gif" width="100%;"/>]|
 
 Functionality
 -------
