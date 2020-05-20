@@ -1,7 +1,8 @@
 <div align="center">
-<img style="display:block;margin:0px auto;height:100px" src="/frontend/public/img/logos/lightLogo.svg" width="100%;"/>
+<img style="display:block;margin:50px auto;" src="/frontend/public/img/logos/lightLogo.svg" height="100px"/>
+<h1 style="text-align:center">CronusFileManager</h1>
+
 </div>
-<h1 style="text-align:center"> CronusFileManager</h1>
 
 Filemanager with React &amp; Nodejs 
 ### [Demo](http://filemanager.kanni.pro)
@@ -19,12 +20,12 @@ npm run start
 ### Design
 <img src="http://api.kanni.pro/uploads/projects/filemanager/demo.gif" width="100%;"/>
 
-Requirements
+### Requirements
 -------
  - NodeJs min. ver 11.x.
  - NPM min. ver 6.x.
 
-Functionality
+### Functionality
 -------
  - Expandable folder tree view
  - List view or Grid view of files and folders
@@ -53,32 +54,31 @@ Functionality
  - Fully Image editor - [Integrated TOAST UI Image Editor](https://ui.toast.com/tui-image-editor/)
  - Localisation texts of plugin
 
-Future changes
+### Future changes
 -------
  - Refactoring of codes
  - Adding comments for better understanding to modify
 
- <p style="font-size:10px">
-        MIT License
-
-        Copyright (c) 2020 Farhad Aliyev
-      
-        Selling this software is prohibited. Any violation of this contract will be prosecuted.
-        
-        Permission is hereby granted, free of charge, to any person obtaining a copy
-        of this software and associated documentation files (the "Software"), to deal
-        in the Software without restriction, including without limitation the rights
-        to use, copy, modify, merge, publish, distribute and to permit persons to whom the Software is
-        furnished to do so, subject to the following conditions:
-        
-        The above copyright notice and this permission notice shall be included in all
-        copies or substantial portions of the Software.
-        
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-        SOFTWARE.
-</p>
+### MIT License
+<div style="font-size:10px">
+    Copyright (c) 2020 Farhad Aliyev
+    
+    Selling this software is prohibited. Any violation of this contract will be prosecuted.
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+</div>
