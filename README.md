@@ -1,6 +1,7 @@
-# CronusFileManager
-
-<img style="display:block;margin:0px auto" src="/frontend/img/logos/lightLogo.svg" width="100%;"/>
+<div align="center">
+<img style="display:block;margin:0px auto;height:100px" src="/frontend/public/img/logos/lightLogo.svg" width="100%;"/>
+</div>
+<h1 style="text-align:center"> CronusFileManager</h1>
 
 Filemanager with React &amp; Nodejs 
 ### [Demo](http://filemanager.kanni.pro)
@@ -57,7 +58,7 @@ Future changes
  - Refactoring of codes
  - Adding comments for better understanding to modify
 
- <sub><sup>
+ <p style="font-size:10px">
         MIT License
 
         Copyright (c) 2020 Farhad Aliyev
@@ -80,4 +81,4 @@ Future changes
         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
         SOFTWARE.
-</sup></sub>
+</p>
