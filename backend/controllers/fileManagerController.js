@@ -237,7 +237,7 @@ module.exports = {
         destination = (destination === '' || destination === undefined) ? file.split(".").shift() :  escapePath(destination);
         try {
                 const zip = fs.createReadStream(`${coreFolder}${file}`).pipe(unzipper.Parse({forceStream: true}));
-                for await (const entry of zip) {
+                for (const entry of zip) {
                     if(checkExtension(nodePath.extname(entry.path))){
                         entry.pipe(fs.createWriteStream(`${coreFolder}${destination}/${entry.path}`));
                     } else {

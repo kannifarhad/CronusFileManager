@@ -8,7 +8,9 @@
     font-weight: normal;
     font-style: normal;
 }
-
+div ,li {
+    box-sizing: border-box;
+}
 
 [class*=" cronus-"], [class^=cronus-]  {
     font-family: 'cronus' !important;

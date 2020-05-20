@@ -1,0 +1,42 @@
+body {
+    font-family: "Montserrat";
+    padding: 0px;
+}
+#root {
+    max-width: 1300px;
+    margin:0px auto;
+}
+.demo-content {
+    max-width: 1200px;
+    margin:50px auto 100px auto;
+    padding: 50px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.demo-content pre {
+    background: #f1f1f1;
+    border-radius: 7px;
+    padding: 20px 0px;
+    color:#666;
+    font-style: italic;
+}
+.demo-content img {
+    margin:0px auto;
+    display: block;
+}
+.demo-content p {
+    font-size:14px;
+}
+.demo-content ul li {
+    font-size: 14px;
+    padding: 5px 0px;
+}
+.demo-content a {
+    color:#0492f2
+}
+.demo-content h1 {
+    text-align: center;
+}
+.lisence p{
+    font-size: 11px;
+}

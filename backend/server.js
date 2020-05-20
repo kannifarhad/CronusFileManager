@@ -21,13 +21,13 @@ app.use(
 );
 app.use(xss());
 app.set('trust proxy', 1);
-// const limiter = rateLimit({
-//   max: 100,
-//   windowMs: 5 * 60 * 1000,
-//   message: new AppError(`Too many requests from this IP, please try again in an 5 minutes`, 429)
-// });
+const limiter = rateLimit({
+  max: 1000,
+  windowMs: 1 * 60 * 1000,
+  message: new AppError(`Too many requests from this IP, please try again in an 1 minutes`, 429)
+});
 
-// app.use('*', limiter);
+app.use('*', limiter);
 
 app.use('/admin/fm', fileManager);
 app.use('/admin/uploads', express.static(__dirname + '/uploads'));
