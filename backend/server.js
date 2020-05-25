@@ -1,3 +1,11 @@
+/**
+ * @package		Cronus File Manager
+ * @author		Farhad Aliyev Kanni
+ * @copyright	Copyright (c) 2011 - 2019, Kannifarhad, Ltd. (http://www.kanni.pro/)
+ * @license		https://opensource.org/licenses/GPL-3.0
+ * @link		http://filemanager.kanni.pro
+**/
+
 const express = require('express');
 const cors = require('cors');
 const xss = require('xss-clean');

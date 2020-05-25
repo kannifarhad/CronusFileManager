@@ -1,3 +1,12 @@
+/**
+ * @package		Cronus File Manager
+ * @author		Farhad Aliyev Kanni
+ * @copyright	Copyright (c) 2011 - 2019, Kannifarhad, Ltd. (http://www.kanni.pro/)
+ * @license		https://opensource.org/licenses/GPL-3.0
+ * @link		http://filemanager.kanni.pro
+**/
+
+
 const AppError = require('../utilits/appError');
 const environment = process.env.NODE_ENV || 'development';
 
