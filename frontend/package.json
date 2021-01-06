@@ -12,7 +12,7 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "@toast-ui/react-image-editor": "^1.2.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-preset-es2017": "^6.24.1",
     "clsx": "^1.0.4",
     "material-ui-popup-state": "^1.5.1",
