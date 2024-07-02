@@ -27,11 +27,11 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
     }));
 
     return (
-      <ThemeProvider theme={customTheme}>
+      // <ThemeProvider theme={customTheme}>
         <FileManagerProvider>
           <FileManager {...props} />
         </FileManagerProvider>
-      </ThemeProvider>
+      // </ThemeProvider>
     );
   }
 );

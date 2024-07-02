@@ -1,6 +1,6 @@
 import * as React from "react";
 import { styled } from "@mui/system";
-import { Box, BoxProps, Paper, Grid, Collapse } from "@mui/material";
+import { Box, BoxProps, Grid, GridProps } from "@mui/material";
 interface FileManagerWrapperProps extends BoxProps {
   expanded: boolean;
 }
@@ -20,4 +20,30 @@ export const FileManagerWrapper = styled(Box, {
     };
   }
   return {};
+});
+
+export const FileManagerFolderBarGrid = styled(Grid)(({ theme }) => {
+  return {
+    flexGrow: 1,
+    background: "#f9fafc",
+    borderRight: "1px solid #E9eef9",
+    "& .FileManagerFolderBarWrapper": {},
+  };
+});
+
+interface FileManagerFolderBarWrapperProps extends BoxProps {
+  height?: number;
+  expanded?: boolean;
+}
+export const FileManagerFolderBarWrapper = styled(Box, {
+  shouldForwardProp: (prop: string) => !["maxHeight"].includes(prop),
+})<FileManagerFolderBarWrapperProps>(({ height, expanded }) => {
+  const heightInPx =
+    height !== undefined && height > 300 ? `${height}px` : "300px";
+  const bigHeight = `${window.innerHeight - 100}px`;
+  const maxHeight = expanded ? bigHeight : heightInPx;
+  return {
+    // maxHeight,
+    
+  };
 });

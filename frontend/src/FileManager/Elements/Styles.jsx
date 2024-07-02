@@ -174,13 +174,5 @@ export default makeStyles(theme => ({
       width:'300px',
       float:'right'
     },
-    dialogDescription: {
-      '& .list':{
-        textAlign: "left"
-      },
-      '& img':{
-        maxWidth: "100%",
-        display: 'block'
-      }
-    }
+   
   }));

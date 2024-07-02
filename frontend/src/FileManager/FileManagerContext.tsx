@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, ReactNode } from "react";
 import { sortFilter } from "./helpers";
+import { ButtonObject, PopupData, EditImage, Messages } from "./types";
 
 interface FileManagerState {
   selectedFiles: string[];
@@ -11,6 +12,9 @@ interface FileManagerState {
   itemsView: string;
   showImages: string;
   orderFiles: { field: string; orderBy: string };
+  loading: boolean;
+  popUpData: PopupData;
+  messages: Messages[];
 }
 
 interface FileManagerAction {
@@ -31,6 +35,11 @@ const initialState: FileManagerState = {
     field: "name",
     orderBy: "asc",
   },
+  loading: false,
+  popUpData: {
+    open: false,
+  },
+  messages: [],
 };
 
 const FileManagerStateContext = createContext<FileManagerState>(initialState);
