@@ -1,29 +1,26 @@
 import React from "react";
-import { makeStyles } from '@material-ui/core/styles';
 import '../Assets/tui-image-editor.css'
 import ImageEditor from '@toast-ui/react-image-editor'
 import whiteTheme from '../Assets/whiteTheme';
 import ButtonList from './ButtonGroup';
-import Dialog from '@material-ui/core/Dialog';
-import Zoom  from '@material-ui/core/Zoom';
+import Dialog from '@mui/material/Dialog';
+import Zoom  from '@mui/material/Zoom';
 
-const useStyles = makeStyles(theme => ({
-  buttonsCont: {
-    textAlign: 'center',
-    borderRadius: '0px 0px 5px 5px',
-    border: '1px solid #E9eef9',
-    borderTop:'none',
-    padding:'15px',
-    background:'#fff'
-  },
-dialog:{
-}
+//   buttonsCont: {
+//     textAlign: 'center',
+//     borderRadius: '0px 0px 5px 5px',
+//     border: '1px solid #E9eef9',
+//     borderTop:'none',
+//     padding:'15px',
+//     background:'#fff'
+//   },
+// dialog:{
+// }
 
-}));
+// }));
 
 export default function ImageEditPopup(props){
     const {closeCallBack, submitCallback, name,extension, path, open } = props;
-    const classes = useStyles();
     const editorRef = React.createRef();
 
     const handleClickButton = (asNew) => {
@@ -72,7 +69,7 @@ export default function ImageEditPopup(props){
         fullWidth
         maxWidth={'xl'}
         onClose={closeCallBack}
-        className={classes.dialog}
+        className={'.dialog'}
       >
           <ImageEditor 
             ref={editorRef}
@@ -97,7 +94,7 @@ export default function ImageEditPopup(props){
             usageStatistics={true}
             
           />
-          <div className={classes.buttonsCont} >
+          <div className='.buttonsCont' >
             <ButtonList buttons={buttons} />
           </div>
 

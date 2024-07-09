@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Dropzone from "../../Elements/Dropzone";
 
 function DropZoneWrapper(props) {

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
 export const createAxiosInstance = (): AxiosInstance => {
-  const baseURL = "http://localhost:4000";
+  const baseURL = "http://localhost:3131";
 
   if (!baseURL) {
     throw new Error(

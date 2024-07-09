@@ -1,27 +1,39 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { memo } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Box,
-  Checkbox,
   Tooltip,
 } from "@mui/material";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import clsx from "clsx";
-
-import { toAbsoluteUrl, convertDate, formatBytes } from "../../../Utils/Utils";
-import mainconfig from "../../../Data/Config";
-import useStyles from "../../Elements/Styles";
+import ItemSelectButton from './ItemSelectButton';
+import { toAbsoluteUrl, convertDate } from "../../../Utils/Utils";
+import {StyledFileItem, StyledItemTitle, StyledItemInfoBox} from './styled';
 import config from "../../Elements/config.json";
 
 const FolderItem = ({ item, index }) => {
+  const selectedFiles = [];
+  const bufferedItems = {files:[]};
+  const handleContextMenuClick = ()=>{
+  }
+  const doubleClick = ()=>{};
+
+    const isCuted = (item) => {
+    if (bufferedItems.type === "cut") {
+      return (
+        bufferedItems.files.filter((file) => file.id === item.id).length > 0
+      );
+    }
+    return false;
+  };
   let fileCuted = isCuted(item);
-  let isSelected = checkIsSelected(item);
+  const getStyle = (style, snapshot) => {
+    if (!snapshot.isDraggingOver) {
+      return style;
+    }
+    return {
+      ...style,
+      background: "#f00 !important",
+    };
+  }
+  
   return (
     <Draggable
       index={index}
@@ -29,15 +41,15 @@ const FolderItem = ({ item, index }) => {
       isDragDisabled={item.private}
     >
       {(provided, snapshot) => (
-        <Box
+        <StyledFileItem
           ref={provided.innerRef}
-          className={clsx(classes.itemFile, {
-            selected: selectedFiles.includes(item.path),
-            selectmode: selectedFiles.length > 0,
-            notDragging: !snapshot.isDragging,
-            fileCuted: fileCuted,
-          })}
-          onDoubleClick={() => props.doubleClick(item.path)}
+          className={{
+            'selected': selectedFiles.includes(item.path),
+            'selectmode': selectedFiles.length > 0,
+            'notDragging': !snapshot.isDragging,
+            'fileCuted': fileCuted,
+          }}
+          onDoubleClick={() => doubleClick(item.path)}
           onContextMenu={(event) => handleContextMenuClick(item, event)}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
@@ -53,26 +65,19 @@ const FolderItem = ({ item, index }) => {
                 {...provided.droppableProps}
                 style={getStyle(provided.droppableProps.style, snapshot)}
               >
-                {(item.private && (
-                  <span className={`icon-lock ${classes.locked}`} />
-                )) || (
-                  <Checkbox
-                    className={classes.checkbox}
-                    checked={isSelected}
-                    onChange={() => addSelect(item)}
-                    value={item.id}
-                  />
-                )}
-                <div className={classes.infoBox}>
-                  <img
+              <ItemSelectButton item={item} />
+
+              <StyledItemInfoBox>
+              <img
+              alt={item.name}
                     src={
                       snapshot.isDraggingOver
                         ? toAbsoluteUrl(config.icons.folderopen)
                         : toAbsoluteUrl(config.icons.folder)
                     }
                   />
-                </div>
-                <Tooltip
+          </StyledItemInfoBox>
+          <Tooltip
                   title={
                     <>
                       <b>Name :</b> {item.name} <br />
@@ -80,15 +85,15 @@ const FolderItem = ({ item, index }) => {
                     </>
                   }
                 >
-                  <div className={classes.itemTitle}>
-                    <span>{item.name}</span>
-                  </div>
+                    <StyledItemTitle>
+                      <span>{item.name}</span>
+                    </StyledItemTitle>
                 </Tooltip>
                 {provided.placeholder}
               </div>
             )}
           </Droppable>
-        </Box>
+        </StyledFileItem>
       )}
     </Draggable>
   );

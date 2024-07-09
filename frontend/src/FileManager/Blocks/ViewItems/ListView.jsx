@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
 import {
   Table,
   TableBody,
@@ -8,23 +7,19 @@ import {
   TableHead,
   TableRow,
   Box,
-  Checkbox,
-  Tooltip,
 } from "@mui/material";
-import { Droppable, Draggable } from "react-beautiful-dnd";
-import clsx from "clsx";
-
-import { toAbsoluteUrl, convertDate, formatBytes } from "../../../Utils/Utils";
-import mainconfig from "../../../Data/Config";
-import useStyles from "../../Elements/Styles";
-import config from "../../Elements/config.json";
+import { Droppable } from "react-beautiful-dnd";
+import ListFolderItem from './ListFolderItem';
+import ListFileItem from './ListFileItem';
+import {StyledListTable} from './styled';
 
 const ListView = () => {
+  const filesList = [];
   return (
     <TableContainer component={Box}>
-      <Table className={classes.table} size="small" aria-label="a dense table">
+      <StyledListTable size="small" aria-label="a dense table">
         <TableHead>
-          <TableRow className={classes.tableHead}>
+          <TableRow className='tableHead'>
             <TableCell style={{ width: "20px" }}></TableCell>
             <TableCell style={{ width: "35px" }} align="left"></TableCell>
             <TableCell align="left">Name</TableCell>
@@ -44,25 +39,21 @@ const ListView = () => {
         >
           {(provided, snapshot) => (
             <TableBody ref={provided.innerRef} {...provided.droppableProps}>
-              {props.filesList.map(
-                (item, index) =>
+              {filesList.map(
+                (item, index) => {
                   item.type === "folder" && (
                     <ListFolderItem key={index} index={index} item={item} />
                   )
-              )}
-
-              {props.filesList.map(
-                (item, index) =>
                   item.type === "file" && (
                     <ListFileItem key={index} index={index} item={item} />
                   )
-              )}
+})}
 
               {provided.placeholder}
             </TableBody>
           )}
         </Droppable>
-      </Table>
+      </StyledListTable>
     </TableContainer>
   );
 };

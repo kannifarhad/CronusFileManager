@@ -21,46 +21,47 @@ import config from "../../Elements/config.json";
 import GridView from "./GridView";
 import ListView from "./ListView";
 
-function ViewItems(props) {
-  const {
-    onContextMenuClick,
-    addSelect,
-    selectedFiles,
-    bufferedItems,
-    showImages,
-  } = props;
-  const classes = useStyles();
+function ViewItems() {
+  const itemsView = 'grid';
+  // const {
+  //   onContextMenuClick,
+  //   addSelect,
+  //   selectedFiles,
+  //   bufferedItems,
+  //   showImages,
+  // } = props;
+  // const classes = useStyles();
 
 
-  const handleContextMenuClick = async (item, event) => {
-    addSelect(item);
-    onContextMenuClick(event);
-  };
+  // const handleContextMenuClick = async (item, event) => {
+  //   addSelect(item);
+  //   onContextMenuClick(event);
+  // };
 
-  const checkIsSelected = (item) => {
-    return selectedFiles.includes(item);
-  };
+  // const checkIsSelected = (item) => {
+  //   return selectedFiles.includes(item);
+  // };
 
-  const isCuted = (item) => {
-    if (bufferedItems.type === "cut") {
-      return (
-        bufferedItems.files.filter((file) => file.id === item.id).length > 0
-      );
-    }
-    return false;
-  };
+  // const isCuted = (item) => {
+  //   if (bufferedItems.type === "cut") {
+  //     return (
+  //       bufferedItems.files.filter((file) => file.id === item.id).length > 0
+  //     );
+  //   }
+  //   return false;
+  // };
 
-  function getStyle(style, snapshot) {
-    if (!snapshot.isDraggingOver) {
-      return style;
-    }
-    return {
-      ...style,
-      background: "#f00 !important",
-    };
-  }
+  // function getStyle(style, snapshot) {
+  //   if (!snapshot.isDraggingOver) {
+  //     return style;
+  //   }
+  //   return {
+  //     ...style,
+  //     background: "#f00 !important",
+  //   };
+  // }
 
-  return <>{props.itemsView === "grid" ? <GridView /> : <ListView />}</>;
+  return itemsView === "grid" ? <GridView /> : <ListView />;
 }
 
 export default memo(ViewItems);

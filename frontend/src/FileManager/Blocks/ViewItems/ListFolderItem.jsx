@@ -1,39 +1,59 @@
-import React, { memo } from "react";
-import { connect } from "react-redux";
+import { memo } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
   TableRow,
-  Box,
   Checkbox,
-  Tooltip,
 } from "@mui/material";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import clsx from "clsx";
-
 import { toAbsoluteUrl, convertDate, formatBytes } from "../../../Utils/Utils";
-import mainconfig from "../../../Data/Config";
-import useStyles from "../../Elements/Styles";
 import config from "../../Elements/config.json";
+import { StyledListTableCell } from "./styled";
 
 const ListFolderItem = ({ item, index }) => {
+  const doubleClick = ()=>{};
+  const selectedFiles = [];
+
+  const bufferedItems = {files:[]};
+  const handleContextMenuClick = ()=>{
+  }
+  const isCuted = (item) => {
+    if (bufferedItems.type === "cut") {
+      return (
+        bufferedItems.files.filter((file) => file.id === item.id).length > 0
+      );
+    }
+    return false;
+  };
   let fileCuted = isCuted(item);
+
+  const addSelect = ()=>{
+
+  }
+   const checkIsSelected = (item) => {
+    return selectedFiles.includes(item);
+  };
   let isSelected = checkIsSelected(item);
 
+  const getStyle = (style, snapshot) => {
+    if (!snapshot.isDraggingOver) {
+      return style;
+    }
+    return {
+      ...style,
+      background: "#f00 !important",
+    };
+  }
   return (
     <Draggable index={index} draggableId={item.id}>
       {(provided, snapshot) => (
         <TableRow
           ref={provided.innerRef}
-          className={clsx(classes.tableListRow, {
-            selected: selectedFiles.includes(item.path),
-            fileCuted: fileCuted,
-            selectmodeTable: selectedFiles.length > 0,
-          })}
-          onDoubleClick={() => props.doubleClick(item.path)}
+          className={{
+            'tableListRow': true,
+            'selected': selectedFiles.includes(item.path),
+            'fileCuted': fileCuted,
+            'selectmodeTable': selectedFiles.length > 0,
+          }}
+          onDoubleClick={() => doubleClick(item.path)}
           onContextMenu={(event) => handleContextMenuClick(item, event)}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
@@ -45,15 +65,16 @@ const ListFolderItem = ({ item, index }) => {
           >
             {(provided, snapshot) => (
               <>
-                <TableCell className={classes.tableCell}>
+                <StyledListTableCell>
                   <Checkbox
                     checked={isSelected}
                     onChange={() => addSelect(item)}
                     value={item.id}
                   />
-                </TableCell>
-                <TableCell className={classes.tableCell}>
+                </StyledListTableCell>
+                <StyledListTableCell>
                   <img
+                    alt={item.name}
                     style={{ width: "20px" }}
                     src={
                       snapshot.isDraggingOver
@@ -61,8 +82,8 @@ const ListFolderItem = ({ item, index }) => {
                         : toAbsoluteUrl(config.icons.folder)
                     }
                   />
-                </TableCell>
-                <TableCell className={classes.tableCell} align="left">
+                </StyledListTableCell>
+                <StyledListTableCell align="left">
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
@@ -71,13 +92,13 @@ const ListFolderItem = ({ item, index }) => {
                     {item.name}
                     {provided.placeholder}
                   </div>
-                </TableCell>
-                <TableCell className={classes.tableCell} align="left">
+                </StyledListTableCell>
+                <StyledListTableCell align="left">
                   {formatBytes(item.size)}
-                </TableCell>
-                <TableCell className={classes.tableCell} align="left">
+                </StyledListTableCell>
+                <StyledListTableCell align="left">
                   {convertDate(item.created)}
-                </TableCell>
+                </StyledListTableCell>
               </>
             )}
           </Droppable>

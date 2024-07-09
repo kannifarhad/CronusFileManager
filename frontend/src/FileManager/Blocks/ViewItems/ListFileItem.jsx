@@ -1,25 +1,32 @@
-import React, { memo } from "react";
-import { connect } from "react-redux";
+import { memo } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
   TableRow,
-  Box,
   Checkbox,
-  Tooltip,
 } from "@mui/material";
-import { Droppable, Draggable } from "react-beautiful-dnd";
-import clsx from "clsx";
-
-import { toAbsoluteUrl, convertDate, formatBytes } from "../../../Utils/Utils";
-import mainconfig from "../../../Data/Config";
-import useStyles from "../../Elements/Styles";
-import config from "../../Elements/config.json";
+import { Draggable } from "react-beautiful-dnd";
+import { StyledListTableCell } from "./styled";
+import { convertDate, formatBytes } from "../../../Utils/Utils";
+import { getThumb } from "../../helpers";
 
 const ListFileItem = ({ item, index }) => {
+  const selectedFiles = [];
+  const bufferedItems = {files:[]};
+  const handleContextMenuClick = ()=>{
+  }
+    const isCuted = (item) => {
+    if (bufferedItems.type === "cut") {
+      return (
+        bufferedItems.files.filter((file) => file.id === item.id).length > 0
+      );
+    }
+    return false;
+  };
+  const addSelect = ()=>{
+
+  }
+   const checkIsSelected = (item) => {
+    return selectedFiles.includes(item);
+  };
   let fileCuted = isCuted(item);
   let isSelected = checkIsSelected(item);
 
@@ -28,37 +35,39 @@ const ListFileItem = ({ item, index }) => {
       {(provided, snapshot) => (
         <TableRow
           onContextMenu={(event) => handleContextMenuClick(item, event)}
-          className={clsx(classes.tableListRow, {
-            selected: selectedFiles.includes(item.path),
-            fileCuted: fileCuted,
-            selectmodeTable: selectedFiles.length > 0,
-          })}
+          className={{
+            'tableListRow': true,
+            'selected': selectedFiles.includes(item.path),
+            'fileCuted': fileCuted,
+            'selectmodeTable': selectedFiles.length > 0,
+          }}
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <TableCell className={classes.tableCell}>
+          <StyledListTableCell>
             <Checkbox
               checked={isSelected}
               onChange={() => addSelect(item)}
               value={item.id}
             />
-          </TableCell>
-          <TableCell className={classes.tableCell}>
+          </StyledListTableCell>
+          <StyledListTableCell>
             <img
+              alt={item.name}
               style={{ width: "20px", maxHeight: "30px" }}
               src={getThumb(item)}
             />
-          </TableCell>
-          <TableCell className={classes.tableCell} align="left">
+          </StyledListTableCell>
+          <StyledListTableCell align="left">
             {item.name}
-          </TableCell>
-          <TableCell className={classes.tableCell} align="left">
+          </StyledListTableCell>
+          <StyledListTableCell align="left">
             {formatBytes(item.size)}
-          </TableCell>
-          <TableCell className={classes.tableCell} align="left">
+          </StyledListTableCell>
+          <StyledListTableCell align="left">
             {convertDate(item.created)}
-          </TableCell>
+          </StyledListTableCell>
         </TableRow>
       )}
     </Draggable>

@@ -1,27 +1,26 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { memo } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Box,
-  Checkbox,
   Tooltip,
 } from "@mui/material";
-import { Droppable, Draggable } from "react-beautiful-dnd";
-import clsx from "clsx";
-
-import { toAbsoluteUrl, convertDate, formatBytes } from "../../../Utils/Utils";
-import mainconfig from "../../../Data/Config";
-import useStyles from "../../Elements/Styles";
-import config from "../../Elements/config.json";
+import { Draggable } from "react-beautiful-dnd";
+import { getThumb } from "../../helpers";
+import ItemSelectButton from './ItemSelectButton';
+import {StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox} from './styled';
 
 const FileItem = ({ item, index }) => {
+  const selectedFiles = [];
+  const bufferedItems = {files:[]};
+  const handleContextMenuClick = ()=>{
+  }
+    const isCuted = (item) => {
+    if (bufferedItems.type === "cut") {
+      return (
+        bufferedItems.files.filter((file) => file.id === item.id).length > 0
+      );
+    }
+    return false;
+  };
   let fileCuted = isCuted(item);
-  let isSelected = checkIsSelected(item);
 
   return (
     <Draggable
@@ -30,39 +29,30 @@ const FileItem = ({ item, index }) => {
       isDragDisabled={item.private}
     >
       {(provided, snapshot) => (
-        <Box
+        <StyledFileItem
           onContextMenu={(event) => handleContextMenuClick(item, event)}
-          className={clsx(classes.itemFile, {
-            selected: selectedFiles.includes(item.path),
-            selectmode: selectedFiles.length > 0,
-            notDragging: !snapshot.isDragging,
-            fileCuted: fileCuted,
-          })}
+          className={{
+            'selected': selectedFiles.includes(item.path),
+            'selectmode': selectedFiles.length > 0,
+            'notDragging': !snapshot.isDragging,
+            'fileCuted': fileCuted,
+          }}
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          {(item.private && (
-            <span className={`icon-lock ${classes.locked}`} />
-          )) || (
-            <Checkbox
-              className={classes.checkbox}
-              checked={isSelected}
-              onChange={() => addSelect(item)}
-              value={item.id}
-            />
-          )}
-          <span className={classes.extension}>{item.extension}</span>
+          <ItemSelectButton item={item} />
+          <StyledItemExtension>{item.extension}</StyledItemExtension>
 
-          <div className={classes.infoBox}>
-            <img src={getThumb(item)} />
-          </div>
+          <StyledItemInfoBox>
+            <img alt={item.name} src={getThumb(item)} />
+          </StyledItemInfoBox>
           <Tooltip title={item.name}>
-            <div className={classes.itemTitle}>
+            <StyledItemTitle>
               <span>{item.name}</span>
-            </div>
+            </StyledItemTitle>
           </Tooltip>
-        </Box>
+        </StyledFileItem>
       )}
     </Draggable>
   );

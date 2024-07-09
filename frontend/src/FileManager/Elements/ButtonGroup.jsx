@@ -1,7 +1,7 @@
 import React from 'react';
-import Icon from '@material-ui/core/Icon';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Icon from '@mui/material/Icon';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 export default function InputField(props) {
         const { buttons} = props;

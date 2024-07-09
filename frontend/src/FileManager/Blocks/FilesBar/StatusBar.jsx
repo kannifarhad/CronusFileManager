@@ -4,7 +4,7 @@ import { Box, Collapse } from  "@mui/material";
 function StatusBar() {
   const selectMessages = false;
   const selectedFiles = [];
-  const bufferedItems = [];
+  const bufferedItems = {files:[]};
 
   const clearBufferFiles = () => {};
   return (

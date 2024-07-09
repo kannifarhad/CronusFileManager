@@ -1,30 +1,16 @@
-import React, { memo, useState } from "react";
-import { connect } from "react-redux";
-import { Menu, MenuItem, Divider, Box } from "@material-ui/core";
-import { DragDropContext } from "react-beautiful-dnd";
-import { uploadFile, pasteFiles } from "../../../Redux/actions";
-import useStyles from "../../Elements/Styles";
-import InfoBoxes from "../../Elements/InfoBoxes";
+import React, { memo } from "react";
 import DropZoneWrapper from "./DropZoneWrapper";
 import FilesLoadingOverlay from "./FilesLoadingOverlay";
 import ContextMenu from "./ContextMenu";
+import ToasterMessages from "./ToasterMessages";
 
-function OverlayBlocks(props) {
-  const { messages, operations, isloading, uploadBox, buttons } = props;
-  const classes = useStyles();
+function OverlayBlocks() {
 
   return (
     <>
-      <div className={classes.messagesBox}>
-        {messages.map((alert, index) => (
-          <InfoBoxes key={index} alert={alert} />
-        ))}
-      </div>
-
+      <ToasterMessages />
       <FilesLoadingOverlay />
-
       <DropZoneWrapper />
-
       <ContextMenu />
     </>
   );

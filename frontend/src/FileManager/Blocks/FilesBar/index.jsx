@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Box } from  "@mui/material";
 import { StyledFilesBarWrapper } from "./styled";
 import StatusBar from "./StatusBar";
+import FilesListContainer from './FilesListContainer';
 
 function FileBarWrapper({ buttons, operations }) {
   return (

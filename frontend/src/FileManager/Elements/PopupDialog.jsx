@@ -21,12 +21,12 @@ export default function AlertDialogSlide(props) {
   const { open, title, description, handleClose, handleSubmit, nameInputSets } =
     props;
   const [renameText, setRenameText] = useState(
-    typeof nameInputSets.value !== undefined ? nameInputSets.value : ""
+    typeof nameInputSets?.value !== undefined ? nameInputSets?.value : ""
   );
   if (!open) return null;
   const handleNameChange = (value) => {
     setRenameText(value);
-    props.nameInputSets.callBack(value);
+    // nameInputSets.callBack(value);
   };
   return (
     <StyledPopUpDialog

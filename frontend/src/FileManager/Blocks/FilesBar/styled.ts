@@ -31,3 +31,23 @@ export const StyledFilesLoadingOverlay = styled(Box)(({ theme }) => ({
     height: "100%",
   },
 }));
+
+export const StyledToasterMessages = styled(Box)(({ theme }) => ({
+    zIndex: '66',
+    position:'absolute',
+    top:'20px',
+    right:'20px',
+    width:'300px',
+    float:'right'
+}));
+
+export const StyledFilesListContainer = styled(Box)(({ theme }) => ({
+  padding: '10px',
+  minHeight: '400px',
+  position:"relative",
+  paddingBottom:"60px"
+}));
+
+export const StyledFilesListWrapper = styled(Box)(({ theme }) => ({
+  position:"relative",
+}));
