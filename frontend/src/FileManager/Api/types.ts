@@ -47,3 +47,33 @@ export interface SaveImageParams {
   path: string;
   isnew: boolean;
 }
+
+export interface GetFoldersListResponse {
+  path: string
+  name: string
+  created: string
+  modified: string
+  type: string
+  id: string
+  premissions: Premissions
+  children: Children[]
+  size: any
+}
+
+export interface Premissions {
+  others: string
+  group: string
+  owner: string
+}
+
+export interface Children {
+  path: string
+  name: string
+  created: string
+  modified: string
+  type: string
+  id: string
+  premissions: Premissions
+  size?: number
+  extension?: string
+}

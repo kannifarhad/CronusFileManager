@@ -1,26 +1,7 @@
 import React, { createContext, useReducer, ReactNode } from "react";
-import { sortFilter } from "./helpers";
-import { ButtonObject, PopupData, EditImage, Messages } from "./types";
-
-interface FileManagerState {
-  selectedFiles: string[];
-  bufferedItems: { files: string[]; type: string };
-  foldersList: any[];
-  history: { currentIndex: number; steps: any[] };
-  selectedFolder: string;
-  filesList: any[];
-  itemsView: string;
-  showImages: string;
-  orderFiles: { field: string; orderBy: string };
-  loading: boolean;
-  popUpData: PopupData;
-  messages: Messages[];
-}
-
-interface FileManagerAction {
-  type: string;
-  payload?: any;
-}
+import { sortFilter } from "../helpers";
+import useGenerateActionButtons from "../Hooks/useGenerateActionButtons";
+import { FileManagerAction, FileManagerState, ActionTypes } from './types'
 
 const initialState: FileManagerState = {
   selectedFiles: [],
@@ -42,29 +23,10 @@ const initialState: FileManagerState = {
   messages: [],
 };
 
-const FileManagerStateContext = createContext<FileManagerState>(initialState);
+const FileManagerStateContext = createContext<FileManagerState & {aviableButtons?:any, operations?: any}>(initialState);
 const FileManagerDispatchContext = createContext<
   React.Dispatch<FileManagerAction>
 >(() => {});
-
-export enum ActionTypes {
-  SET_SELECTED_FILES = "SET_SELECTED_FILES",
-  UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
-  SELECT_ALL_FILES = "SELECT_ALL_FILES",
-  INVERSE_SELECTED_FILES = "INVERSE_SELECTED_FILES",
-  COPY_FILES_TOBUFFER = "COPY_FILES_TOBUFFER",
-  CUT_FILES_TOBUFFER = "CUT_FILES_TOBUFFER",
-  PASTE_FILES = "PASTE_FILES",
-  SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER",
-  GET_FOLDERS_LIST = "GET_FOLDERS_LIST",
-  GET_FILES_LIST = "GET_FILES_LIST",
-  SET_HISTORY_INDEX = "SET_HISTORY_INDEX",
-  SET_ITEM_VIEW = "SET_ITEM_VIEW",
-  SET_SORT_ORDER_BY = "SET_SORT_ORDER_BY",
-  RUN_SORTING_FILTER = "RUN_SORTING_FILTER",
-  SET_IMAGE_SETTINGS = "SET_IMAGE_SETTINGS",
-  CLEAR_FILES_TOBUFFER = "CLEAR_FILES_TOBUFFER",
-}
 
 const fileManagerReducer = (
   state: FileManagerState,
@@ -195,9 +157,10 @@ const fileManagerReducer = (
 
 export const FileManagerProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(fileManagerReducer, initialState);
+  const { aviableButtons, operations } = useGenerateActionButtons({});
 
   return (
-    <FileManagerStateContext.Provider value={state}>
+    <FileManagerStateContext.Provider value={{ ...state, aviableButtons, operations }}>
       <FileManagerDispatchContext.Provider value={dispatch}>
         {children}
       </FileManagerDispatchContext.Provider>

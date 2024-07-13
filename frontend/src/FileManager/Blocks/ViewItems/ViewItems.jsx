@@ -1,23 +1,4 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Box,
-  Checkbox,
-  Tooltip,
-} from "@mui/material";
-import { Droppable, Draggable } from "react-beautiful-dnd";
-import clsx from "clsx";
-
-import { toAbsoluteUrl, convertDate, formatBytes } from "../../../Utils/Utils";
-import mainconfig from "../../../Data/Config";
-import useStyles from "../../Elements/Styles";
-import config from "../../Elements/config.json";
 import GridView from "./GridView";
 import ListView from "./ListView";
 

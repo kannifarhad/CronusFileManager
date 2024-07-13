@@ -6,9 +6,10 @@ import {
   useFileManagerState,
   useFileManagerDispatch,
   FileManagerProvider,
-  ActionTypes,
-} from "../../FileManagerContext";
+  
+} from "../../ContextStore/FileManagerContext";
 import { getFoldersList } from "../../Api/fileManagerServices";
+import { ActionTypes } from '../../ContextStore/types';
 
 const FolderBar = ({
   foldersList,
@@ -20,7 +21,9 @@ const FolderBar = ({
   selectedFolder: string;
 }) => {
   const dispatch = useFileManagerDispatch();
-
+  const state = useFileManagerState();
+  console.log('state', state);
+  
   useEffect(() => {
     getFoldersList({ path: "/" }).then((result) => {
       dispatch({

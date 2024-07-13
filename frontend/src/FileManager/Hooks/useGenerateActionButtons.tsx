@@ -2,6 +2,13 @@ import { useState, useMemo, useCallback } from "react";
 import { ButtonObject, PopupData, EditImage } from "../types";
 import { checkSelectedFileType } from "../helpers";
 
+import {
+  useFileManagerState,
+  useFileManagerDispatch,
+  FileManagerProvider,
+} from "../ContextStore/FileManagerContext";
+import { ActionTypes } from '../ContextStore/types';
+
 export const generateAllButtons = (operations: any): ButtonObject => {
   const allButtons: ButtonObject = {
     copy: {
@@ -198,6 +205,8 @@ export const generateAllButtons = (operations: any): ButtonObject => {
 };
 
 export const useFileManagerOperations = (props: any) => {
+  const dispatch = useFileManagerDispatch();
+
   const handlingHistory = (
     historyInfo: { action: string; path: string },
     index: number

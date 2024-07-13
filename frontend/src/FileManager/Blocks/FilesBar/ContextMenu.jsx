@@ -1,10 +1,7 @@
 
-import React, { memo, useState } from "react";
-import { connect } from "react-redux";
-import { Menu, MenuItem, Divider, Box } from "@mui/material";
-import { uploadFile, pasteFiles } from "../../../Redux/actions";
-import useStyles from "../../Elements/Styles";
-
+import { memo, useState } from "react";
+import { Divider } from "@mui/material";
+import { StyledContextMenu, StyledContextMenuItem } from "../../Elements/styled";
 const contextMenuInital = {
   mouseX: null,
   mouseY: null,
@@ -12,8 +9,7 @@ const contextMenuInital = {
 };
 
 function ContextMenu() {
-  const buttons = {};
-  const classes = useStyles();
+  const buttons = {file:[]};
   const [itemContext, itemContexSet] = useState(contextMenuInital);
   const [contentContex, contentContexSet] = useState(contextMenuInital);
 
@@ -25,10 +21,9 @@ function ContextMenu() {
   return (
 <>
 
-      <Menu
+      <StyledContextMenu
         keepMounted
         open={itemContext.mouseY !== null}
-        className={classes.menu}
         onContextMenu={handleContextClose}
         onClose={handleContextClose}
         anchorReference="anchorPosition"
@@ -40,24 +35,22 @@ function ContextMenu() {
       >
         {buttons.file.map((buttonGroup, index) => [
           buttonGroup.map((button, index) => (
-            <MenuItem
+            <StyledContextMenuItem
               key={index}
               disabled={button.disable}
-              className={classes.menuItem}
               onClick={button.onClick}
             >
               <span className={`${button.icon}`}></span>
               {button.title}
-            </MenuItem>
+            </StyledContextMenuItem>
           )),
           <Divider />,
         ])}
-      </Menu>
+      </StyledContextMenu>
 
-      <Menu
+      <StyledContextMenu
         keepMounted
         open={contentContex.mouseY !== null}
-        className={classes.menu}
         onContextMenu={handleContextClose}
         onClose={handleContextClose}
         anchorReference="anchorPosition"
@@ -69,19 +62,18 @@ function ContextMenu() {
       >
         {buttons?.container?.map((buttonGroup, index) => [
           buttonGroup.map((button, index) => (
-            <MenuItem
+            <StyledContextMenuItem
               key={index}
               disabled={button.disable}
-              className={classes.menuItem}
               onClick={button.onClick}
             >
               <span className={`${button.icon}`}></span>
               {button.title}
-            </MenuItem>
+            </StyledContextMenuItem>
           )),
           <Divider />,
         ])}
-      </Menu>
+      </StyledContextMenu>
     </>
   );
 }

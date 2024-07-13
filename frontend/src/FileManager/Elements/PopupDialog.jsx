@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -11,7 +10,6 @@ import {
 import Translate from "../../Utils/Translate";
 import InputField from "./InputField";
 import { StyledPopUpDialog } from "./styled";
-// import useStyles from "./Styles";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Zoom in={props.open} ref={ref} {...props} />;

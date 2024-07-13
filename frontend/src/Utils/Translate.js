@@ -1,6 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import {getTranslations} from '../Redux/actions';
 
 function Translate(props){
     const {translations, children, replace } = props;
@@ -34,16 +32,4 @@ function Translate(props){
         </>
     );
 }
-
-const mapStateToProps = store => {
-    return {
-        translations : store.dashboard.translations,
-        lang : store.dashboard.lang,
-    }
-};
-
-const mapDispatchToProps = dispatch => ({
-	getTranslations: (data) => dispatch(getTranslations(data))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Translate);
+export default Translate;

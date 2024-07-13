@@ -11,8 +11,7 @@ import {
   useFileManagerState,
   useFileManagerDispatch,
   FileManagerProvider,
-  ActionTypes,
-} from "./FileManagerContext";
+} from "./ContextStore/FileManagerContext";
 import { getFoldersList } from "./Api/fileManagerServices";
 import { ThemeProvider } from "@mui/system";
 import { customTheme } from "./theme";
