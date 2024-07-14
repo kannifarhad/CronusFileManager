@@ -4,13 +4,14 @@ import { StyledFilesBarWrapper } from "./styled";
 import StatusBar from "./StatusBar";
 import FilesListContainer from './FilesListContainer';
 
-function FileBarWrapper({ buttons, operations }) {
+function FileBarWrapper() {
+  console.log('FileBarWrapper');
   return (
     <StyledFilesBarWrapper item xs={9} sm={10}>
       {/* <PerfectScrollbar> */}
       {/* <Box style={{ maxHeight: expand ? bigHeight : height }}> */}
       <Box>
-        <FilesListContainer buttons={buttons} operations={operations} />
+        <FilesListContainer />
       </Box>
       {/* </PerfectScrollbar> */}
       <StatusBar />

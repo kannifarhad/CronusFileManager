@@ -4,15 +4,18 @@ import { Grid } from "@mui/material";
 import TopBarRightMenus from "./TopBarRightMenus";
 import { TopBarWrapper } from "./styled";
 import { Button } from "../../types";
-
+import {
+  useFileManagerState,
+  useFileManagerDispatch,  
+} from "../../ContextStore/FileManagerContext";
 interface MenuRef {
   handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: string) => void;
 }
 
-const TopBar: React.FC<{
-  buttons: Button[][];
-}> = ({ buttons }) => {
+const TopBar: React.FC<{}> = () => {
   const menuListRef = useRef<MenuRef>(null);
+  const { aviableButtons }  = useFileManagerState();
+  const buttons = aviableButtons?.topbar ?? [];
 
   const handleOpenMenu = useCallback(
     (...props: [React.MouseEvent<HTMLElement>, string]) => {

@@ -10,8 +10,8 @@ export const CLEAR_FILES_TOBUFFER = 'CLEAR_FILES_TOBUFFER';
 export const PASTE_FILES = 'PASTE_FILES';
 
 export const SET_SELECTED_FOLDER = 'SET_SELECTED_FOLDER';
-export const GET_FILES_LIST = 'GET_FILES_LIST';
-export const GET_FOLDERS_LIST = 'GET_FOLDERS_LIST';
+export const SET_FILES_LIST = 'SET_FILES_LIST';
+export const SET_FOLDERS_LIST = 'SET_FOLDERS_LIST';
 export const SET_HISTORY_INDEX = 'SET_HISTORY_INDEX';
 export const SET_ITEM_VIEW = 'SET_ITEM_VIEW';
 
@@ -110,29 +110,6 @@ export function setSelectedFolder(path, history) {
     };
 }
 
-export function getFilesList(path) {
-    return {
-        type: GET_FILES_LIST,
-        path: path,
-        request: {
-            method: 'post',
-            url: '/fm/folder'
-        },
-        body: { 
-            path
-        }
-    };
-}
-
-export function getFoldersList() {
-    return {
-        type: GET_FOLDERS_LIST,
-        request: {
-            method: 'post',
-            url: '/fm/foldertree'
-        }
-    };
-}
 
 export function setHistoryIndex(index) {
     return {

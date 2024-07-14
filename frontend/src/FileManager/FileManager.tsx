@@ -14,8 +14,8 @@ import PopupDialog from "./Elements/PopupDialog";
 const FileManager: React.FC<FileManagerProps> = ({ height, callback }) => {
   const expanded = false;
   const [popupData, setPopup] = useState({
-    open: false,
-});
+      open: false,
+  });
 
   return (
     <FileManagerWrapper expanded={expanded}>

@@ -28,7 +28,7 @@ export const StyledButton = styled(Button)(({
 }) => ({
   fontSize: "14px",
   padding: "10px 5px",
-  minWidth: "35px",
+  minWidth: "35px !important",
   background: "#fff",
   "& span": {},
   "& .buttonTitle": {

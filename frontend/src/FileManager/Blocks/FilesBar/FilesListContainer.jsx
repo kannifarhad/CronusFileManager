@@ -3,7 +3,10 @@ import { DragDropContext } from "react-beautiful-dnd";
 import ViewItems from "../ViewItems/ViewItems";
 import {StyledFilesListContainer, StyledFilesListWrapper} from './styled';
 import OverlayBlocks from "./OverlayBlocks";
-
+import {
+  useFileManagerState,
+  useFileManagerDispatch,  
+} from "../../ContextStore/FileManagerContext";
 const contextMenuInital = {
   mouseX: null,
   mouseY: null,
@@ -11,9 +14,9 @@ const contextMenuInital = {
 };
 
 function ContainerBar() {
-  const operations = {};
   const [itemContext, itemContexSet] = useState(contextMenuInital);
   const [contentContex, contentContexSet] = useState(contextMenuInital);
+  const { operations, aviableButtons }  = useFileManagerState();
 
   const handleAddSelected = (value) => {
     operations.handleAddSelected(value);

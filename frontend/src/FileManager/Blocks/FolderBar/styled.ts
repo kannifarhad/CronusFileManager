@@ -1,8 +1,19 @@
-import { styled } from "@mui/system";
-import { Box, ListItem, ListItemProps } from "@mui/material";
+import {
+  styled
+} from "@mui/system";
+import {
+  Box,
+  Grid,
+  ListItem,
+  ListItemProps,
+  BoxProps,  GridProps
+} from "@mui/material";
 
-export const StyledFolderBar = styled(Box)(({ theme }) => ({
+export const StyledFolderBar = styled(Grid)(({
+  theme
+}) => ({
   padding: "10px 0px",
+  overflow:'hidden',
   "& .folderItem": {
     display: "block !important",
     width: "100%",
@@ -16,9 +27,9 @@ export const StyledFolderBar = styled(Box)(({ theme }) => ({
         position: "absolute",
         left: "0px",
         top: "0px",
-        fontSize: "10px",
-        lineHeight: "17px",
-        padding: "6px 5px",
+        fontSize: "8px",
+        lineHeight: "12px",
+        padding: "6px",
       },
       "& .titleWrap": {
         display: "block",
@@ -48,24 +59,57 @@ interface StyledFolderMenuItemProps extends ListItemProps {
 }
 export const StyledFolderMenuItem = styled(ListItem, {
   shouldForwardProp: (prop: string) => !["isOpen", "isActive"].includes(prop),
-})<StyledFolderMenuItemProps>(({ theme, isOpen, isActive }) => {
+}) < StyledFolderMenuItemProps > (({
+  theme,
+  isOpen,
+  isActive
+}) => {
+  let styles = {}
   if (isActive) {
-    return {
-      "& > .MuiButtonBase-root": {
-        background: "#0492f2",
-        color: "#fff",
+    styles = {
+      ...styles,
+      "&  > .MuiButtonBase-root": {
+        background: "#0492f2 !important",
+        color: "#fff !important",
       },
     };
   }
   if (isOpen) {
-    return {
+    styles = {
+      ...styles,
       "& > .folderSubmenu": {
-        display: "block",
+        display: "block !important",
       },
-      "& > .MuiButtonBase-root .iconArrow": {
+      "&  >  .MuiButtonBase-root .iconArrow": {
         transform: "rotate(90deg)",
       },
     };
   }
-  return {};
+  return styles;
+});
+
+export const FileManagerFolderBarGrid = styled(Grid)(({ theme }) => {
+  return {
+    flexGrow: 1,
+    background: "#f9fafc",
+    borderRight: "1px solid #E9eef9",
+    "& .FileManagerFolderBarWrapper": {},
+  };
+});
+
+interface FileManagerFolderBarWrapperProps extends BoxProps {
+  height?: number;
+  expanded?: boolean;
+}
+export const FileManagerFolderBarWrapper = styled(Box, {
+  shouldForwardProp: (prop: string) => !["maxHeight"].includes(prop),
+})<FileManagerFolderBarWrapperProps>(({ height, expanded }) => {
+  const heightInPx =
+    height !== undefined && height > 300 ? `${height}px` : "300px";
+  const bigHeight = `${window.innerHeight - 100}px`;
+  const maxHeight = expanded ? bigHeight : heightInPx;
+  return {
+    // maxHeight,
+    
+  };
 });

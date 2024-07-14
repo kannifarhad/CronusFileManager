@@ -12,7 +12,6 @@ import {
   useFileManagerDispatch,
   FileManagerProvider,
 } from "./ContextStore/FileManagerContext";
-import { getFoldersList } from "./Api/fileManagerServices";
 import { ThemeProvider } from "@mui/system";
 import { customTheme } from "./theme";
 import FileManager from "./FileManager";
@@ -35,4 +34,4 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
   }
 );
 
-export default FileManagerWithProvider;
+export default memo(FileManagerWithProvider);

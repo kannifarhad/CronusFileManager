@@ -8,8 +8,8 @@ import {
     CUT_FILES_TOBUFFER, 
     PASTE_FILES,
     SET_SELECTED_FOLDER,
-    GET_FOLDERS_LIST,
-    GET_FILES_LIST,
+    SET_FOLDERS_LIST,
+    SET_FILES_LIST,
     SET_HISTORY_INDEX,
     SET_ITEM_VIEW,
     SET_SORT_ORDER_BY,
@@ -113,12 +113,12 @@ export default function reducer(state = {}, action){
             }
             return {...state,history: newHistory, selectedFolder: action.path};
 
-        case GET_FILES_LIST: 
+        case SET_FILES_LIST: 
             let filesList = Array.isArray(action.data.children) ? action.data.children : [];
                 filesList = sortFilter(filesList, state.orderFiles);
             return {...state, filesList};
 
-        case GET_FOLDERS_LIST:
+        case SET_FOLDERS_LIST:
             return {...state, foldersList:action.data};
 
         case SET_HISTORY_INDEX:

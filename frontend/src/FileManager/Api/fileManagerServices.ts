@@ -14,25 +14,25 @@ import {
 
 const axiosInstance = createAxiosInstance();
 
-export const getFoldersList = async ({
-  path,
-}: {
-  path: string;
-}): Promise<GetFoldersListResponse> => {
+// export const getFoldersList = async ({
+//   path,
+// }: {
+//   path: string;
+// }): Promise<GetFoldersListResponse> => {
+//   return axiosInstance
+//     .post("folder", { path })
+//     .then((response) => response.data);
+// };
+
+export const getFolderTree = async (): Promise<GetFoldersListResponse> => {
   return axiosInstance
-    .post("folder", { path })
+    .get("foldertree")
     .then((response) => response.data);
 };
 
-
-
-export const getFolderTree = async (): Promise<any> => {
-  return axiosInstance.post("/fm/foldertree").then((response) => response.data);
-};
-
-export const getFilesList = async ({ path }: PathParam): Promise<any> => {
+export const getFilesList = async ({ path }: PathParam): Promise<GetFoldersListResponse> => {
   return axiosInstance
-    .post("/fm/folder", { path })
+    .post("folder", { path })
     .then((response) => response.data);
 };
 

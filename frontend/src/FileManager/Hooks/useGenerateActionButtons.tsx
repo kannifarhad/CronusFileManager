@@ -1,14 +1,13 @@
 import { useState, useMemo, useCallback } from "react";
 import { ButtonObject, PopupData, EditImage } from "../types";
 import { checkSelectedFileType } from "../helpers";
-
 import {
   useFileManagerState,
   useFileManagerDispatch,
   FileManagerProvider,
 } from "../ContextStore/FileManagerContext";
 import { ActionTypes } from '../ContextStore/types';
-
+import { getFilesList } from '../Api/fileManagerServices';
 export const generateAllButtons = (operations: any): ButtonObject => {
   const allButtons: ButtonObject = {
     copy: {
@@ -204,15 +203,14 @@ export const generateAllButtons = (operations: any): ButtonObject => {
   return allButtons;
 };
 
-export const useFileManagerOperations = (props: any) => {
-  const dispatch = useFileManagerDispatch();
+export const useFileManagerOperations = ({ dispatch }: any) => {
 
   const handlingHistory = (
     historyInfo: { action: string; path: string },
     index: number
   ) => {
-    props?.setHistoryIndex(index);
-    props?.unsetSelectedFiles();
+    // props?.setHistoryIndex(index);
+    // props?.unsetSelectedFiles();
     switch (historyInfo.action) {
       case "folderChange":
         operations.handleSetMainFolder(historyInfo.path, true);
@@ -222,63 +220,93 @@ export const useFileManagerOperations = (props: any) => {
     }
   };
 
-  const setMessages = useCallback(([]) => {}, []); // (messages: any[]) => void,
+  const setMessages = useCallback((messages: any[]) => {
+    dispatch({
+      type: ActionTypes.SET_MESSAGES,
+      payload: messages,
+    });
+  }, [dispatch]);
   //   const setPopup = useCallback(() => {}, []); // (popupData: PopupData) => void,
   //   const setLoading = useCallback(() => {}, []); // (loading: boolean) => void,
   //   const setEditImage = useCallback(() => {}, []); // (editImage: EditImage) => void
 
   const operations = useMemo(
     () => ({
+
+      handleSelectFolder: (path: string, history: boolean = false) => {
+        dispatch({
+          type: ActionTypes.SET_SELECTED_FOLDER,
+          payload: {path, history, loading: true},
+        });
+        getFilesList({ path }).then((data) => {
+          dispatch({
+            type: ActionTypes.SET_FILES_LIST,
+            payload: { 
+              data,
+              loading: false,
+              message: {
+                title: `File Successfully Loaded`,
+                type: "success",
+                message: "You can paste it in any folder",
+                timer: 3000,
+                id: Date.now().toString() + Math.random().toString()
+              }
+            },
+          });
+        });
+      },
+
+
       handleAddSelected: (path: string) => {
-        props?.setSelectedFiles(path);
+        // props?.setSelectedFiles(path);
       },
       handleUnsetSelected: () => {
-        props?.unsetSelectedFiles();
+        // props?.unsetSelectedFiles();
       },
       handleInverseSelected: () => {
-        props?.inverseSelectedFiles();
+        // props?.inverseSelectedFiles();
       },
       handleSelectAll: () => {
-        props?.selectAllFiles();
+        // props?.selectAllFiles();
       },
       handleGotoParent: () => {
-        props?.unsetSelectedFiles();
-        operations.handleSetMainFolder(props?.foldersList.path);
+        // props?.unsetSelectedFiles();
+        // operations.handleSetMainFolder(props?.foldersList.path);
       },
       handleGoBackWard: () => {
-        let historyIndex =
-          props?.history.currentIndex > 0 ? props?.history.currentIndex - 1 : 0;
-        let historyInfo = props?.history.steps[historyIndex];
-        handlingHistory(historyInfo, historyIndex);
+        // let historyIndex =
+        //   props?.history.currentIndex > 0 ? props?.history.currentIndex - 1 : 0;
+        // let historyInfo = props?.history.steps[historyIndex];
+        // handlingHistory(historyInfo, historyIndex);
       },
       handleGoForWard: () => {
-        if (props?.history.currentIndex + 1 < props?.history.steps.length) {
-          let historyIndex = props?.history.currentIndex + 1;
-          let historyInfo = props?.history.steps[historyIndex];
-          handlingHistory(historyInfo, historyIndex);
-        }
+        // if (props?.history.currentIndex + 1 < props?.history.steps.length) {
+        //   let historyIndex = props?.history.currentIndex + 1;
+        //   let historyInfo = props?.history.steps[historyIndex];
+        //   handlingHistory(historyInfo, historyIndex);
+        // }
       },
       handleCopy: () => {
-        props?.copyToBufferFiles();
-        setMessages([
-          {
-            title: `File Successfully Copied`,
-            type: "info",
-            message: "You can paste it in any folder",
-            timer: 3000,
-          },
-        ]);
+        // props?.copyToBufferFiles();
+        // setMessages([
+        //   {
+        //     title: `File Successfully Copied`,
+        //     type: "info",
+        //     message: "You can paste it in any folder",
+        //     timer: 3000,
+        //   },
+        // ]);
       },
       handleCut: () => {
-        props?.cutToBufferFiles();
-        setMessages([
-          {
-            title: `File Successfully Cut`,
-            type: "info",
-            message: "You can paste it in any folder",
-            timer: 3000,
-          },
-        ]);
+        // props?.cutToBufferFiles();
+        // setMessages([
+        //   {
+        //     title: `File Successfully Cut`,
+        //     type: "info",
+        //     message: "You can paste it in any folder",
+        //     timer: 3000,
+        //   },
+        // ]);
       },
       handlePaste: () => {
         // let files = props?.bufferedItems.files.map((item) => item.path);
@@ -642,7 +670,7 @@ export const useFileManagerOperations = (props: any) => {
         // });
       },
     }),
-    []
+    [dispatch]
   );
   const allButtons = useMemo(() => {
     return generateAllButtons(operations);

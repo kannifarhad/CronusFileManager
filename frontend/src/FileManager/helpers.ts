@@ -22,8 +22,8 @@ export const sortFilter = (filesList: File[], order: Order): File[] => {
   switch (order.field) {
     case "name":
       sortedFiles = filesList.sort((a, b) => {
-        const x = a.fileName.toLowerCase(); // Changed from 'name'
-        const y = b.fileName.toLowerCase(); // Changed from 'name'
+        const x = a.fileName?.toLowerCase(); // Changed from 'name'
+        const y = b.fileName?.toLowerCase(); // Changed from 'name'
         if (x < y) {
           return -1;
         }

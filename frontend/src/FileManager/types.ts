@@ -1,3 +1,4 @@
+import { AlertColor } from '@mui/material/Alert';
 export interface FileManagerProps {
   height?: string;
   callback?: (filePath: string) => void;
@@ -10,10 +11,50 @@ export interface Button {
   disabled?: boolean;
 }
 
-export interface Messages {
-  icon: string;
-  title: string;
+export type ButtonGroup = Button[];
+
+export interface AvailableButtons {
+  topbar: ButtonGroup[];
+  file: ButtonGroup[];
+  container: ButtonGroup[];
 }
+
+export interface Operations {
+  handleSelectFolder: (value: string, history?: boolean) => void;
+  
+  handleAddSelected: (path: string) => void;
+  handleUnsetSelected: () => void;
+  handleInverseSelected: () => void;
+  handleSelectAll: () => void;
+  handleGotoParent: () => void;
+  handleGoBackWard: () => void;
+  handleGoForWard: () => void;
+  handleCopy: () => void;
+  handleCut: () => void;
+  handlePaste: () => void;
+  handleSetMainFolder: (value: string, history?: boolean) => void;
+  handleDelete: () => void;
+  handleEmptyFolder: () => void;
+  handleNewFile: () => void;
+  handleNewFolder: () => void;
+  handleRename: () => void;
+  handleDuplicate: () => void;
+  handleReload: () => void;
+  handleCreateZip: () => void;
+  handleExtractZip: () => void;
+  handleEdit: () => void;
+}
+export interface Message {
+    title: string;
+    message: string;
+    type: AlertColor;
+    disableClose?: boolean;
+    progress?: boolean;
+    timer?: number;
+    id: string;
+}
+export type Messages = Message[];
+
 export type ButtonObject = {
   [key: string]: Button;
 };
@@ -36,8 +77,22 @@ export interface EditImage {
   extension: string;
 }
 
+enum ItemType {
+  FOLDER = 'folder',
+  FILE = 'file',
+}
+interface Permissions{
+  group: string;
+  others: string;
+  owner: string;
+}
 export interface FolderList {
   path: string;
   name: string;
+  created: string;
+  id: string;
+  modified: string;
+  type: ItemType;
+  premissions: Permissions,
   children?: FolderList[] | null;
 }

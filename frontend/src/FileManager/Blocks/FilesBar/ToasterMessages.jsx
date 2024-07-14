@@ -1,13 +1,16 @@
-import React, { memo, } from "react";
+import { memo } from "react";
 import InfoBoxes from "../../Elements/InfoBoxes";
 import { StyledToasterMessages} from './styled';
+import {
+  useFileManagerState,
+} from "../../ContextStore/FileManagerContext";
 
 const ToasterMessages = ()=> {
-  const messages =[];
+  const { messages }  = useFileManagerState();
   return (
       <StyledToasterMessages>
-        {messages.map((alert, index) => (
-          <InfoBoxes key={index} alert={alert} />
+        {messages.map((alert) => (
+          <InfoBoxes key={alert.id} alert={alert} />
         ))}
       </StyledToasterMessages>
   );

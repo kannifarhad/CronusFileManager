@@ -1,46 +1,52 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, memo } from "react";
 import { StyledFolderBar } from "./styled";
 import MenuItem from "./MenuItem";
-import { FolderList } from "../../types";
 import {
   useFileManagerState,
-  useFileManagerDispatch,
-  FileManagerProvider,
-  
+  useFileManagerDispatch,  
 } from "../../ContextStore/FileManagerContext";
-import { getFoldersList } from "../../Api/fileManagerServices";
+import { getFolderTree } from "../../Api/fileManagerServices";
 import { ActionTypes } from '../../ContextStore/types';
-
-const FolderBar = ({
-  foldersList,
-  onFolderClick,
-  selectedFolder,
-}: {
-  foldersList: FolderList;
-  onFolderClick: (value: string, history?: boolean) => void;
-  selectedFolder: string;
-}) => {
+import {
+  FileManagerFolderBarGrid,
+  FileManagerFolderBarWrapper,
+} from "./styled";
+const FolderBar = () => {
   const dispatch = useFileManagerDispatch();
-  const state = useFileManagerState();
-  console.log('state', state);
+  const { foldersList, selectedFolder, operations: { handleSelectFolder } }  = useFileManagerState();
   
   useEffect(() => {
-    getFoldersList({ path: "/" }).then((result) => {
-      dispatch({
-        type: ActionTypes.SET_SELECTED_FOLDER,
-        payload: result.path,
-      });
-    });
-  }, []);
+      // getFoldersList({ path: "/" }).then((result) => {
+      //   console.log('result',result);
+      //   dispatch({
+      //     type: ActionTypes.SET_FOLDERS_LIST,
+      //     payload: result.children,
+      //   });
+      // });
 
+      getFolderTree().then((result) => {
+        dispatch({
+          type: ActionTypes.SET_FOLDERS_LIST,
+          payload: result,
+        });
+      });
+    
+  }, [dispatch]);
+
+  // console.log('foldersList', foldersList)
   return (
-    <StyledFolderBar key={`folderRoot`}>
-      <MenuItem
-        item={foldersList}
-        onFolderClick={onFolderClick}
-        currentUrl={selectedFolder}
-      />
-    </StyledFolderBar>
+      <FileManagerFolderBarGrid item xs={3} sm={2}>
+        <FileManagerFolderBarWrapper>
+          <StyledFolderBar key={`folderRoot`}>
+            <MenuItem
+              item={foldersList}
+              onFolderClick={handleSelectFolder}
+              currentUrl={selectedFolder ?? '/'}
+            />
+          </StyledFolderBar>
+        </FileManagerFolderBarWrapper>
+    </FileManagerFolderBarGrid>
+
   );
 };
-export default FolderBar;
+export default memo(FolderBar);
