@@ -21,8 +21,8 @@ export interface AvailableButtons {
 
 export interface Operations {
   handleSelectFolder: (value: string, history?: boolean) => void;
+  handleAddSelected: (item: ItemType) => void;
   
-  handleAddSelected: (path: string) => void;
   handleUnsetSelected: () => void;
   handleInverseSelected: () => void;
   handleSelectAll: () => void;
@@ -77,7 +77,7 @@ export interface EditImage {
   extension: string;
 }
 
-enum ItemType {
+export enum ItemType {
   FOLDER = 'folder',
   FILE = 'file',
 }
@@ -86,13 +86,33 @@ interface Permissions{
   others: string;
   owner: string;
 }
-export interface FolderList {
+export type Items = FolderType | FileType;
+export type ItemsList = Items[];
+
+export interface FolderList extends FolderType {
+  children?: FolderList[] | null;
+} 
+
+export interface FolderType {
   path: string;
   name: string;
   created: string;
   id: string;
   modified: string;
-  type: ItemType;
+  type: ItemType.FOLDER;
   premissions: Permissions,
-  children?: FolderList[] | null;
+  children?: ItemsList | null;
+}
+
+export interface FileType {
+  path: string
+  name: string
+  created: string
+  modified: string
+  type: ItemType.FILE
+  id: string
+  premissions: Permissions
+  size: number
+  extension: string
+  private?: boolean;
 }

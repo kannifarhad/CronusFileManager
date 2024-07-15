@@ -45,12 +45,12 @@ export const StyledPrivateIcon = styled('span')(({ theme }) => ({
   padding:'5px'
 }));
 
-export const StyledSelectCheckbox = styled(Checkbox)(({ theme }) => ({
+export const StyledSelectCheckbox = styled(Checkbox)(({ theme, checked }) => ({
   position: 'absolute',
   top:'0px',
   left: '0px',
   padding: '0px',
-  display: 'none'
+  display: checked ? 'block' : 'none'
 }));
 
 export const StyledListTable = styled(Table)(({ theme }) => ({

@@ -3,7 +3,8 @@ import {
   PopupData,
   EditImage,
   Messages,
-  FolderList
+  FolderType,
+  FolderList, ItemType
 } from "../types";
 import {
   AvailableButtons,
@@ -17,7 +18,8 @@ export enum ActionTypes {
   SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER",
   SET_MESSAGES = 'SET_MESSAGES', 
   SET_FILES_LIST = "SET_FILES_LIST",
-
+  ADD_SELECTED_FILE = 'ADD_SELECTED_FILE',
+  
     UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
     SELECT_ALL_FILES = "SELECT_ALL_FILES",
     INVERSE_SELECTED_FILES = "INVERSE_SELECTED_FILES",

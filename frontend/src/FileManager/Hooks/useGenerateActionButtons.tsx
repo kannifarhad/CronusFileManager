@@ -1,11 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
-import { ButtonObject, PopupData, EditImage } from "../types";
+import { ButtonObject, PopupData, EditImage, FolderType, ItemType } from "../types";
 import { checkSelectedFileType } from "../helpers";
-import {
-  useFileManagerState,
-  useFileManagerDispatch,
-  FileManagerProvider,
-} from "../ContextStore/FileManagerContext";
 import { ActionTypes } from '../ContextStore/types';
 import { getFilesList } from '../Api/fileManagerServices';
 export const generateAllButtons = (operations: any): ButtonObject => {
@@ -255,11 +250,17 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
           });
         });
       },
-
-
-      handleAddSelected: (path: string) => {
+      handleAddSelected: (item: ItemType) => {
+        dispatch({
+          type: ActionTypes.ADD_SELECTED_FILE,
+          payload: item
+        });
         // props?.setSelectedFiles(path);
       },
+
+
+
+
       handleUnsetSelected: () => {
         // props?.unsetSelectedFiles();
       },

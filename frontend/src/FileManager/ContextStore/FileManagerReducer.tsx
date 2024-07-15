@@ -49,6 +49,9 @@ export const fileManagerReducer = (
     case ActionTypes.SET_MESSAGES:
       return { ...state, messages: [...state.messages, action.payload ]};
 
+    case ActionTypes.ADD_SELECTED_FILE:
+      return { ...state, selectedFiles: [...state.selectedFiles, action.payload ]};
+    
       
 
     case ActionTypes.SET_IMAGE_SETTINGS:

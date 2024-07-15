@@ -87,3 +87,64 @@ export const getThumb = (item: Item, showImages: string) => {
     return toAbsoluteUrl(config.icons.broken);
   }
 };
+
+
+const hasOwn = {}.hasOwnProperty;
+
+type ClassValue = string | number | boolean | undefined | null | ClassDictionary | ClassArray;
+
+interface ClassDictionary {
+  [key: string]: any;
+}
+
+interface ClassArray extends Array<ClassValue> {}
+
+export function classNames(...args: ClassValue[]): string {
+  let classes = '';
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg) {
+      classes = appendClass(classes, parseValue(arg));
+    }
+  }
+
+  return classes;
+}
+
+function parseValue(arg: ClassValue): string {
+  if (typeof arg === 'string' || typeof arg === 'number' || typeof arg === 'boolean') {
+    return arg.toString();
+  }
+
+  if (typeof arg !== 'object' || arg === null) {
+    return '';
+  }
+
+  if (Array.isArray(arg)) {
+    return classNames(...arg);
+  }
+
+  if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes('[native code]')) {
+    return arg.toString();
+  }
+
+  let classes = '';
+
+  for (const key in arg as ClassDictionary) {
+    if (hasOwn.call(arg, key) && (arg as ClassDictionary)[key]) {
+      classes = appendClass(classes, key);
+    }
+  }
+
+  return classes;
+}
+
+function appendClass(value: string, newClass: string): string {
+  if (!newClass) {
+    return value;
+  }
+
+  return value ? (value + ' ' + newClass) : newClass;
+}
+

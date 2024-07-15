@@ -9,20 +9,11 @@ import {
   UnzipParams,
   ArchiveParams,
   SaveImageParams,
-  GetFoldersListResponse
+  GetFoldersListResponse,
+  GetFilesListResponse
 } from "./types";
 
 const axiosInstance = createAxiosInstance();
-
-// export const getFoldersList = async ({
-//   path,
-// }: {
-//   path: string;
-// }): Promise<GetFoldersListResponse> => {
-//   return axiosInstance
-//     .post("folder", { path })
-//     .then((response) => response.data);
-// };
 
 export const getFolderTree = async (): Promise<GetFoldersListResponse> => {
   return axiosInstance
@@ -30,7 +21,7 @@ export const getFolderTree = async (): Promise<GetFoldersListResponse> => {
     .then((response) => response.data);
 };
 
-export const getFilesList = async ({ path }: PathParam): Promise<GetFoldersListResponse> => {
+export const getFilesList = async ({ path }: PathParam): Promise<GetFilesListResponse> => {
   return axiosInstance
     .post("folder", { path })
     .then((response) => response.data);
