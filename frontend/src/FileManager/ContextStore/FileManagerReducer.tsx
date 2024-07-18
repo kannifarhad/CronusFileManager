@@ -1,4 +1,5 @@
 import { sortFilter } from "../helpers";
+import { ItemMoveActionTypeEnum } from "../types";
 import { FileManagerAction, FileManagerState, ActionTypes } from './types'
 
 export const fileManagerReducer = (
@@ -49,10 +50,23 @@ export const fileManagerReducer = (
     case ActionTypes.SET_MESSAGES:
       return { ...state, messages: [...state.messages, action.payload ]};
 
-    case ActionTypes.ADD_SELECTED_FILE:
-      return { ...state, selectedFiles: [...state.selectedFiles, action.payload ]};
-    
+    case ActionTypes.REMOVE_MESSAGES:
+      return { ...state, messages: state.messages.filter(message=> message.id !== action.payload.id)};
+
+      case ActionTypes.ADD_SELECTED_FILE: {
+        const item = action.payload;
+        // Create a new Set based on the current state
+        const selectedFilesNew = new Set(state.selectedFiles);
       
+        // Add or remove the item from the new Set
+        if (selectedFilesNew.has(item)) {
+          selectedFilesNew.delete(item);
+        } else {
+          selectedFilesNew.add(item);
+        }
+        // Return the new state with the updated Set
+        return { ...state, selectedFiles: selectedFilesNew };
+      }
 
     case ActionTypes.SET_IMAGE_SETTINGS:
       return { ...state, showImages: action.payload };
@@ -71,18 +85,18 @@ export const fileManagerReducer = (
       };
     }
     case ActionTypes.UNSET_SELECTED_FILES:
-      return { ...state, selectedFiles: [] };
+      return { ...state, selectedFiles: new Set() };
 
-    case ActionTypes.SET_SELECTED_FILES: {
-      let selectedFilesNew = [...state.selectedFiles];
-      let index = selectedFilesNew.indexOf(action.payload.item);
-      if (index !== -1) {
-        selectedFilesNew.splice(index, 1);
-      } else {
-        selectedFilesNew = [...selectedFilesNew, action.payload.item];
-      }
-      return { ...state, selectedFiles: selectedFilesNew };
-    }
+    // case ActionTypes.SET_SELECTED_FILES: {
+    //   let selectedFilesNew = state.selectedFiles;
+    //   const item = action.payload.item;
+    //   if (selectedFilesNew.has(item)) {
+    //     selectedFilesNew.delete(item)
+    //   } else {
+    //     selectedFilesNew.add(item);
+    //   }
+    //   return { ...state, selectedFiles: selectedFilesNew };
+    // }
     case ActionTypes.SELECT_ALL_FILES: {
       let newSelected = state.filesList.reduce(function (result, file) {
         if (file.private !== true) {
@@ -95,7 +109,7 @@ export const fileManagerReducer = (
     case ActionTypes.INVERSE_SELECTED_FILES: {
       let selectedFiles = state.selectedFiles;
       const inversedSelected = state.filesList.reduce((nextSelected, file) => {
-        if (!selectedFiles.find((selectedFile) => selectedFile === file.id)) {
+        if (!selectedFiles?.has(file)) {
           nextSelected.push(file);
         }
         return nextSelected;
@@ -104,37 +118,28 @@ export const fileManagerReducer = (
       return { ...state, selectedFiles: inversedSelected };
     }
     case ActionTypes.COPY_FILES_TOBUFFER: {
-      let bufferedItems = {
-        type: "copy",
-        files: state.selectedFiles,
+      const bufferedItems = {
+        type: ItemMoveActionTypeEnum.COPY,
+        files: new Set(state.selectedFiles),
       };
-      return { ...state, bufferedItems, selectedFiles: [] };
+      return { ...state, bufferedItems, selectedFiles: new Set() };
     }
 
     case ActionTypes.CUT_FILES_TOBUFFER: {
-      let bufferedItems = {
-        type: "cut",
-        files: state.selectedFiles,
+      const bufferedItems = {
+        type: ItemMoveActionTypeEnum.CUT,
+        files: new Set(state.selectedFiles),
       };
-      return { ...state, bufferedItems, selectedFiles: [] };
+      return { ...state, bufferedItems, selectedFiles: new Set() };
     }
 
     case ActionTypes.CLEAR_FILES_TOBUFFER: {
-      let bufferedItems = {
-        type: "",
-        files: [],
+      const bufferedItems = {
+        type: null,
+        files: new Set(),
       };
       return { ...state, bufferedItems };
     }
-
-    case ActionTypes.PASTE_FILES: {
-      let bufferedItems = {
-        type: "",
-        files: [],
-      };
-      return { ...state, bufferedItems };
-    }
-
 
 
 

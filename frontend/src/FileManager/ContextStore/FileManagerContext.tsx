@@ -2,11 +2,11 @@ import React, { createContext, useReducer, ReactNode } from "react";
 import useGenerateActionButtons from "../Hooks/useGenerateActionButtons";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
-import { ItemType } from "../types";
+import { Items } from "../types";
 
 const initialState: CreateContextType = {
-  selectedFiles: [],
-  bufferedItems: { files: [], type: "" },
+  selectedFiles: new Set(),
+  bufferedItems: { files: new Set([]), type: null },
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
   selectedFolder: "/",
@@ -24,7 +24,7 @@ const initialState: CreateContextType = {
   messages: [],
   operations:{
     handleSelectFolder: (value: string, history?: boolean) => null,
-    handleAddSelected: (item: ItemType) => null,
+    handleAddSelected: (item: Items) => null,
     handleUnsetSelected: () => null,
     handleInverseSelected: () => null,
     handleSelectAll: () => null,

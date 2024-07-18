@@ -29,7 +29,7 @@ const ListFolderItem = ({ item, index }) => {
 
   }
    const checkIsSelected = (item) => {
-    return selectedFiles.includes(item);
+    return selectedFiles?.has (item);
   };
   let isSelected = checkIsSelected(item);
 
@@ -49,9 +49,9 @@ const ListFolderItem = ({ item, index }) => {
           ref={provided.innerRef}
           className={{
             'tableListRow': true,
-            'selected': selectedFiles.includes(item.path),
+            'selected': selectedFiles?.has (item.path),
             'fileCuted': fileCuted,
-            'selectmodeTable': selectedFiles.length > 0,
+            'selectmodeTable': selectedFiles.size > 0,
           }}
           onDoubleClick={() => doubleClick(item.path)}
           onContextMenu={(event) => handleContextMenuClick(item, event)}

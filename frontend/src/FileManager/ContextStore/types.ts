@@ -4,7 +4,9 @@ import {
   EditImage,
   Messages,
   FolderType,
-  FolderList, ItemType
+  FolderList,
+  BufferedItemsType,
+  Items
 } from "../types";
 import {
   AvailableButtons,
@@ -19,6 +21,7 @@ export enum ActionTypes {
   SET_MESSAGES = 'SET_MESSAGES', 
   SET_FILES_LIST = "SET_FILES_LIST",
   ADD_SELECTED_FILE = 'ADD_SELECTED_FILE',
+  REMOVE_MESSAGES = 'REMOVE_MESSAGES',
   
     UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
     SELECT_ALL_FILES = "SELECT_ALL_FILES",
@@ -36,11 +39,8 @@ export enum ActionTypes {
 }
 
 export interface FileManagerState {
-  selectedFiles: string[];
-  bufferedItems: {
-    files: string[];
-    type: string
-  };
+  selectedFiles: Set<Items>;
+  bufferedItems: BufferedItemsType;
   foldersList: FolderList | null;
   history: {
     currentIndex: number;steps: any[]

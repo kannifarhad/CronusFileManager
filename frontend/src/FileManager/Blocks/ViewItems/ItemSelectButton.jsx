@@ -6,8 +6,7 @@ const ItemSelectButton = ({ item }) => {
   const { operations:{ handleAddSelected }, selectedFiles }  = useFileManagerState();
   
   if(item.private) return <StyledPrivateIcon className='icon-lock' />
-
-  const isSelected = selectedFiles.includes(item);
+  const isSelected = selectedFiles?.has(item);
   return (
     <StyledSelectCheckbox
       checked={isSelected}

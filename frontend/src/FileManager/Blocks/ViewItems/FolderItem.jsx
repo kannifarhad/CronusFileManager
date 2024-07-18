@@ -7,12 +7,14 @@ import ItemSelectButton from './ItemSelectButton';
 import { toAbsoluteUrl, convertDate } from "../../../Utils/Utils";
 import {StyledFileItem, StyledItemTitle, StyledItemInfoBox} from './styled';
 import config from "../../Elements/config.json";
+import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 
 const FolderItem = ({ item, index }) => {
-  const selectedFiles = [];
-  const bufferedItems = {files:[]};
+  const { operations, selectedFiles, bufferedItems, showImages } = useFileManagerState();
+
   const handleContextMenuClick = ()=>{
   }
+  console.log('selectedFiles', selectedFiles);
   const doubleClick = ()=>{};
 
     const isCuted = (item) => {
@@ -44,8 +46,8 @@ const FolderItem = ({ item, index }) => {
         <StyledFileItem
           ref={provided.innerRef}
           className={{
-            'selected': selectedFiles.includes(item.path),
-            'selectmode': selectedFiles.length > 0,
+            'selected': selectedFiles?.has(item),
+            'selectmode': selectedFiles?.size > 0,
             'notDragging': !snapshot.isDragging,
             'fileCuted': fileCuted,
           }}
