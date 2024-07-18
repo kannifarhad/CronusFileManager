@@ -1,4 +1,5 @@
 import { AlertColor } from '@mui/material/Alert';
+import config from "./Elements/config.json";
 export interface FileManagerProps {
   height?: string;
   callback?: (filePath: string) => void;
@@ -21,7 +22,7 @@ export interface AvailableButtons {
 
 export interface Operations {
   handleSelectFolder: (value: string, history?: boolean) => void;
-  handleAddSelected: (item: ItemType) => void;
+  handleAddSelected: (item: Items) => void;
   
   handleUnsetSelected: () => void;
   handleInverseSelected: () => void;
@@ -81,6 +82,16 @@ export enum ItemType {
   FOLDER = 'folder',
   FILE = 'file',
 }
+
+export enum ItemMoveActionTypeEnum {
+  COPY = 'COPY',
+  CUT = 'CUT'
+}
+export interface BufferedItemsType{
+  files: Set<Items | unknown>;
+  type: ItemMoveActionTypeEnum | null
+};
+
 interface Permissions{
   group: string;
   others: string;
@@ -104,6 +115,7 @@ export interface FolderType {
   children?: ItemsList | null;
 }
 
+type ExtensionsTypes = keyof typeof config.icons;
 export interface FileType {
   path: string
   name: string
@@ -113,6 +125,6 @@ export interface FileType {
   id: string
   premissions: Permissions
   size: number
-  extension: string
+  extension: ExtensionsTypes
   private?: boolean;
 }

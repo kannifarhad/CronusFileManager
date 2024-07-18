@@ -1,11 +1,11 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { Tooltip } from "@mui/material";
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from "react-beautiful-dnd";
 import { getThumb, classNames } from "../../helpers";
 import ItemSelectButton from './ItemSelectButton';
 import { StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox } from './styled';
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { FileType } from "../../types";
+import { Items , FileType,  ItemMoveActionTypeEnum  } from "../../types";
 
 interface FileItemProps {
   item: FileType;
@@ -19,14 +19,9 @@ const FileItem: React.FC<FileItemProps> = ({ item, index }) => {
     // Context menu click handling logic here
   };
 
-  const isCuted = (item: FileType): boolean => {
-    // if (bufferedItems.type === "cut") {
-    //   return bufferedItems.files.some((file: FileType) => file.id === item.id);
-    // }
-    return false;
-  };
-
-  let fileCuted = isCuted(item);
+  const isCuted = useMemo(() => {
+    return bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item);
+  }, [item, bufferedItems]);
 
   return (
     <Draggable
@@ -38,10 +33,10 @@ const FileItem: React.FC<FileItemProps> = ({ item, index }) => {
         <StyledFileItem
           onContextMenu={(event) => handleContextMenuClick(item, event)}
           className={classNames({
-            'selected': selectedFiles.includes(item.path),
-            'selectmode': selectedFiles.length > 0,
+            'selected': selectedFiles?.has (item),
+            'selectmode': selectedFiles.size > 0,
             'notDragging': !snapshot.isDragging,
-            'fileCuted': fileCuted,
+            'fileCuted': isCuted,
           })}
           ref={provided.innerRef}
           {...provided.draggableProps}

@@ -1,5 +1,6 @@
 import config from "./Elements/config.json";
 import mainconfig from "../Data/Config";
+import { FileType } from "./types";
 
 interface File {
   fileName: string; // Renamed from 'name'
@@ -10,10 +11,6 @@ interface File {
 interface Order {
   field: string;
   orderBy: string;
-}
-interface Item {
-  extension: string;
-  path: string;
 }
 
 export const sortFilter = (filesList: File[], order: Order): File[] => {
@@ -74,13 +71,12 @@ export const checkSelectedFileType = (type: any, selectedFile: any) => {
 export const toAbsoluteUrl = (pathname: string) =>
   process.env.PUBLIC_URL + pathname;
 
-export const getThumb = (item: Item, showImages: string) => {
+export const getThumb = (item: FileType, showImages: string) => {
   try {
     if (showImages === "thumbs" && config.imageFiles.includes(item.extension)) {
       return `${mainconfig.serverPath}${item.path}`;
     } else {
-      // const extensionIconPath = config.icons[item.extension] || config.icons.broken;
-      const extensionIconPath = config.icons.broken;
+      const extensionIconPath = config.icons[item.extension] || config.icons.broken;
       return  toAbsoluteUrl(extensionIconPath);
     }
   } catch (error) {

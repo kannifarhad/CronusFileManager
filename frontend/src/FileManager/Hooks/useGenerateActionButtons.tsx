@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, ItemType } from "../types";
+import { ButtonObject, PopupData, EditImage, FolderType, Items } from "../types";
 import { checkSelectedFileType } from "../helpers";
 import { ActionTypes } from '../ContextStore/types';
 import { getFilesList } from '../Api/fileManagerServices';
@@ -250,7 +250,7 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
           });
         });
       },
-      handleAddSelected: (item: ItemType) => {
+      handleAddSelected: (item: Items) => {
         dispatch({
           type: ActionTypes.ADD_SELECTED_FILE,
           payload: item

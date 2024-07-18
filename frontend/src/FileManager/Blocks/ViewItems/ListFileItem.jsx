@@ -25,7 +25,7 @@ const ListFileItem = ({ item, index }) => {
 
   }
    const checkIsSelected = (item) => {
-    return selectedFiles.includes(item);
+    return selectedFiles?.has (item);
   };
   let fileCuted = isCuted(item);
   let isSelected = checkIsSelected(item);
@@ -37,9 +37,9 @@ const ListFileItem = ({ item, index }) => {
           onContextMenu={(event) => handleContextMenuClick(item, event)}
           className={{
             'tableListRow': true,
-            'selected': selectedFiles.includes(item.path),
+            'selected': selectedFiles?.has (item.path),
             'fileCuted': fileCuted,
-            'selectmodeTable': selectedFiles.length > 0,
+            'selectmodeTable': selectedFiles.size > 0,
           }}
           ref={provided.innerRef}
           {...provided.draggableProps}
