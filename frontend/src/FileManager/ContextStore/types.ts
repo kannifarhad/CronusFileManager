@@ -7,7 +7,9 @@ import {
   FolderList,
   BufferedItemsType,
   Items,
-  ContextMenuTypeENum
+  ContextMenuTypeEnum,
+  ImagesThumbTypeEnum,
+  ViewTypeEnum
 } from "../types";
 import {
   AvailableButtons,
@@ -48,22 +50,23 @@ export interface FileManagerState {
     item: Items | null,
     mouseX: number,
     mouseY: number,
-    menuType: ContextMenuTypeENum
+    menuType: ContextMenuTypeEnum
   } | null,
   selectedFolder: FolderList | null;
+  itemsViewType: ViewTypeEnum;
+  showImages: ImagesThumbTypeEnum;
+  loading: boolean;
+  messages: Messages;
+
   history: {
     currentIndex: number;
     steps: any[]
   };
   filesList: any[];
-  itemsView: string;
-  showImages: string;
   orderFiles: {
     field: string;orderBy: string
   };
-  loading: boolean;
   popUpData: PopupData;
-  messages: Messages;
 }
 
 export interface FileManagerAction {

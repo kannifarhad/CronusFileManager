@@ -16,5 +16,5 @@ export default {
       field:'name',
       orderBy: 'asc'
     },
-    itemsView: 'list'
+    itemsViewType: 'list'
 }

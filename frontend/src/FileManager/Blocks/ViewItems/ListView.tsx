@@ -11,10 +11,13 @@ import {
 import { Droppable } from "react-beautiful-dnd";
 import ListFolderItem from './ListFolderItem';
 import ListFileItem from './ListFileItem';
-import {StyledListTable} from './styled';
+import { StyledListTable } from './styled';
+import { useFileManagerState } from "../../ContextStore/FileManagerContext";
+import { Items, ItemType} from "../../types";
 
-const ListView = () => {
-  const filesList = [];
+const ListView: React.FC<{}> = () => {
+  const { filesList } = useFileManagerState();
+
   return (
     <TableContainer component={Box}>
       <StyledListTable size="small" aria-label="a dense table">
@@ -33,22 +36,19 @@ const ListView = () => {
         </TableHead>
 
         <Droppable
-          droppableId="listDroppablContainer"
+          droppableId="listDroppableContainer"
           type="CONTAINERITEM"
           isCombineEnabled
         >
           {(provided, snapshot) => (
             <TableBody ref={provided.innerRef} {...provided.droppableProps}>
-              {filesList.map(
-                (item, index) => {
-                  item.type === "folder" && (
-                    <ListFolderItem key={index} index={index} item={item} />
-                  )
-                  item.type === "file" && (
-                    <ListFileItem key={index} index={index} item={item} />
-                  )
-})}
-
+              {filesList.map((item, index) => (
+                item.type === ItemType.FOLDER ? (
+                  <ListFolderItem key={item.id} index={index} item={item} />
+                ) : item.type === ItemType.FILE ? (
+                  <ListFileItem key={item.id} index={index} item={item} />
+                ) : null
+              ))}
               {provided.placeholder}
             </TableBody>
           )}

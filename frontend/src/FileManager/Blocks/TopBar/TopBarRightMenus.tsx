@@ -1,6 +1,8 @@
 import React, { memo, forwardRef, useImperativeHandle } from "react";
 import { Menu, Radio, Divider, FormControlLabel } from "@mui/material";
 import { StyledTopBarMenuItem } from "./styled";
+import { useFileManagerState } from "../../ContextStore/FileManagerContext";
+import { ImagesThumbTypeEnum } from "../../types";
 
 interface MenuRef {
   handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: string) => void;
@@ -24,17 +26,17 @@ const options = [
 const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
   const {
     orderFiles,
-    showImages,
     setSorting,
     filterSorting,
     setImagesSettings,
   } = {
     orderFiles: { field: "", orderBy: "" },
-    showImages: {},
     setSorting: () => {},
     filterSorting: () => {},
     setImagesSettings: () => {},
   };
+
+  const { itemsViewType, showImages, operations:{} } = useFileManagerState();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = React.useState({
@@ -158,31 +160,31 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
         open={Boolean(open.settings)}
         onClose={handleClose}
       >
-        <StyledTopBarMenuItem selected={showImages === "thumbs"}>
+        <StyledTopBarMenuItem selected={showImages === ImagesThumbTypeEnum.THUMB}>
           <FormControlLabel
             control={
               <Radio
                 name="imageSettings"
-                checked={showImages === "thumbs"}
+                checked={showImages === ImagesThumbTypeEnum.THUMB}
                 onChange={() => {
-                  handleSetSettings("thumbs");
+                  handleSetSettings(ImagesThumbTypeEnum.THUMB);
                 }}
-                value="thumbs"
+                value={ImagesThumbTypeEnum.THUMB}
               />
             }
             label="Show Thumbs"
           />
         </StyledTopBarMenuItem>
-        <StyledTopBarMenuItem selected={showImages === "icons"}>
+        <StyledTopBarMenuItem selected={showImages === ImagesThumbTypeEnum.ICONS}>
           <FormControlLabel
             control={
               <Radio
                 name="imageSettings"
-                checked={showImages === "icons"}
+                checked={showImages === ImagesThumbTypeEnum.ICONS}
                 onChange={() => {
-                  handleSetSettings("icons");
+                  handleSetSettings(ImagesThumbTypeEnum.ICONS);
                 }}
-                value="icons"
+                value={ImagesThumbTypeEnum.ICONS}
               />
             }
             label="Show Icons"

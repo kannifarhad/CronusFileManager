@@ -1,19 +1,21 @@
 import React, { memo, useMemo, useCallback } from "react";
-import { Tooltip } from "@mui/material";
+import {
+  TableRow,
+  Checkbox,
+} from "@mui/material";
 import { Droppable, Draggable, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from "react-beautiful-dnd";
-import ItemSelectButton from './ItemSelectButton';
-import { toAbsoluteUrl, convertDate } from "../../../Utils/Utils";
-import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from './styled';
+import { toAbsoluteUrl, convertDate, formatBytes } from "../../helpers";
 import config from "../../Elements/config.json";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { FolderType,  ItemMoveActionTypeEnum, ContextMenuTypeEnum  } from "../../types";
+import { StyledListTableCell } from "./styled";
 import { classNames } from "../../helpers";
 
-const FolderItem:  React.FC<{
+const ListFolderItem: React.FC<{
   item: FolderType;
   index: number;
 }> = ({ item, index }) => {
-  const { operations:{ handleContextClick, handleSelectFolder}, selectedFiles, bufferedItems } = useFileManagerState();
+  const { operations:{ handleContextClick, handleSelectFolder, handleAddSelected}, selectedFiles, bufferedItems } = useFileManagerState();
 
   const handleContextMenuClick = useCallback((item: FolderType, event: React.MouseEvent) => {
     handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
@@ -26,7 +28,9 @@ const FolderItem:  React.FC<{
   const isCuted = useMemo(() => bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item)
   , [item, bufferedItems]);
 
-  // const getStyle = (style: React.CSSProperties, snapshot: DroppableStateSnapshot): React.CSSProperties => {
+  const isSelected = useMemo(()=> selectedFiles.has(item),[selectedFiles, item]);
+
+  // const getStyle = (style: React.CSSProperties, snapshot: DroppableStateSnapshot) => {
   //   if (!snapshot.isDraggingOver) {
   //     return style;
   //   }
@@ -37,14 +41,14 @@ const FolderItem:  React.FC<{
   // };
 
   return (
-    <Draggable index={index} draggableId={item.id} isDragDisabled={item.private}>
+    <Draggable index={index} draggableId={item.id}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-        <StyledFileItem
+        <TableRow
           ref={provided.innerRef}
           className={classNames({
+            'tableListRow': true,
             'selected': selectedFiles?.has(item),
-            'selectmode': selectedFiles?.size > 0,
-            'notDragging': !snapshot.isDragging,
+            'selectmodeTable': selectedFiles?.size > 0,
             'fileCuted': isCuted,
           })}
           onDoubleClick={() => doubleClick(item)}
@@ -52,45 +56,54 @@ const FolderItem:  React.FC<{
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Droppable droppableId={item.id} type="CONTAINERITEM" isCombineEnabled>
+          <Droppable
+            droppableId={item.id}
+            type="CONTAINERITEM"
+            isCombineEnabled
+          >
             {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                // style={getStyle(provided.droppableProps?.style as React.CSSProperties, snapshot)}
-              >
-                <ItemSelectButton item={item} />
-
-                <StyledItemInfoBox>
+              <>
+                <StyledListTableCell>
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => handleAddSelected(item)}
+                    value={item.id}
+                  />
+                </StyledListTableCell>
+                <StyledListTableCell>
                   <img
                     alt={item.name}
+                    style={{ width: "20px" }}
                     src={
                       snapshot.isDraggingOver
                         ? toAbsoluteUrl(config.icons.folderopen)
                         : toAbsoluteUrl(config.icons.folder)
                     }
                   />
-                </StyledItemInfoBox>
-                <Tooltip
-                  title={
-                    <>
-                      <b>Name :</b> {item.name} <br />
-                      <b>Created :</b> {convertDate(item.created)}
-                    </>
-                  }
-                >
-                  <StyledItemTitle>
-                    <span>{item.name}</span>
-                  </StyledItemTitle>
-                </Tooltip>
-                {provided.placeholder}
-              </div>
+                </StyledListTableCell>
+                <StyledListTableCell align="left">
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    // style={getStyle(provided.droppableProps.style, snapshot)}
+                  >
+                    {item.name}
+                    {provided.placeholder}
+                  </div>
+                </StyledListTableCell>
+                <StyledListTableCell align="left">
+                  {formatBytes(item.size)}
+                </StyledListTableCell>
+                <StyledListTableCell align="left">
+                  {convertDate(item.created)}
+                </StyledListTableCell>
+              </>
             )}
           </Droppable>
-        </StyledFileItem>
+        </TableRow>
       )}
     </Draggable>
   );
 };
 
-export default memo(FolderItem);
+export default memo(ListFolderItem);

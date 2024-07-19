@@ -79,15 +79,18 @@ export const fileManagerReducer = (
         return { ...state, bufferedItems };
       }
 
-
-
-
-
-
-
+    case ActionTypes.SET_ITEM_VIEW:
+        return { ...state, itemsViewType: action.payload };
 
     case ActionTypes.SET_IMAGE_SETTINGS:
-      return { ...state, showImages: action.payload };
+        return { ...state, showImages: action.payload };
+
+
+
+
+
+
+
 
     case ActionTypes.RUN_SORTING_FILTER: {
       let sortedFiles = sortFilter(state.filesList, state.orderFiles);
@@ -147,8 +150,6 @@ export const fileManagerReducer = (
       newHistoryIndex.currentIndex = action.payload.index;
       return { ...state, history: newHistoryIndex };
     }
-    case ActionTypes.SET_ITEM_VIEW:
-      return { ...state, itemsView: action.payload.iew };
 
     default:
       return state;

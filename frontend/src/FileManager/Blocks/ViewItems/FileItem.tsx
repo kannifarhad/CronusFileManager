@@ -5,7 +5,7 @@ import { getThumb, classNames } from "../../helpers";
 import ItemSelectButton from './ItemSelectButton';
 import { StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox } from './styled';
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { FileType,  ItemMoveActionTypeEnum, ContextMenuTypeENum  } from "../../types";
+import { FileType,  ItemMoveActionTypeEnum, ContextMenuTypeEnum  } from "../../types";
 
 const FileItem: React.FC<{
   item: FileType;
@@ -14,7 +14,7 @@ const FileItem: React.FC<{
   const { operations:{ handleContextClick}, selectedFiles, bufferedItems, showImages } = useFileManagerState();
 
   const handleContextMenuClick = useCallback((item: FileType, event: React.MouseEvent) => {
-    handleContextClick({ item, event, menuType: ContextMenuTypeENum.ITEM });
+    handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
   },[handleContextClick]);
 
   const isCuted = useMemo(() => bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item)

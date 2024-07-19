@@ -2,7 +2,7 @@ import React, { createContext, useReducer, ReactNode } from "react";
 import useGenerateActionButtons from "../Hooks/useGenerateActionButtons";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
-import { ContextMenuTypeENum, FolderType, Items } from "../types";
+import { ContextMenuTypeEnum, FolderType, ImagesThumbTypeEnum, Items, ViewTypeEnum, } from "../types";
 import { DropResult } from "react-beautiful-dnd";
 
 const initialState: CreateContextType = {
@@ -12,12 +12,12 @@ const initialState: CreateContextType = {
   messages: [],
   loading: false,
   selectedFolder: null,
+  itemsViewType: ViewTypeEnum.GRID,
+  showImages: ImagesThumbTypeEnum.ICONS,
 
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
   filesList: [],
-  itemsView: "list",
-  showImages: "icons",
   orderFiles: {
     field: "name",
     orderBy: "asc",
@@ -29,10 +29,11 @@ const initialState: CreateContextType = {
   operations:{
     handleSelectFolder: (folder: FolderType, history?: boolean) => null,
     handleAddSelected: (item: Items) => null,
-    handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum}) => null,
+    handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeEnum}) => null,
     handleClearBuffer: ()=> null,
     handleContextClose: (event: React.MouseEvent) => null,
     handleDragEnd: (result: DropResult) => null,
+    handleSetViewItemType: (view: ViewTypeEnum)=> null,
 
     handleUnsetSelected: () => null,
     handleInverseSelected: () => null,

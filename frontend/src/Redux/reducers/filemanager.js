@@ -127,7 +127,7 @@ export default function reducer(state = {}, action){
             return {...state,history: newHistoryIndex};
         
         case SET_ITEM_VIEW:
-            return {...state,itemsView: action.view};
+            return {...state,itemsViewType: action.view};
 
         default:
             return state;

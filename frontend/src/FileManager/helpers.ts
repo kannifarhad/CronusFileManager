@@ -1,6 +1,6 @@
 import config from "./Elements/config.json";
 import mainconfig from "../Data/Config";
-import { FileType } from "./types";
+import { FileType, ImagesThumbTypeEnum } from "./types";
 
 interface File {
   fileName: string; // Renamed from 'name'
@@ -71,9 +71,9 @@ export const checkSelectedFileType = (type: any, selectedFile: any) => {
 export const toAbsoluteUrl = (pathname: string) =>
   process.env.PUBLIC_URL + pathname;
 
-export const getThumb = (item: FileType, showImages: string) => {
+export const getThumb = (item: FileType, showImages: ImagesThumbTypeEnum) => {
   try {
-    if (showImages === "thumbs" && config.imageFiles.includes(item.extension)) {
+    if (showImages === ImagesThumbTypeEnum.THUMB && config.imageFiles.includes(item.extension)) {
       return `${mainconfig.serverPath}${item.path}`;
     } else {
       const extensionIconPath = config.icons[item.extension] || config.icons.broken;
@@ -83,6 +83,45 @@ export const getThumb = (item: FileType, showImages: string) => {
     return toAbsoluteUrl(config.icons.broken);
   }
 };
+
+/**
+ * Formats a given number of bytes into a human-readable string.
+ * 
+ * @param bytes - The number of bytes.
+ * @param decimals - The number of decimal places to include.
+ * @returns A string representing the formatted size.
+ */
+export const formatBytes = (bytes: number, decimals: number = 2): string => {
+  if (bytes === undefined || bytes === null) return '';
+
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const formattedBytes = parseFloat((bytes / Math.pow(k, i)).toFixed(decimals));
+
+  return `${formattedBytes} ${sizes[i]}`;
+};
+
+/**
+ * Converts a date string to a human-readable format.
+ * 
+ * @param dateString - The date string to convert.
+ * @returns A string representing the date and time in "dd/mm/yyyy hh:mm:ss" format.
+ */
+export const convertDate = (dateString: string): string => {
+  const myDate = new Date(dateString);
+
+  // Check if the date is invalid
+  if (isNaN(myDate.getTime())) {
+    return 'Invalid Date';
+  }
+
+  return `${myDate.toLocaleDateString("en-GB")} ${myDate.toLocaleTimeString("en-GB")}`;
+};
+
 
 
 const hasOwn = {}.hasOwnProperty;
