@@ -6,7 +6,8 @@ import {
   FolderType,
   FolderList,
   BufferedItemsType,
-  Items
+  Items,
+  ContextMenuTypeENum
 } from "../types";
 import {
   AvailableButtons,
@@ -22,6 +23,7 @@ export enum ActionTypes {
   SET_FILES_LIST = "SET_FILES_LIST",
   ADD_SELECTED_FILE = 'ADD_SELECTED_FILE',
   REMOVE_MESSAGES = 'REMOVE_MESSAGES',
+  SET_CONTEXT_MENU = 'SET_CONTEXT_MENU',
   
     UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
     SELECT_ALL_FILES = "SELECT_ALL_FILES",
@@ -42,10 +44,17 @@ export interface FileManagerState {
   selectedFiles: Set<Items>;
   bufferedItems: BufferedItemsType;
   foldersList: FolderList | null;
+  contextMenu: { 
+    item: Items | null,
+    mouseX: number,
+    mouseY: number,
+    menuType: ContextMenuTypeENum
+  } | null,
+  selectedFolder: FolderList | null;
   history: {
-    currentIndex: number;steps: any[]
+    currentIndex: number;
+    steps: any[]
   };
-  selectedFolder: string;
   filesList: any[];
   itemsView: string;
   showImages: string;

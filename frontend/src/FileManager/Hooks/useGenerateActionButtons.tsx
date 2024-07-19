@@ -1,8 +1,9 @@
 import { useState, useMemo, useCallback } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, Items } from "../types";
+import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeENum } from "../types";
 import { checkSelectedFileType } from "../helpers";
 import { ActionTypes } from '../ContextStore/types';
 import { getFilesList } from '../Api/fileManagerServices';
+
 export const generateAllButtons = (operations: any): ButtonObject => {
   const allButtons: ButtonObject = {
     copy: {
@@ -208,7 +209,7 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
     // props?.unsetSelectedFiles();
     switch (historyInfo.action) {
       case "folderChange":
-        operations.handleSetMainFolder(historyInfo.path, true);
+        // operations.handleSetMainFolder(historyInfo.path, true);
         break;
       default:
         break;
@@ -228,12 +229,12 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
   const operations = useMemo(
     () => ({
 
-      handleSelectFolder: (path: string, history: boolean = false) => {
+      handleSelectFolder: (folder: FolderType, history: boolean = false) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_FOLDER,
-          payload: {path, history, loading: true},
+          payload: {folder, history, loading: true},
         });
-        getFilesList({ path }).then((data) => {
+        getFilesList({ path: folder.path }).then((data) => {
           dispatch({
             type: ActionTypes.SET_FILES_LIST,
             payload: { 
@@ -255,9 +256,21 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
           type: ActionTypes.ADD_SELECTED_FILE,
           payload: item
         });
-        // props?.setSelectedFiles(path);
       },
+      handleContextClick: ({ item, event, menuType }: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum} )=>{
+        event.stopPropagation();
+        event.preventDefault();
+        dispatch({
+          type: ActionTypes.SET_CONTEXT_MENU,
+          payload: { 
+            item,
+            mouseX: event.clientX - 2,
+            mouseY: event.clientY - 4,
+            menuType
+          }
+        });
 
+      },
 
 
 
@@ -334,20 +347,7 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
         //     ]);
         //   });
       },
-      handleSetMainFolder: (value: string, history: boolean = false) => {
-        // props?.unsetSelectedFiles();
-        // props?.setSelectedFolder(value, history);
-        // props?.getFilesList(value).then(() => {
-        //   setMessages([
-        //     {
-        //       title: `File Successfully Loaded`,
-        //       type: "success",
-        //       message: "You can paste it in any folder",
-        //       timer: 3000,
-        //     },
-        //   ]);
-        // });
-      },
+
       handleDelete: () => {
         // let files = props?.selectedFiles.map((item) => item.path) as any;
         // const handleDeleteSubmit = () => {

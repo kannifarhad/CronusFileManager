@@ -2,14 +2,18 @@ import React, { createContext, useReducer, ReactNode } from "react";
 import useGenerateActionButtons from "../Hooks/useGenerateActionButtons";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
-import { Items } from "../types";
+import { ContextMenuTypeENum, FolderType, Items } from "../types";
 
 const initialState: CreateContextType = {
   selectedFiles: new Set(),
   bufferedItems: { files: new Set([]), type: null },
+  contextMenu: null, 
+  messages: [],
+  loading: false,
+  selectedFolder: null,
+
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
-  selectedFolder: "/",
   filesList: [],
   itemsView: "list",
   showImages: "icons",
@@ -17,14 +21,15 @@ const initialState: CreateContextType = {
     field: "name",
     orderBy: "asc",
   },
-  loading: false,
   popUpData: {
     open: false,
   },
-  messages: [],
+
   operations:{
-    handleSelectFolder: (value: string, history?: boolean) => null,
+    handleSelectFolder: (folder: FolderType, history?: boolean) => null,
     handleAddSelected: (item: Items) => null,
+    handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum}) => null,
+
     handleUnsetSelected: () => null,
     handleInverseSelected: () => null,
     handleSelectAll: () => null,
@@ -34,7 +39,6 @@ const initialState: CreateContextType = {
     handleCopy: () => null,
     handleCut: () => null,
     handlePaste: () => null,
-    handleSetMainFolder: (value: string, history?: boolean) => null,
     handleDelete: () => null,
     handleEmptyFolder: () => null,
     handleNewFile: () => null,

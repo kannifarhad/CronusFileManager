@@ -21,9 +21,10 @@ export interface AvailableButtons {
 }
 
 export interface Operations {
-  handleSelectFolder: (value: string, history?: boolean) => void;
+  handleSelectFolder: (value: FolderType, history?: boolean) => void;
   handleAddSelected: (item: Items) => void;
-  
+  handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum}) => void;
+
   handleUnsetSelected: () => void;
   handleInverseSelected: () => void;
   handleSelectAll: () => void;
@@ -33,7 +34,6 @@ export interface Operations {
   handleCopy: () => void;
   handleCut: () => void;
   handlePaste: () => void;
-  handleSetMainFolder: (value: string, history?: boolean) => void;
   handleDelete: () => void;
   handleEmptyFolder: () => void;
   handleNewFile: () => void;
@@ -87,6 +87,10 @@ export enum ItemMoveActionTypeEnum {
   COPY = 'COPY',
   CUT = 'CUT'
 }
+export enum ContextMenuTypeENum {
+  ITEM = 'ITEM',
+  CONTENT = 'CONTENT',
+}
 export interface BufferedItemsType{
   files: Set<Items | unknown>;
   type: ItemMoveActionTypeEnum | null
@@ -101,7 +105,7 @@ export type Items = FolderType | FileType;
 export type ItemsList = Items[];
 
 export interface FolderList extends FolderType {
-  children?: FolderList[] | null;
+  children?: FolderList[];
 } 
 
 export interface FolderType {
@@ -113,6 +117,7 @@ export interface FolderType {
   type: ItemType.FOLDER;
   premissions: Permissions,
   children?: ItemsList | null;
+  private?: boolean;
 }
 
 type ExtensionsTypes = keyof typeof config.icons;

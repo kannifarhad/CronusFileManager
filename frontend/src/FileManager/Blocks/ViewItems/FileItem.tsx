@@ -1,27 +1,24 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { Tooltip } from "@mui/material";
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from "react-beautiful-dnd";
 import { getThumb, classNames } from "../../helpers";
 import ItemSelectButton from './ItemSelectButton';
 import { StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox } from './styled';
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { Items , FileType,  ItemMoveActionTypeEnum  } from "../../types";
+import { FileType,  ItemMoveActionTypeEnum, ContextMenuTypeENum  } from "../../types";
 
-interface FileItemProps {
+const FileItem: React.FC<{
   item: FileType;
   index: number;
-}
+}> = ({ item, index }) => {
+  const { operations:{ handleContextClick}, selectedFiles, bufferedItems, showImages } = useFileManagerState();
 
-const FileItem: React.FC<FileItemProps> = ({ item, index }) => {
-  const { operations, selectedFiles, bufferedItems, showImages } = useFileManagerState();
+  const handleContextMenuClick = useCallback((item: FileType, event: React.MouseEvent) => {
+    handleContextClick({ item, event, menuType: ContextMenuTypeENum.ITEM });
+  },[handleContextClick]);
 
-  const handleContextMenuClick = (item: FileType, event: React.MouseEvent) => {
-    // Context menu click handling logic here
-  };
-
-  const isCuted = useMemo(() => {
-    return bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item);
-  }, [item, bufferedItems]);
+  const isCuted = useMemo(() => bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item)
+  , [item, bufferedItems]);
 
   return (
     <Draggable
@@ -33,7 +30,7 @@ const FileItem: React.FC<FileItemProps> = ({ item, index }) => {
         <StyledFileItem
           onContextMenu={(event) => handleContextMenuClick(item, event)}
           className={classNames({
-            'selected': selectedFiles?.has (item),
+            'selected': selectedFiles.has(item),
             'selectmode': selectedFiles.size > 0,
             'notDragging': !snapshot.isDragging,
             'fileCuted': isCuted,
