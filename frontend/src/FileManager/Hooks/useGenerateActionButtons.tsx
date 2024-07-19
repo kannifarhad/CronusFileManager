@@ -340,24 +340,32 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
         })
       },
       handleSetThumbView: (view: ImagesThumbTypeEnum)=> {
-        console.log(view);
         dispatch({
           type: ActionTypes.SET_IMAGE_SETTINGS,
           payload: view
         })
       },
-
-
-
       handleUnsetSelected: () => {
-        // props?.unsetSelectedFiles();
+        dispatch({
+          type: ActionTypes.UNSET_SELECTED_FILES,
+          payload: null
+        })
       },
       handleInverseSelected: () => {
-        // props?.inverseSelectedFiles();
+        dispatch({
+          type: ActionTypes.INVERSE_SELECTED_FILES,
+          payload: null
+        })      
       },
       handleSelectAll: () => {
-        // props?.selectAllFiles();
+        dispatch({
+          type: ActionTypes.SELECT_ALL_FILES,
+          payload: null
+        })
       },
+
+
+      
       handleGotoParent: () => {
         // props?.unsetSelectedFiles();
         // operations.handleSetMainFolder(props?.foldersList.path);

@@ -36,10 +36,10 @@ const initialState: CreateContextType = {
     handleSetViewItemType: (view: ViewTypeEnum)=> null,
     handleSetOrder: (order: OrderByType)=> null,
     handleSetThumbView: (view: ImagesThumbTypeEnum)=> null,
-
     handleUnsetSelected: () => null,
     handleInverseSelected: () => null,
     handleSelectAll: () => null,
+
     handleGotoParent: () => null,
     handleGoBackWard: () => null,
     handleGoForWard: () => null,

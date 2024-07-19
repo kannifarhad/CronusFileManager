@@ -19,7 +19,7 @@ const FileManager: React.FC<FileManagerProps> = ({ height, callback }) => {
 
   return (
     <FileManagerWrapper expanded={expanded}>
-      <PopupDialog {...popupData} />
+      {/* <PopupDialog {...popupData} /> */}
       <FileManagerContainer />
     </FileManagerWrapper>
   );
