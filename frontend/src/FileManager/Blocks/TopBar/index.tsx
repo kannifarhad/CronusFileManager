@@ -1,15 +1,12 @@
 import React, { memo, useRef, useMemo, useCallback } from "react";
 import TopBarButtonGroups from "./TopBarButtonGroups";
 import { Grid } from "@mui/material";
-import TopBarRightMenus from "./TopBarRightMenus";
+import TopBarRightMenus, { SettingsMenuEnum } from "./TopBarRightMenus";
 import { TopBarWrapper } from "./styled";
 import { Button } from "../../types";
-import {
-  useFileManagerState,
-  useFileManagerDispatch,  
-} from "../../ContextStore/FileManagerContext";
+import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 interface MenuRef {
-  handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: string) => void;
+  handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: SettingsMenuEnum) => void;
 }
 
 const TopBar: React.FC<{}> = () => {
@@ -18,9 +15,8 @@ const TopBar: React.FC<{}> = () => {
   const buttons = aviableButtons?.topbar ?? [];
 
   const handleOpenMenu = useCallback(
-    (...props: [React.MouseEvent<HTMLElement>, string]) => {
+    (...props: [React.MouseEvent<HTMLElement>, SettingsMenuEnum]) => {
       if (menuListRef.current?.handleOpenMenu) {
-        console.log("menuListRef", menuListRef.current.handleOpenMenu);
         menuListRef.current.handleOpenMenu(...props);
       } else {
         console.error("Topbar menu doesn't have handleOpenMenu function");
@@ -34,13 +30,13 @@ const TopBar: React.FC<{}> = () => {
       {
         title: "Sorting",
         icon: "icon-settings",
-        onClick: (e) => handleOpenMenu(e, "sorting"),
+        onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SORTING),
         disabled: false,
       },
       {
         title: "Settings",
         icon: "icon-settings-1",
-        onClick: (e) => handleOpenMenu(e, "settings"),
+        onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SETTINGS),
         disabled: false,
       },
     ],
@@ -54,7 +50,6 @@ const TopBar: React.FC<{}> = () => {
           <TopBarButtonGroups buttons={groups} />
         </Grid>
       ))}
-
       <Grid style={{ marginLeft: "auto" }}>
         <TopBarButtonGroups buttons={additionalButtons} />
         <TopBarRightMenus ref={menuListRef} />

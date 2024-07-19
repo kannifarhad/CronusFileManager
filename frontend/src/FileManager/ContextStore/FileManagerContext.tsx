@@ -2,7 +2,7 @@ import React, { createContext, useReducer, ReactNode } from "react";
 import useGenerateActionButtons from "../Hooks/useGenerateActionButtons";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
-import { ContextMenuTypeEnum, FolderType, ImagesThumbTypeEnum, Items, ViewTypeEnum, } from "../types";
+import { ContextMenuTypeEnum, FolderType, ImagesThumbTypeEnum, Items, OrderByFieldEnum, OrderByType, SortByFieldEnum, ViewTypeEnum,} from "../types";
 import { DropResult } from "react-beautiful-dnd";
 
 const initialState: CreateContextType = {
@@ -14,13 +14,13 @@ const initialState: CreateContextType = {
   selectedFolder: null,
   itemsViewType: ViewTypeEnum.GRID,
   showImages: ImagesThumbTypeEnum.ICONS,
+  filesList: [],
 
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
-  filesList: [],
   orderFiles: {
-    field: "name",
-    orderBy: "asc",
+    field: OrderByFieldEnum.NAME,
+    orderBy: SortByFieldEnum.ASC,
   },
   popUpData: {
     open: false,
@@ -34,6 +34,8 @@ const initialState: CreateContextType = {
     handleContextClose: (event: React.MouseEvent) => null,
     handleDragEnd: (result: DropResult) => null,
     handleSetViewItemType: (view: ViewTypeEnum)=> null,
+    handleSetOrder: (order: OrderByType)=> null,
+    handleSetThumbView: (view: ImagesThumbTypeEnum)=> null,
 
     handleUnsetSelected: () => null,
     handleInverseSelected: () => null,

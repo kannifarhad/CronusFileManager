@@ -29,6 +29,8 @@ export interface Operations {
   handleContextClose: (event: React.MouseEvent) => void;
   handleDragEnd: (result: DropResult) => void;
   handleSetViewItemType: (view: ViewTypeEnum)=> void,
+  handleSetOrder: (order: OrderByType)=> void,
+  handleSetThumbView: (view: ImagesThumbTypeEnum)=> void,
 
 
   handleUnsetSelected: () => void;
@@ -106,6 +108,20 @@ export enum ViewTypeEnum {
 export enum ImagesThumbTypeEnum {
   ICONS = 'ICONS',
   THUMB = 'THUMB'
+}
+
+export enum OrderByFieldEnum {
+  NAME = 'NAME',
+  SIZE = 'SIZE',
+  DATE = 'DATE',
+}
+export enum SortByFieldEnum {
+  DESC = 'DESC',
+  ASC = 'ASC',
+}
+export type OrderByType = {
+  field: OrderByFieldEnum,
+  orderBy: SortByFieldEnum
 }
 
 export interface BufferedItemsType{
