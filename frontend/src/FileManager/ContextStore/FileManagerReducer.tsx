@@ -84,50 +84,42 @@ export const fileManagerReducer = (
 
     case ActionTypes.SET_IMAGE_SETTINGS:
         return { ...state, showImages: action.payload };
+    
+    case ActionTypes.UNSET_SELECTED_FILES:
+      return { ...state, selectedFiles: new Set() };
 
-
-
-
-
-
-
-
-    case ActionTypes.RUN_SORTING_FILTER: {
-      let sortedFiles = sortFilter(state.filesList, state.orderFiles);
-      return { ...state, filesList: sortedFiles };
+    case ActionTypes.SELECT_ALL_FILES: {
+      const newSelected = state.filesList.filter(file => !file.private);
+      return {
+        ...state,
+        selectedFiles: new Set(newSelected),
+      };
     }
+
+    case ActionTypes.INVERSE_SELECTED_FILES: {
+      const selectedFiles = state.selectedFiles;
+      const inversedSelected = state.filesList.filter(file => !selectedFiles.has(file));
+      return {
+        ...state,
+        selectedFiles: new Set(inversedSelected),
+      };
+    }
+
     case ActionTypes.SET_SORT_ORDER_BY: {
       return {
         ...state,
+        filesList: sortFilter(state.filesList, state.orderFiles),
         orderFiles: {
           field: action.payload.field,
           orderBy: action.payload.orderBy,
         },
       };
     }
-    case ActionTypes.UNSET_SELECTED_FILES:
-      return { ...state, selectedFiles: new Set() };
 
-    case ActionTypes.SELECT_ALL_FILES: {
-      let newSelected = state.filesList.reduce(function (result, file) {
-        if (file.private !== true) {
-          result.push(file);
-        }
-        return result;
-      }, []);
-      return { ...state, selectedFiles: newSelected };
-    }
-    case ActionTypes.INVERSE_SELECTED_FILES: {
-      let selectedFiles = state.selectedFiles;
-      const inversedSelected = state.filesList.reduce((nextSelected, file) => {
-        if (!selectedFiles?.has(file)) {
-          nextSelected.push(file);
-        }
-        return nextSelected;
-      }, []);
+    
 
-      return { ...state, selectedFiles: inversedSelected };
-    }
+
+ 
     case ActionTypes.COPY_FILES_TOBUFFER: {
       const bufferedItems = {
         type: ItemMoveActionTypeEnum.COPY,

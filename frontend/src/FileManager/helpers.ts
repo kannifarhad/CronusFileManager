@@ -1,26 +1,20 @@
 import config from "./Elements/config.json";
 import mainconfig from "../Data/Config";
-import { FileType, ImagesThumbTypeEnum } from "./types";
-
-interface File {
-  fileName: string; // Renamed from 'name'
-  size: number;
-  created: string;
-}
+import { FileType, ImagesThumbTypeEnum, ItemsList } from "./types";
 
 interface Order {
   field: string;
   orderBy: string;
 }
 
-export const sortFilter = (filesList: File[], order: Order): File[] => {
-  let sortedFiles: File[] = [];
+export const sortFilter = (filesList: ItemsList, order: Order): ItemsList=> {
+  let sortedFiles: ItemsList = [];
 
   switch (order.field) {
     case "name":
       sortedFiles = filesList.sort((a, b) => {
-        const x = a.fileName?.toLowerCase(); // Changed from 'name'
-        const y = b.fileName?.toLowerCase(); // Changed from 'name'
+        const x = a.name.toLowerCase();
+        const y = b.name.toLowerCase();
         if (x < y) {
           return -1;
         }
@@ -49,7 +43,7 @@ export const sortFilter = (filesList: File[], order: Order): File[] => {
   return order.orderBy === "asc" ? sortedFiles : sortedFiles.reverse();
 };
 
-export const checkSelectedFileType = (type: any, selectedFile: any) => {
+export const checkSelectedFileType = (type: any, selectedFile: FileType) => {
   try {
     switch (type) {
       case "text":

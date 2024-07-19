@@ -18,7 +18,6 @@ const ButtonGroupSimple: React.FC<ButtonGroupSimpleProps> = ({ buttons }) => {
               aria-haspopup="true"
             >
               {button.icon && <span className={button.icon}></span>}
-              {/* <span className={classes?.buttonTitle}>{button.title}</span> */}
             </StyledButton>
           </Tooltip>
         ))}

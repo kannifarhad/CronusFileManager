@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum } from "../types";
+import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum } from "../types";
 import { checkSelectedFileType } from "../helpers";
 import { ActionTypes } from '../ContextStore/types';
 import { getFilesList } from '../Api/fileManagerServices';
@@ -330,6 +330,19 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
       handleSetViewItemType: (view: ViewTypeEnum)=>{
         dispatch({
           type: ActionTypes.SET_ITEM_VIEW,
+          payload: view
+        })
+      },
+      handleSetOrder: (order: OrderByType)=> {
+        dispatch({
+          type: ActionTypes.SET_SORT_ORDER_BY,
+          payload: order
+        })
+      },
+      handleSetThumbView: (view: ImagesThumbTypeEnum)=> {
+        console.log(view);
+        dispatch({
+          type: ActionTypes.SET_IMAGE_SETTINGS,
           payload: view
         })
       },

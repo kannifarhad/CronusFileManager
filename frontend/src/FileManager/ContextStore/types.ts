@@ -9,13 +9,14 @@ import {
   Items,
   ContextMenuTypeEnum,
   ImagesThumbTypeEnum,
-  ViewTypeEnum
+  ViewTypeEnum,
+  ItemsList,
+  OrderByType
 } from "../types";
 import {
   AvailableButtons,
   Operations
 } from '../types';
-
 
 export enum ActionTypes {
   SET_SELECTED_FILES = "SET_SELECTED_FILES",
@@ -27,18 +28,17 @@ export enum ActionTypes {
   REMOVE_MESSAGES = 'REMOVE_MESSAGES',
   SET_CONTEXT_MENU = 'SET_CONTEXT_MENU',
   CLEAR_BUFFER = "CLEAR_BUFFER",
+  UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
+  SELECT_ALL_FILES = "SELECT_ALL_FILES",
+  INVERSE_SELECTED_FILES = "INVERSE_SELECTED_FILES",
+  SET_SORT_ORDER_BY = "SET_SORT_ORDER_BY",
 
-    UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
-    SELECT_ALL_FILES = "SELECT_ALL_FILES",
-    INVERSE_SELECTED_FILES = "INVERSE_SELECTED_FILES",
     COPY_FILES_TOBUFFER = "COPY_FILES_TOBUFFER",
     CUT_FILES_TOBUFFER = "CUT_FILES_TOBUFFER",
     PASTE_FILES = "PASTE_FILES",
     SET_FOLDERS_LIST = "SET_FOLDERS_LIST",
     SET_HISTORY_INDEX = "SET_HISTORY_INDEX",
     SET_ITEM_VIEW = "SET_ITEM_VIEW",
-    SET_SORT_ORDER_BY = "SET_SORT_ORDER_BY",
-    RUN_SORTING_FILTER = "RUN_SORTING_FILTER",
     SET_IMAGE_SETTINGS = "SET_IMAGE_SETTINGS",
 }
 
@@ -57,21 +57,19 @@ export interface FileManagerState {
   showImages: ImagesThumbTypeEnum;
   loading: boolean;
   messages: Messages;
+  filesList: ItemsList;
+  orderFiles: OrderByType;
 
   history: {
     currentIndex: number;
     steps: any[]
-  };
-  filesList: any[];
-  orderFiles: {
-    field: string;orderBy: string
   };
   popUpData: PopupData;
 }
 
 export interface FileManagerAction {
   type: string;
-  payload ? : any;
+  payload? : any;
 }
 
 export interface CreateContextType extends FileManagerState {

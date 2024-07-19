@@ -1,100 +1,63 @@
-import React, { memo, forwardRef, useImperativeHandle } from "react";
+import React, { memo,useState, forwardRef, useImperativeHandle } from "react";
 import { Menu, Radio, Divider, FormControlLabel } from "@mui/material";
 import { StyledTopBarMenuItem } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { ImagesThumbTypeEnum } from "../../types";
+import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum } from "../../types";
 
-interface MenuRef {
-  handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: string) => void;
+export enum SettingsMenuEnum {
+  SETTINGS = 'SETTINGS',
+  SEARCH = 'SEARCH',
+  SORTING = 'SORTING'
 }
 
-const options = [
-  {
-    name: "By Name",
-    value: "name",
-  },
-  {
-    name: "By Size",
-    value: "size",
-  },
-  {
-    name: "By Create Date",
-    value: "date",
-  },
+interface MenuRef {
+  handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: SettingsMenuEnum) => void;
+}
+
+const orderOptions: {
+  name: string;
+  value: OrderByFieldEnum ;
+}[] = [
+  { name: "By Name", value: OrderByFieldEnum.NAME },
+  { name: "By Size", value: OrderByFieldEnum.SIZE },
+  { name: "By Create Date", value: OrderByFieldEnum.DATE },
 ];
 
+const sortOptions: {
+  name: string;
+  value: SortByFieldEnum ;
+}[] = [
+  { name: "Ascending", value: SortByFieldEnum.ASC },
+  { name: "Descending", value: SortByFieldEnum.DESC },
+]
+
+const imageViewOptions: {
+  name: string;
+  value: ImagesThumbTypeEnum;
+}[] = [
+  { name: "Show Thumbs", value: ImagesThumbTypeEnum.THUMB },
+  { name: "Show Icons", value: ImagesThumbTypeEnum.ICONS },
+]
+
 const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
-  const {
-    orderFiles,
-    setSorting,
-    filterSorting,
-    setImagesSettings,
-  } = {
-    orderFiles: { field: "", orderBy: "" },
-    setSorting: () => {},
-    filterSorting: () => {},
-    setImagesSettings: () => {},
-  };
-
-  const { itemsViewType, showImages, operations:{} } = useFileManagerState();
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [open, setOpen] = React.useState({
-    sorting: false,
-    search: false,
-    settings: false,
-  });
+  const { showImages, orderFiles, operations:{ handleSetOrder, handleSetThumbView } } = useFileManagerState();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [open, setOpen] = useState<SettingsMenuEnum | null>(null);
 
   useImperativeHandle(ref, () => ({
     handleOpenMenu: (event, name) => {
-      console.log("asdasdasd");
-      switch (name) {
-        case "sorting":
-          setOpen({
-            sorting: true,
-            search: false,
-            settings: false,
-          });
-          break;
-        case "search":
-          setOpen({
-            sorting: false,
-            search: true,
-            settings: false,
-          });
-          break;
-        case "settings":
-          setOpen({
-            sorting: false,
-            search: false,
-            settings: true,
-          });
-          break;
-        default:
-          break;
-      }
+      setOpen(name);
       setAnchorEl(event.currentTarget);
     },
   }));
 
-  const handleSetOrderBy = (orderBy: string) => {
-    // setSorting(orderBy, orderFiles.field);
-    filterSorting();
-  };
-
-  const handleSetOrderField = (field: string) => {
-    // setSorting(orderFiles.orderBy, field);
-    filterSorting();
-  };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setOpen({ sorting: false, search: false, settings: false });
+    setOpen(null);
   };
 
-  const handleSetSettings = (imagePreview: string) => {
-    // setImagesSettings(imagePreview);
-  };
+  if(!open) return null;
 
   return (
     <>
@@ -102,13 +65,14 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
         id="sorting-menu"
         anchorEl={anchorEl}
         keepMounted
-        open={Boolean(open.sorting)}
+        open={open === SettingsMenuEnum.SORTING}
         onClose={handleClose}
       >
-        {options.map((option, index) => (
+        {orderOptions.map((option, index) => (
           <StyledTopBarMenuItem
             key={index}
             selected={option.value === orderFiles?.field}
+            onClick={() => handleSetOrder({ ...orderFiles, field: option.value })}
           >
             <FormControlLabel
               value={option.value}
@@ -116,7 +80,6 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
                 <Radio
                   name="orderField"
                   checked={option.value === orderFiles?.field}
-                  onChange={() => handleSetOrderField(option.value)}
                   value={option.value}
                 />
               }
@@ -125,71 +88,53 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
           </StyledTopBarMenuItem>
         ))}
         <Divider />
-        <StyledTopBarMenuItem selected={"asc" === orderFiles?.orderBy}>
-          <FormControlLabel
-            control={
-              <Radio
-                name="orderby"
-                checked={"asc" === orderFiles?.orderBy}
-                onChange={() => handleSetOrderBy("asc")}
-                value="asc"
-              />
-            }
-            label="Ascending"
-          />
-        </StyledTopBarMenuItem>
-        <StyledTopBarMenuItem selected={"desc" === orderFiles?.orderBy}>
-          <FormControlLabel
-            control={
-              <Radio
-                name="orderby"
-                checked={"desc" === orderFiles?.orderBy}
-                onChange={() => handleSetOrderBy("desc")}
-                value="desc"
-              />
-            }
-            label="Descending"
-          />
-        </StyledTopBarMenuItem>
+        {sortOptions.map((option, index) => (
+          <StyledTopBarMenuItem
+            key={index}
+            selected={option.value === orderFiles.orderBy}
+            onClick={() => handleSetOrder({ ...orderFiles, orderBy: option.value })}
+          >
+            <FormControlLabel
+              value={option.value}
+              control={
+                <Radio
+                  name="orderField"
+                  checked={option.value === orderFiles.orderBy}
+                  value={option.value}
+                />
+              }
+              label={option.name}
+            />
+          </StyledTopBarMenuItem>
+        ))}
       </Menu>
 
       <Menu
         id="settings-menu"
         anchorEl={anchorEl}
         keepMounted
-        open={Boolean(open.settings)}
+        open={open === SettingsMenuEnum.SETTINGS}
         onClose={handleClose}
       >
-        <StyledTopBarMenuItem selected={showImages === ImagesThumbTypeEnum.THUMB}>
-          <FormControlLabel
-            control={
-              <Radio
-                name="imageSettings"
-                checked={showImages === ImagesThumbTypeEnum.THUMB}
-                onChange={() => {
-                  handleSetSettings(ImagesThumbTypeEnum.THUMB);
-                }}
-                value={ImagesThumbTypeEnum.THUMB}
-              />
-            }
-            label="Show Thumbs"
-          />
-        </StyledTopBarMenuItem>
-        <StyledTopBarMenuItem selected={showImages === ImagesThumbTypeEnum.ICONS}>
-          <FormControlLabel
-            control={
-              <Radio
-                name="imageSettings"
-                checked={showImages === ImagesThumbTypeEnum.ICONS}
-                onChange={() => {
-                  handleSetSettings(ImagesThumbTypeEnum.ICONS);
-                }}
-                value={ImagesThumbTypeEnum.ICONS}
-              />
-            }
-            label="Show Icons"
-          />
-        </StyledTopBarMenuItem>
+        {imageViewOptions.map((option, index) => (
+          <StyledTopBarMenuItem
+            key={index}
+            selected={option.value === showImages}
+            onClick={() => handleSetThumbView(option.value)}        
+          >
+            <FormControlLabel
+              value={option.value}
+              control={
+                <Radio
+                  name="orderField"
+                  checked={option.value === showImages}
+                  value={option.value}
+                />
+              }
+              label={option.name}
+            />
+          </StyledTopBarMenuItem>
+        ))}
       </Menu>
     </>
   );
