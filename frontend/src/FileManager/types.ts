@@ -24,10 +24,12 @@ export interface AvailableButtons {
 export interface Operations {
   handleSelectFolder: (value: FolderType, history?: boolean) => void;
   handleAddSelected: (item: Items) => void;
-  handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum}) => void;
+  handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeEnum}) => void;
   handleClearBuffer: () => void;
   handleContextClose: (event: React.MouseEvent) => void;
   handleDragEnd: (result: DropResult) => void;
+  handleSetViewItemType: (view: ViewTypeEnum)=> void,
+
 
   handleUnsetSelected: () => void;
   handleInverseSelected: () => void;
@@ -91,10 +93,21 @@ export enum ItemMoveActionTypeEnum {
   COPY = 'COPY',
   CUT = 'CUT'
 }
-export enum ContextMenuTypeENum {
+export enum ContextMenuTypeEnum {
   ITEM = 'ITEM',
   CONTENT = 'CONTENT',
 }
+
+export enum ViewTypeEnum {
+  GRID = 'GRID',
+  LIST = 'LIST'
+}
+
+export enum ImagesThumbTypeEnum {
+  ICONS = 'ICONS',
+  THUMB = 'THUMB'
+}
+
 export interface BufferedItemsType{
   files: Set<Items | unknown>;
   type: ItemMoveActionTypeEnum | null
@@ -121,6 +134,7 @@ export interface FolderType {
   type: ItemType.FOLDER;
   premissions: Permissions,
   children?: ItemsList | null;
+  size: number,
   private?: boolean;
 }
 

@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeENum } from "../types";
+import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum } from "../types";
 import { checkSelectedFileType } from "../helpers";
 import { ActionTypes } from '../ContextStore/types';
 import { getFilesList } from '../Api/fileManagerServices';
@@ -180,14 +180,14 @@ export const generateAllButtons = (operations: any): ButtonObject => {
     gridView: {
       title: "Grid view",
       icon: "icon-layout-1",
-      onClick: () => operations.handleViewChange("grid"),
-      //   disabled: props?.itemsView === "grid",
+      onClick: () => operations.handleSetViewItemType(ViewTypeEnum.GRID),
+      //   disabled: props?.itemsViewType === "grid",
     },
     listView: {
       title: "List View",
       icon: "icon-layout-2",
-      onClick: () => operations.handleViewChange("list"),
-      //   disabled: props?.itemsView === "list",
+      onClick: () => operations.handleSetViewItemType(ViewTypeEnum.LIST),
+      //   disabled: props?.itemsViewType === "list",
     },
     fullScreen: {
       title: "Full Screen",
@@ -258,7 +258,7 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
           payload: item
         });
       },
-      handleContextClick: ({ item, event, menuType }: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum} )=>{
+      handleContextClick: ({ item, event, menuType }: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeEnum} )=>{
         event.stopPropagation();
         event.preventDefault();
         dispatch({
@@ -326,7 +326,13 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
             });
           }
           
-    },
+      },
+      handleSetViewItemType: (view: ViewTypeEnum)=>{
+        dispatch({
+          type: ActionTypes.SET_ITEM_VIEW,
+          payload: view
+        })
+      },
 
 
 

@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { Divider } from "@mui/material";
 import { StyledContextMenu, StyledContextMenuItem } from "../../Elements/styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { ContextMenuTypeENum } from "../../types";
+import { ContextMenuTypeEnum } from "../../types";
 
 const ContextMenu: React.FC = () => {
   const { operations: { handleContextClose }, contextMenu, aviableButtons: { file: fileButtons, container: containerButtons } } = useFileManagerState();
@@ -22,7 +22,7 @@ const ContextMenu: React.FC = () => {
           : undefined
       }
     >
-      {contextMenu.menuType === ContextMenuTypeENum.ITEM ?
+      {contextMenu.menuType === ContextMenuTypeEnum.ITEM ?
         fileButtons.map((buttonGroup, index) => (
           <React.Fragment key={index}>
             {buttonGroup.map((button, index) => (

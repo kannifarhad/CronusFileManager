@@ -6,13 +6,13 @@ import OverlayBlocks from "./OverlayBlocks";
 import {
   useFileManagerState,
 } from "../../ContextStore/FileManagerContext";
-import { ContextMenuTypeENum } from "../../types";
+import { ContextMenuTypeEnum } from "../../types";
 
 const ContainerBar: React.FC = () => {
   const { operations: { handleContextClick, handleDragEnd } } = useFileManagerState();
 
   const handleContextMenuClick = useCallback((event: MouseEvent) => {
-    handleContextClick({ item: null, event, menuType: ContextMenuTypeENum.CONTENT});
+    handleContextClick({ item: null, event, menuType: ContextMenuTypeEnum.CONTENT});
   }, [handleContextClick]);
 
 
