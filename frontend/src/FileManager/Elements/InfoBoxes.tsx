@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo, useState } from 'react';
 import { AlertTitle, IconButton, Collapse, LinearProgress } from '@mui/material';
 import { Message } from '../types';
 import { StyledInfoBox } from './styled';
@@ -14,10 +14,11 @@ interface InfoBoxesProps {
 const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
     const dispatch = useFileManagerDispatch();
     const closeTimer = useRef<NodeJS.Timeout | null>(null);
-
+    const [open, setOpen]= useState(true);
     useEffect(() => {
         if (alert.timer) {
             closeTimer.current = setTimeout(() => {
+                setOpen(false);
                 dispatch({
                     type: ActionTypes.REMOVE_MESSAGES,
                     payload: {id: alert.id}
@@ -33,7 +34,7 @@ const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
 
     return (
         <>
-        <Collapse in={true}>
+        <Collapse in={open}>
             <>
             <StyledInfoBox
                 key={alert.id}
@@ -45,7 +46,7 @@ const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
                             color="inherit"
                             size="small"
                             onClick={() => { 
-                                console.log('Alert', alert);
+                                setOpen(false);
                                 dispatch({
                                     type: ActionTypes.REMOVE_MESSAGES,
                                     payload: {id: alert.id}

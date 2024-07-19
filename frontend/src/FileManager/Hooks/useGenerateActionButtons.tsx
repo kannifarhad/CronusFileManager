@@ -3,6 +3,7 @@ import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeE
 import { checkSelectedFileType } from "../helpers";
 import { ActionTypes } from '../ContextStore/types';
 import { getFilesList } from '../Api/fileManagerServices';
+import { DropResult } from "react-beautiful-dnd";
 
 export const generateAllButtons = (operations: any): ButtonObject => {
   const allButtons: ButtonObject = {
@@ -244,7 +245,7 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
                 title: `File Successfully Loaded`,
                 type: "success",
                 message: "You can paste it in any folder",
-                timer: 3000,
+                timer: 1000,
                 id: Date.now().toString() + Math.random().toString()
               }
             },
@@ -271,6 +272,61 @@ export const useFileManagerOperations = ({ dispatch }: any) => {
         });
 
       },
+      handleContextClose:(event: React.MouseEvent)=>{
+        event.stopPropagation();
+        event.preventDefault();
+        dispatch({
+          type: ActionTypes.SET_CONTEXT_MENU,
+          payload: null
+        });
+      },
+      handleClearBuffer: ()=>{
+        dispatch({
+          type: ActionTypes.CLEAR_BUFFER,
+          payload: null
+        })
+      },
+      handleDragEnd: (result: DropResult) => {
+        dispatch({
+          type: ActionTypes.SET_LOADING,
+          payload: true
+        });
+        try {
+            // let files = [];
+            // let destination;
+            // props.filesList.forEach(file => {
+            //   if(file.id === result.draggableId){
+            //     files = [file.path];
+            //   }
+            //   if(file.id === result.destination.droppableId){
+            //     destination = file.path;
+            //   }
+            // });
+    
+            // if(destination !== undefined && files.length !== 0){
+            //     props.pasteFiles(files, 'cut', destination).then(result =>{
+            //         operations.handleReload();
+            //         setMessages([{
+            //             title: `File Successfully Moved`,
+            //             type:'success',
+            //             message: 'File that you dragged successfully moved',
+            //             timer: 3000,
+            //         }]);
+            //     }).catch((error)=>{
+                  
+            //     });
+            // }
+           
+          } catch (error) {
+            console.log('Error happened while dropping item', error);
+          }finally{
+            dispatch({
+              type: ActionTypes.SET_LOADING,
+              payload: true
+            });
+          }
+          
+    },
 
 
 

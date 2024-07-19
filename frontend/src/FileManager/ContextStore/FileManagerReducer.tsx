@@ -70,6 +70,20 @@ export const fileManagerReducer = (
     
     case ActionTypes.SET_CONTEXT_MENU:
       return { ...state, contextMenu: action.payload };
+      
+    case ActionTypes.CLEAR_BUFFER: {
+        const bufferedItems = {
+          type: null,
+          files: new Set(),
+        };
+        return { ...state, bufferedItems };
+      }
+
+
+
+
+
+
 
 
     case ActionTypes.SET_IMAGE_SETTINGS:
@@ -127,13 +141,6 @@ export const fileManagerReducer = (
       return { ...state, bufferedItems, selectedFiles: new Set() };
     }
 
-    case ActionTypes.CLEAR_FILES_TOBUFFER: {
-      const bufferedItems = {
-        type: null,
-        files: new Set(),
-      };
-      return { ...state, bufferedItems };
-    }
 
     case ActionTypes.SET_HISTORY_INDEX: {
       const newHistoryIndex = { ...state.history };

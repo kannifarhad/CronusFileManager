@@ -56,9 +56,7 @@ export const StyledPopUpDialog = styled(Dialog)(({
 export const StyledInfoBox = styled(Alert)(({
   theme
 }) => ({
-  ".dialogDescription": {
-    margin: '0px 0px 10px 0px',
-
+    marginTop: '10px',
     '& .fmInfoBoxtitle': {
       fontSize: '14px'
     },
@@ -72,7 +70,6 @@ export const StyledInfoBox = styled(Alert)(({
       marginTop: '-15px',
       marginBottom: '10px'
     },
-  },
 }));
 
 export const StyledDropZoneSection = styled('section')(({
