@@ -1,27 +1,21 @@
 import React, { FC } from "react";
 import { List } from "@mui/material";
 import MenuItem from "./MenuItem";
-import { FolderList } from "../../types";
+import { FolderList, FolderType } from "../../types";
 
 interface MenuSubmenuProps {
-  item: FolderList;
-  currentUrl: string;
-  onFolderClick: (path: string) => void;
+  folderList: FolderList['children'];
 }
 
 const MenuSubmenu: FC<MenuSubmenuProps> = ({
-  item,
-  currentUrl,
-  onFolderClick,
+  folderList,
 }) => (
   <List className="folderSubmenu">
-    {Array.isArray(item.children) &&
-      item.children.map((child) => (
+    {Array.isArray(folderList) &&
+      folderList.map((child) => (
         <MenuItem
           key={child.name}
           item={child}
-          onFolderClick={onFolderClick}
-          currentUrl={currentUrl}
         />
       ))}
   </List>

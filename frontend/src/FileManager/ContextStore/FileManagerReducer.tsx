@@ -13,11 +13,11 @@ export const fileManagerReducer = (
 
     case ActionTypes.SET_SELECTED_FOLDER: {
       let newHistory = { ...state.history };
-      const {path, history, loading} = action.payload;
+      const {folder, history, loading} = action.payload;
       if (!history) {
         newHistory.steps.push({
           action: "folderChange",
-          path,
+          folder,
         });
         newHistory.currentIndex =
           newHistory.steps.length === 0 ? 0 : newHistory.steps.length - 1;
@@ -25,7 +25,7 @@ export const fileManagerReducer = (
       return {
         ...state,
         history: newHistory,
-        selectedFolder: path,
+        selectedFolder: folder,
         loading: loading !== undefined ? loading : state.loading
       };
     }
@@ -53,20 +53,24 @@ export const fileManagerReducer = (
     case ActionTypes.REMOVE_MESSAGES:
       return { ...state, messages: state.messages.filter(message=> message.id !== action.payload.id)};
 
-      case ActionTypes.ADD_SELECTED_FILE: {
-        const item = action.payload;
-        // Create a new Set based on the current state
-        const selectedFilesNew = new Set(state.selectedFiles);
-      
-        // Add or remove the item from the new Set
-        if (selectedFilesNew.has(item)) {
-          selectedFilesNew.delete(item);
-        } else {
-          selectedFilesNew.add(item);
-        }
-        // Return the new state with the updated Set
-        return { ...state, selectedFiles: selectedFilesNew };
+    case ActionTypes.ADD_SELECTED_FILE: {
+      const item = action.payload;
+      // Create a new Set based on the current state
+      const selectedFilesNew = new Set(state.selectedFiles);
+    
+      // Add or remove the item from the new Set
+      if (selectedFilesNew.has(item)) {
+        selectedFilesNew.delete(item);
+      } else {
+        selectedFilesNew.add(item);
       }
+      // Return the new state with the updated Set
+      return { ...state, selectedFiles: selectedFilesNew };
+    }
+    
+    case ActionTypes.SET_CONTEXT_MENU:
+      return { ...state, contextMenu: action.payload };
+
 
     case ActionTypes.SET_IMAGE_SETTINGS:
       return { ...state, showImages: action.payload };
@@ -87,16 +91,6 @@ export const fileManagerReducer = (
     case ActionTypes.UNSET_SELECTED_FILES:
       return { ...state, selectedFiles: new Set() };
 
-    // case ActionTypes.SET_SELECTED_FILES: {
-    //   let selectedFilesNew = state.selectedFiles;
-    //   const item = action.payload.item;
-    //   if (selectedFilesNew.has(item)) {
-    //     selectedFilesNew.delete(item)
-    //   } else {
-    //     selectedFilesNew.add(item);
-    //   }
-    //   return { ...state, selectedFiles: selectedFilesNew };
-    // }
     case ActionTypes.SELECT_ALL_FILES: {
       let newSelected = state.filesList.reduce(function (result, file) {
         if (file.private !== true) {
@@ -140,9 +134,6 @@ export const fileManagerReducer = (
       };
       return { ...state, bufferedItems };
     }
-
-
-
 
     case ActionTypes.SET_HISTORY_INDEX: {
       const newHistoryIndex = { ...state.history };

@@ -13,7 +13,7 @@ import {
 } from "./styled";
 const FolderBar = () => {
   const dispatch = useFileManagerDispatch();
-  const { foldersList, selectedFolder, operations: { handleSelectFolder } }  = useFileManagerState();
+  const { foldersList, operations: { handleSelectFolder } }  = useFileManagerState();
   
   useEffect(() => {
       // getFoldersList({ path: "/" }).then((result) => {
@@ -38,11 +38,7 @@ const FolderBar = () => {
       <FileManagerFolderBarGrid item xs={3} sm={2}>
         <FileManagerFolderBarWrapper>
           <StyledFolderBar key={`folderRoot`}>
-            <MenuItem
-              item={foldersList}
-              onFolderClick={handleSelectFolder}
-              currentUrl={selectedFolder ?? '/'}
-            />
+            <MenuItem item={foldersList} />
           </StyledFolderBar>
         </FileManagerFolderBarWrapper>
     </FileManagerFolderBarGrid>
