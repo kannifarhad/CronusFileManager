@@ -1,4 +1,4 @@
-import { useState, useRef, FC, memo, useCallback, useMemo } from "react";
+import { useState, useRef, FC, memo, useMemo } from "react";
 import { ListItem } from "@mui/material";
 import MenuSubmenu from "./MenuSubmenu";
 import { StyledFolderMenuItem } from "./styled";

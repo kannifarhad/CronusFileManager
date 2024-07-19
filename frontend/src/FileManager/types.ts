@@ -1,5 +1,6 @@
 import { AlertColor } from '@mui/material/Alert';
 import config from "./Elements/config.json";
+import { DropResult } from 'react-beautiful-dnd';
 export interface FileManagerProps {
   height?: string;
   callback?: (filePath: string) => void;
@@ -24,6 +25,9 @@ export interface Operations {
   handleSelectFolder: (value: FolderType, history?: boolean) => void;
   handleAddSelected: (item: Items) => void;
   handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum}) => void;
+  handleClearBuffer: () => void;
+  handleContextClose: (event: React.MouseEvent) => void;
+  handleDragEnd: (result: DropResult) => void;
 
   handleUnsetSelected: () => void;
   handleInverseSelected: () => void;

@@ -3,6 +3,7 @@ import useGenerateActionButtons from "../Hooks/useGenerateActionButtons";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
 import { ContextMenuTypeENum, FolderType, Items } from "../types";
+import { DropResult } from "react-beautiful-dnd";
 
 const initialState: CreateContextType = {
   selectedFiles: new Set(),
@@ -29,6 +30,9 @@ const initialState: CreateContextType = {
     handleSelectFolder: (folder: FolderType, history?: boolean) => null,
     handleAddSelected: (item: Items) => null,
     handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeENum}) => null,
+    handleClearBuffer: ()=> null,
+    handleContextClose: (event: React.MouseEvent) => null,
+    handleDragEnd: (result: DropResult) => null,
 
     handleUnsetSelected: () => null,
     handleInverseSelected: () => null,

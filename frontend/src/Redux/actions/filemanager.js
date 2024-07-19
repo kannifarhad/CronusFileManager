@@ -5,7 +5,7 @@ export const SELECT_ALL_FILES = 'SELECT_ALL_FILES';
 
 export const COPY_FILES_TOBUFFER = 'COPY_FILES_TOBUFFER';
 export const CUT_FILES_TOBUFFER = 'CUT_FILES_TOBUFFER';
-export const CLEAR_FILES_TOBUFFER = 'CLEAR_FILES_TOBUFFER';
+export const CLEAR_BUFFER = 'CLEAR_BUFFER';
 
 export const PASTE_FILES = 'PASTE_FILES';
 
@@ -98,7 +98,7 @@ export function cutToBufferFiles() {
 
 export function clearBufferFiles() {
     return {
-        type:CLEAR_FILES_TOBUFFER
+        type:CLEAR_BUFFER
     }
 }
 

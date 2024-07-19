@@ -15,7 +15,7 @@ import {
     SET_SORT_ORDER_BY,
     RUN_SORTING_FILTER,
     SET_IMAGE_SETTINGS,
-    CLEAR_FILES_TOBUFFER
+    CLEAR_BUFFER
 }  from '../actions';
 
 export default function reducer(state = {}, action){
@@ -87,7 +87,7 @@ export default function reducer(state = {}, action){
                 }
             return {...state, bufferedItems, selectedFiles:[]};
 
-        case CLEAR_FILES_TOBUFFER:
+        case CLEAR_BUFFER:
                 bufferedItems = {
                     type: '',
                     files: []
