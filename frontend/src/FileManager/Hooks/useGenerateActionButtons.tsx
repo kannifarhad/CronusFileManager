@@ -1,23 +1,37 @@
 import {  useMemo } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum } from "../types";
+import { ButtonObject, ViewTypeEnum, ItemType, ItemExtensionCategoryFilter, Items } from "../types";
 import { checkSelectedFileType } from "../helpers";
-import { ActionTypes, CreateContextType } from '../ContextStore/types';
+import {  CreateContextType } from '../ContextStore/types';
+
+const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: CreateContextType['contextMenu'], selectedFiles: CreateContextType['selectedFiles'])=>{
+  if(selectedFiles.size !== 1 && !Boolean(contextMenu?.item)) return false;
+  const selectedItem = contextMenu?.item ?? Array.from(selectedFiles)[0];
+  if(selectedItem && selectedItem.type !==  ItemType.FILE) return false;
+  return checkSelectedFileType(type, selectedItem);
+};
 
 export const generateAllButtons = (operations: any, stateOperations: any, state: CreateContextType): ButtonObject => {
 
-  const { selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems } = state;
+  const { selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
+
+  const isItemFocusedOrSelected = ((contextMenu, selectedFiles)=>
+    Boolean(contextMenu?.item) || selectedFiles.size === 1
+  )(contextMenu, selectedFiles)
+  
+  const isSelectedItemImage = isSelectedFileType(ItemExtensionCategoryFilter.IMAGE, contextMenu, selectedFiles)
+
   const allButtons: ButtonObject = {
     copy: {
       title: "Copy",
       icon: "icon-copy",
       onClick: operations.handleCopy,
-      disabled: !(selectedFiles.size > 0),
+      disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     cut: {
       title: "Cut",
       icon: "icon-scissors",
       onClick: operations.handleCut,
-      disabled: !(selectedFiles.size > 0),
+      disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     paste: {
       title: "Paste",
@@ -29,7 +43,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "Delete",
       icon: "icon-trash",
       onClick: operations.handleDelete,
-      disabled: !(selectedFiles.size > 0),
+      disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     emptyFolder: {
       title: "Empty Folder",
@@ -40,7 +54,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "Rename",
       icon: "icon-text",
       onClick: operations.handleRename,
-      disabled: !(Boolean(contextMenu?.item) || selectedFiles.size === 1),
+      disabled: !isItemFocusedOrSelected,
     },
     newFile: {
       title: "Few File",
@@ -56,31 +70,31 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "Forwad",
       icon: "icon-forward",
       onClick: operations.handleGoForWard,
-      //   disabled: !(props?.history.currentIndex + 1 < props?.history.steps.length),
+        disabled: !(history.currentIndex + 1 < history.steps.length),
     },
     goParent: {
       title: "Go to parent folder",
       icon: "icon-backward",
       onClick: operations.handleGotoParent,
-      //   disabled: props?.selectedFolder === props?.foldersList.path,
+      disabled: Array.isArray(foldersList) && selectedFolder === foldersList[0]?.path,
     },
     goBack: {
       title: "Back",
       icon: "icon-backward",
       onClick: operations.handleGoBackWard,
-      //   disabled: !(props?.history.currentIndex > 0),
+      disabled: !(history.currentIndex > 0),
     },
     selectAll: {
       title: "Select all",
       icon: "icon-add-3",
       onClick: operations.handleSelectAll,
-      //   disabled: !(props?.selectedFiles.length !== props?.filesList.length),
+      disabled: !(selectedFiles.size !== filesList.length),
     },
     selectNone: {
       title: "Select none",
       icon: "icon-cursor",
       onClick: operations.handleUnsetSelected,
-      //   disabled: props?.selectedFiles.length === 0,
+      disabled: selectedFiles.size === 0,
     },
     inverseSelected: {
       title: "Invert selection",
@@ -106,39 +120,33 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "Duplicate",
       icon: "icon-layers",
       onClick: operations.handleDuplicate,
-      disabled: !(Boolean(contextMenu?.item) || selectedFiles.size === 1),
+      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.FILE, contextMenu, selectedFiles),
     },
 
     editFile: {
       title: "Edit File",
       icon: "icon-pencil",
       onClick: operations.handleEditText,
-      //   disabled: !(
-      //     props?.selectedFiles.length === 1 && checkSelectedFileType("text")
-      //   ),
+      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.TEXT,contextMenu, selectedFiles),
     },
 
     editImage: {
       title: "Resize & Rotate",
       icon: "icon-paint-palette",
       onClick: operations.handleEditImage,
-      //   disabled: !(
-      //     props?.selectedFiles.length === 1 && checkSelectedFileType("image")
-      //   ),
+      disabled: !isSelectedItemImage
     },
     createZip: {
       title: "Create archive",
       icon: "icon-zip",
       onClick: operations.handleCreateZip,
-      //   disabled: !(props?.selectedFiles.length > 0),
+      disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     extractZip: {
       title: "Extract files from archive",
       icon: "icon-zip-1",
       onClick: operations.handleExtractZip,
-      //   disabled: !(
-      //     props?.selectedFiles.length === 1 && checkSelectedFileType("archive")
-      //   ),
+      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.ARCHIVE, contextMenu, selectedFiles),
     },
     uploadFile: {
       title: "Upload Files",
@@ -159,23 +167,19 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "View",
       icon: "icon-view",
       onClick: operations.handlePreview,
-      //   disabled: !(
-      //     props?.selectedFiles.length === 1 && checkSelectedFileType("image")
-      //   ),
+      disabled: !isSelectedItemImage
     },
     getInfo: {
       title: "Get Info",
       icon: "icon-information",
       onClick: operations.handleGetInfo,
-      disabled: !(Boolean(contextMenu?.item) || selectedFiles.size === 1),
+      disabled: !isItemFocusedOrSelected,
     },
     download: {
       title: "Download File",
       icon: "icon-download-1",
       onClick: operations.handleDownload,
-      //   disabled: !(
-      //     props?.selectedFiles.length === 1 && checkSelectedFileType("file")
-      //   ),
+      disabled: !isItemFocusedOrSelected,
     },
     gridView: {
       title: "Grid view",

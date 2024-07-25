@@ -119,6 +119,13 @@ export enum SortByFieldEnum {
   DESC = 'DESC',
   ASC = 'ASC',
 }
+
+export enum ItemExtensionCategoryFilter {
+  FILE = 'FILE',
+  IMAGE = 'IMAGE',
+  TEXT = 'TEXT',
+  ARCHIVE = 'ARCHIVE',
+}
 export type OrderByType = {
   field: OrderByFieldEnum,
   orderBy: SortByFieldEnum

@@ -1,6 +1,6 @@
 import config from "./Elements/config.json";
 import mainconfig from "../Data/Config";
-import { FileType, ImagesThumbTypeEnum, ItemsList, OrderByFieldEnum, OrderByType, SortByFieldEnum, ItemType } from "./types";
+import { FileType, ImagesThumbTypeEnum, ItemsList, OrderByFieldEnum, OrderByType, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "./types";
 
 export const sortFilter = (filesList: ItemsList, order: OrderByType): ItemsList => {
   // Helper function to sort items based on the field and order
@@ -44,15 +44,19 @@ export const sortFilter = (filesList: ItemsList, order: OrderByType): ItemsList 
   return [...sortedFolders, ...sortedFiles];
 };
 
-export const checkSelectedFileType = (type: any, selectedFile: FileType) => {
+
+export const checkSelectedFileType = (type: ItemExtensionCategoryFilter, selectedFile: FileType) => {
   try {
     switch (type) {
-      case "text":
+      case ItemExtensionCategoryFilter.FILE:
+        return selectedFile.type === ItemType.FILE;
+        
+        case ItemExtensionCategoryFilter.TEXT:
         return config.textFiles.includes(selectedFile.extension);
-      case "archive":
+      case ItemExtensionCategoryFilter.ARCHIVE:
         return config.archiveFiles.includes(selectedFile.extension);
 
-      case "image":
+      case ItemExtensionCategoryFilter.IMAGE:
         return config.imageFiles.includes(selectedFile.extension);
 
       default:
