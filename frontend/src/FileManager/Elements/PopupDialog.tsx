@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, ForwardRefRenderFunction } from "react";
 import {
   Button,
   DialogActions,
@@ -6,30 +6,49 @@ import {
   DialogContentText,
   DialogTitle,
   Zoom,
+  ZoomProps,
 } from "@mui/material";
 import Translate from "../../Utils/Translate";
 import InputField from "./InputField";
 import { StyledPopUpDialog } from "./styled";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Zoom in={props.open} ref={ref} {...props} />;
-});
+interface NameInputSets {
+  value: string;
+  label: string;
+  callBack: (value: string) => void;
+}
 
-export default function AlertDialogSlide(props) {
-  const { open, title, description, handleClose, handleSubmit, nameInputSets } =
-    props;
-  const [renameText, setRenameText] = useState(
-    typeof nameInputSets?.value !== undefined ? nameInputSets?.value : ""
+interface AlertDialogSlideProps {
+  open: boolean;
+  title: string;
+  description: string;
+  handleClose: () => void;
+  handleSubmit?: () => void;
+  nameInputSets?: NameInputSets;
+}
+
+const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (props, ref) => {
+  return <Zoom ref={ref} {...props} />;
+};
+
+const AlertDialogSlide: React.FC<AlertDialogSlideProps> = (props) => {
+  const { open, title, description, handleClose, handleSubmit, nameInputSets } = props;
+
+  const [renameText, setRenameText] = useState<string>(
+    nameInputSets?.value ?? ""
   );
+
   if (!open) return null;
-  const handleNameChange = (value) => {
+
+  const handleNameChange = (value: string) => {
     setRenameText(value);
-    // nameInputSets.callBack(value);
+    nameInputSets?.callBack(value);
   };
+
   return (
     <StyledPopUpDialog
       open={open}
-      TransitionComponent={Transition}
+      TransitionComponent={React.forwardRef(Transition)}
       keepMounted
       onClose={handleClose}
       className="dialogBlock"
@@ -40,12 +59,12 @@ export default function AlertDialogSlide(props) {
         <DialogContentText className="dialogDescription">
           <div dangerouslySetInnerHTML={{ __html: description }}></div>
         </DialogContentText>
-        {nameInputSets.value && (
+        {nameInputSets && (
           <div className="form-group">
             <InputField
               type="text"
               label={<Translate>{nameInputSets.label}</Translate>}
-              onChange={handleNameChange}
+              onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleNameChange(e.target.value)}
               value={renameText}
               variant="outlined"
             />
@@ -65,4 +84,6 @@ export default function AlertDialogSlide(props) {
       </DialogActions>
     </StyledPopUpDialog>
   );
-}
+};
+
+export default AlertDialogSlide;

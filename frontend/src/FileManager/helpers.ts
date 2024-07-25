@@ -1,57 +1,62 @@
 import config from "./Elements/config.json";
 import mainconfig from "../Data/Config";
-import { FileType, ImagesThumbTypeEnum, ItemsList } from "./types";
+import { FileType, ImagesThumbTypeEnum, ItemsList, OrderByFieldEnum, OrderByType, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "./types";
 
-interface Order {
-  field: string;
-  orderBy: string;
-}
+export const sortFilter = (filesList: ItemsList, order: OrderByType): ItemsList => {
+  // Helper function to sort items based on the field and order
+  const sortItems = (items: ItemsList, field: OrderByFieldEnum, orderBy: SortByFieldEnum): ItemsList => {
+    return items.sort((a, b) => {
+      let comparison = 0;
+      switch (field) {
+        case OrderByFieldEnum.NAME:
+          comparison = a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+          break;
 
-export const sortFilter = (filesList: ItemsList, order: Order): ItemsList=> {
-  let sortedFiles: ItemsList = [];
+        case OrderByFieldEnum.SIZE:
+          comparison = a.size - b.size;
+          break;
 
-  switch (order.field) {
-    case "name":
-      sortedFiles = filesList.sort((a, b) => {
-        const x = a.name.toLowerCase();
-        const y = b.name.toLowerCase();
-        if (x < y) {
-          return -1;
-        }
-        if (x > y) {
-          return 1;
-        }
-        return 0;
-      });
-      break;
+        case OrderByFieldEnum.DATE:
+          comparison = new Date(a.created).getTime() - new Date(b.created).getTime();
+          break;
 
-    case "size":
-      sortedFiles = filesList.sort((a, b) => a.size - b.size);
-      break;
+        default:
+          break;
+      }
+      return orderBy === SortByFieldEnum.ASC ? comparison : -comparison;
+    });
+  };
 
-    case "date":
-      sortedFiles = filesList.sort(
-        (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
-      );
-      break;
+  // Separate folders and files, then sort each category
+  const [folders, files] = filesList.reduce<[ItemsList, ItemsList]>((acc, item) => {
+    if (item.type === ItemType.FOLDER) {
+      acc[0].push(item);
+    } else {
+      acc[1].push(item);
+    }
+    return acc;
+  }, [[], []]);
 
-    default:
-      sortedFiles = filesList;
-      break;
-  }
+  const sortedFolders = sortItems(folders, order.field, order.orderBy);
+  const sortedFiles = sortItems(files, order.field, order.orderBy);
 
-  return order.orderBy === "asc" ? sortedFiles : sortedFiles.reverse();
+  // Combine sorted folders and files
+  return [...sortedFolders, ...sortedFiles];
 };
 
-export const checkSelectedFileType = (type: any, selectedFile: FileType) => {
+
+export const checkSelectedFileType = (type: ItemExtensionCategoryFilter, selectedFile: FileType) => {
   try {
     switch (type) {
-      case "text":
+      case ItemExtensionCategoryFilter.FILE:
+        return selectedFile.type === ItemType.FILE;
+        
+        case ItemExtensionCategoryFilter.TEXT:
         return config.textFiles.includes(selectedFile.extension);
-      case "archive":
+      case ItemExtensionCategoryFilter.ARCHIVE:
         return config.archiveFiles.includes(selectedFile.extension);
 
-      case "image":
+      case ItemExtensionCategoryFilter.IMAGE:
         return config.imageFiles.includes(selectedFile.extension);
 
       default:

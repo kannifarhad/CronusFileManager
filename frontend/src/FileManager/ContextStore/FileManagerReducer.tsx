@@ -1,11 +1,11 @@
 import { sortFilter } from "../helpers";
 import { ItemMoveActionTypeEnum } from "../types";
-import { FileManagerAction, FileManagerState, ActionTypes } from './types'
+import { FileManagerAction, FileManagerState, ActionTypes, CreateContextType } from './types'
 
 export const fileManagerReducer = (
-  state: FileManagerState,
+  state: CreateContextType,
   action: FileManagerAction
-): FileManagerState => {
+): CreateContextType => {
   // console.log('action', action);
   switch (action.type) {
     case ActionTypes.SET_FOLDERS_LIST:
@@ -116,7 +116,7 @@ export const fileManagerReducer = (
       };
     }
 
-    
+
 
 
  

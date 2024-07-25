@@ -5,14 +5,15 @@ import TopBarRightMenus, { SettingsMenuEnum } from "./TopBarRightMenus";
 import { TopBarWrapper } from "./styled";
 import { Button } from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
+import useGenerateActionButtons from "../../Hooks/useGenerateActionButtons";
 interface MenuRef {
   handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: SettingsMenuEnum) => void;
 }
 
 const TopBar: React.FC<{}> = () => {
   const menuListRef = useRef<MenuRef>(null);
-  const { aviableButtons }  = useFileManagerState();
-  const buttons = aviableButtons?.topbar ?? [];
+  const state = useFileManagerState();
+  const { topbar } = useGenerateActionButtons({ state }) 
 
   const handleOpenMenu = useCallback(
     (...props: [React.MouseEvent<HTMLElement>, SettingsMenuEnum]) => {
@@ -45,7 +46,7 @@ const TopBar: React.FC<{}> = () => {
 
   return (
     <TopBarWrapper container>
-      {buttons.map((groups, index) => (
+      {topbar.map((groups, index) => (
         <Grid item key={index}>
           <TopBarButtonGroups buttons={groups} />
         </Grid>

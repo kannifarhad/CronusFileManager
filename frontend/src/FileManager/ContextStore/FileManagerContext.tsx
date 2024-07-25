@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, ReactNode } from "react";
-import useGenerateActionButtons from "../Hooks/useGenerateActionButtons";
+import useFileManagerOperations from "../Hooks/useFileManagerOperations";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
 import { ContextMenuTypeEnum, FolderType, ImagesThumbTypeEnum, Items, OrderByFieldEnum, OrderByType, SortByFieldEnum, ViewTypeEnum,} from "../types";
@@ -36,10 +36,10 @@ const initialState: CreateContextType = {
     handleSetViewItemType: (view: ViewTypeEnum)=> null,
     handleSetOrder: (order: OrderByType)=> null,
     handleSetThumbView: (view: ImagesThumbTypeEnum)=> null,
-
     handleUnsetSelected: () => null,
     handleInverseSelected: () => null,
     handleSelectAll: () => null,
+
     handleGotoParent: () => null,
     handleGoBackWard: () => null,
     handleGoForWard: () => null,
@@ -57,11 +57,6 @@ const initialState: CreateContextType = {
     handleExtractZip: () => null,
     handleEdit: () => null,
   },
-  aviableButtons :{
-    topbar: [],
-    file: [],
-    container: [],
-  }
 };
 
 
@@ -73,10 +68,10 @@ const FileManagerDispatchContext = createContext<
 
 export const FileManagerProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(fileManagerReducer, initialState);
-  const { aviableButtons, operations } = useGenerateActionButtons({ dispatch });
+  const { operations } = useFileManagerOperations({ dispatch, state});
 
   return (
-    <FileManagerStateContext.Provider value={{ ...state, aviableButtons, operations }}>
+    <FileManagerStateContext.Provider value={{ ...state, operations }}>
       <FileManagerDispatchContext.Provider value={dispatch}>
         {children}
       </FileManagerDispatchContext.Provider>
