@@ -73,6 +73,5 @@ export interface FileManagerAction {
 }
 
 export interface CreateContextType extends FileManagerState {
-  aviableButtons: AvailableButtons;
   operations: Operations;
 }

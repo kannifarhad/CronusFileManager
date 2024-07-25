@@ -3,9 +3,12 @@ import { Divider } from "@mui/material";
 import { StyledContextMenu, StyledContextMenuItem } from "../../Elements/styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { ContextMenuTypeEnum } from "../../types";
+import useGenerateActionButtons from "../../Hooks/useGenerateActionButtons";
 
 const ContextMenu: React.FC = () => {
-  const { operations: { handleContextClose }, contextMenu, aviableButtons: { file: fileButtons, container: containerButtons } } = useFileManagerState();
+  const state = useFileManagerState();
+  const { operations: { handleContextClose }, contextMenu } = state;
+  const { file: fileButtons, container: containerButtons } = useGenerateActionButtons({ state }) 
 
   if(!contextMenu) return null;
 
