@@ -11,7 +11,9 @@ import {
   ImagesThumbTypeEnum,
   ViewTypeEnum,
   ItemsList,
-  OrderByType
+  HistoryStep,
+  OrderByType,
+  HistoryType
 } from "../types";
 import {
   AvailableButtons,
@@ -59,11 +61,8 @@ export interface FileManagerState {
   messages: Messages;
   filesList: ItemsList;
   orderFiles: OrderByType;
-
-  history: {
-    currentIndex: number;
-    steps: any[]
-  };
+  history: HistoryType;
+  
   popUpData: PopupData;
 }
 

@@ -1,12 +1,11 @@
 import { sortFilter } from "../helpers";
-import { ItemMoveActionTypeEnum } from "../types";
-import { FileManagerAction, FileManagerState, ActionTypes, CreateContextType } from './types'
+import { ItemMoveActionTypeEnum, HistoryStepTypeEnum } from "../types";
+import { FileManagerAction, FileManagerState, ActionTypes } from './types'
 
 export const fileManagerReducer = (
-  state: CreateContextType,
+  state: FileManagerState,
   action: FileManagerAction
-): CreateContextType => {
-  // console.log('action', action);
+): FileManagerState => {
   switch (action.type) {
     case ActionTypes.SET_FOLDERS_LIST:
       return { ...state, foldersList: action.payload };
@@ -16,11 +15,10 @@ export const fileManagerReducer = (
       const {folder, history, loading} = action.payload;
       if (!history) {
         newHistory.steps.push({
-          action: "folderChange",
-          folder,
+          action: HistoryStepTypeEnum.FOLDERCHANGE,
+          payload: folder,
         });
-        newHistory.currentIndex =
-          newHistory.steps.length === 0 ? 0 : newHistory.steps.length - 1;
+        newHistory.currentIndex = Math.max(0, newHistory.steps.length - 1);
       }
       return {
         ...state,
@@ -29,7 +27,6 @@ export const fileManagerReducer = (
         loading: loading !== undefined ? loading : state.loading
       };
     }
-
     case ActionTypes.SET_LOADING:
       return { ...state, loading: action.payload };
 
@@ -46,7 +43,6 @@ export const fileManagerReducer = (
         loading: loading !== undefined ? loading : state.loading
       };
     }
-
     case ActionTypes.SET_MESSAGES:
       return { ...state, messages: [...state.messages, action.payload ]};
 
@@ -67,7 +63,6 @@ export const fileManagerReducer = (
       // Return the new state with the updated Set
       return { ...state, selectedFiles: selectedFilesNew };
     }
-    
     case ActionTypes.SET_CONTEXT_MENU:
       return { ...state, contextMenu: action.payload };
       
@@ -115,7 +110,9 @@ export const fileManagerReducer = (
         },
       };
     }
-
+    case ActionTypes.SET_HISTORY_INDEX: {
+      return { ...state, history: { ...state.history, currentIndex: action.payload.index}};
+    }
 
 
 
@@ -137,11 +134,6 @@ export const fileManagerReducer = (
     }
 
 
-    case ActionTypes.SET_HISTORY_INDEX: {
-      const newHistoryIndex = { ...state.history };
-      newHistoryIndex.currentIndex = action.payload.index;
-      return { ...state, history: newHistoryIndex };
-    }
 
     default:
       return state;

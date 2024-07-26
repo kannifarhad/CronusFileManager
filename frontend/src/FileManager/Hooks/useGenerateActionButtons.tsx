@@ -10,10 +10,9 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
   return checkSelectedFileType(type, selectedItem);
 };
 
-export const generateAllButtons = (operations: any, stateOperations: any, state: CreateContextType): ButtonObject => {
-
+export const generateAllButtons = (operations: any, stateOperations: any, state: any): ButtonObject => {
   const { selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
-
+  console.log('generateAllButtons', history);
   const isItemFocusedOrSelected = ((contextMenu, selectedFiles)=>
     Boolean(contextMenu?.item) || selectedFiles.size === 1
   )(contextMenu, selectedFiles)
@@ -69,19 +68,19 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     goForwad: {
       title: "Forwad",
       icon: "icon-forward",
-      onClick: operations.handleGoForWard,
+      onClick: ()=>operations.handleGoForWard(history),
         disabled: !(history.currentIndex + 1 < history.steps.length),
     },
     goParent: {
       title: "Go to parent folder",
       icon: "icon-backward",
-      onClick: operations.handleGotoParent,
-      disabled: Array.isArray(foldersList) && selectedFolder === foldersList[0]?.path,
+      onClick: ()=>operations.handleGotoParent(foldersList),
+      disabled: selectedFolder?.path === foldersList?.path,
     },
     goBack: {
       title: "Back",
       icon: "icon-backward",
-      onClick: operations.handleGoBackWard,
+      onClick: ()=>operations.handleGoBackWard(history),
       disabled: !(history.currentIndex > 0),
     },
     selectAll: {
@@ -205,9 +204,9 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
 };
 
 export const useGenerateActionButtons = ({ state }: { state: CreateContextType}) => {
-  const { operations } = state;
+  const { operations, selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
 
-  const allButtons = useMemo(() =>  generateAllButtons(operations, null, state), [operations, state]);
+  const allButtons = useMemo(() =>  generateAllButtons(operations, null, {selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList }), [operations, selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList ]);
 
   const aviableButtons = useMemo(
     () => ({

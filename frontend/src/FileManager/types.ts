@@ -31,14 +31,13 @@ export interface Operations {
   handleSetViewItemType: (view: ViewTypeEnum)=> void,
   handleSetOrder: (order: OrderByType)=> void,
   handleSetThumbView: (view: ImagesThumbTypeEnum)=> void,
-
-
   handleUnsetSelected: () => void;
   handleInverseSelected: () => void;
   handleSelectAll: () => void;
-  handleGotoParent: () => void;
-  handleGoBackWard: () => void;
-  handleGoForWard: () => void;
+  handleGoBackWard: (history:HistoryType) => void,
+  handleGoForWard: (history:HistoryType) => void,
+  handleGotoParent: (folderList: FolderList) => void;
+
   handleCopy: () => void;
   handleCut: () => void;
   handlePaste: () => void;
@@ -173,4 +172,16 @@ export interface FileType {
   size: number
   extension: ExtensionsTypes
   private?: boolean;
+}
+
+export enum HistoryStepTypeEnum {
+  FOLDERCHANGE = 'FOLDERCHANGE'
+}
+export interface HistoryStep {
+  action: HistoryStepTypeEnum,
+  payload: FolderList
+}
+export interface HistoryType {
+  currentIndex: number;
+  steps: HistoryStep[]
 }

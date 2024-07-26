@@ -2,11 +2,11 @@ import React, { createContext, useReducer, ReactNode } from "react";
 import useFileManagerOperations from "../Hooks/useFileManagerOperations";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
-import { ContextMenuTypeEnum, FolderType, ImagesThumbTypeEnum, Items, OrderByFieldEnum, OrderByType, SortByFieldEnum, ViewTypeEnum,} from "../types";
+import { ContextMenuTypeEnum, FolderList, FolderType, HistoryType, ImagesThumbTypeEnum, Items, OrderByFieldEnum, OrderByType, SortByFieldEnum, ViewTypeEnum,} from "../types";
 import { DropResult } from "react-beautiful-dnd";
 
-const initialState: CreateContextType = {
-  selectedFiles: new Set(),
+const initialState = {
+  selectedFiles: new Set([]),
   bufferedItems: { files: new Set([]), type: null },
   contextMenu: null, 
   messages: [],
@@ -15,52 +15,19 @@ const initialState: CreateContextType = {
   itemsViewType: ViewTypeEnum.GRID,
   showImages: ImagesThumbTypeEnum.ICONS,
   filesList: [],
-
-  foldersList: null,
-  history: { currentIndex: 0, steps: [] },
   orderFiles: {
     field: OrderByFieldEnum.NAME,
     orderBy: SortByFieldEnum.ASC,
   },
+  foldersList: null,
+  history: { currentIndex: 0, steps: [] },
   popUpData: {
     open: false,
-  },
-
-  operations:{
-    handleSelectFolder: (folder: FolderType, history?: boolean) => null,
-    handleAddSelected: (item: Items) => null,
-    handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeEnum}) => null,
-    handleClearBuffer: ()=> null,
-    handleContextClose: (event: React.MouseEvent) => null,
-    handleDragEnd: (result: DropResult) => null,
-    handleSetViewItemType: (view: ViewTypeEnum)=> null,
-    handleSetOrder: (order: OrderByType)=> null,
-    handleSetThumbView: (view: ImagesThumbTypeEnum)=> null,
-    handleUnsetSelected: () => null,
-    handleInverseSelected: () => null,
-    handleSelectAll: () => null,
-
-    handleGotoParent: () => null,
-    handleGoBackWard: () => null,
-    handleGoForWard: () => null,
-    handleCopy: () => null,
-    handleCut: () => null,
-    handlePaste: () => null,
-    handleDelete: () => null,
-    handleEmptyFolder: () => null,
-    handleNewFile: () => null,
-    handleNewFolder: () => null,
-    handleRename: () => null,
-    handleDuplicate: () => null,
-    handleReload: () => null,
-    handleCreateZip: () => null,
-    handleExtractZip: () => null,
-    handleEdit: () => null,
   },
 };
 
 
-const FileManagerStateContext = createContext<CreateContextType>(initialState);
+const FileManagerStateContext = createContext<CreateContextType | undefined>(undefined);
 const FileManagerDispatchContext = createContext<
   React.Dispatch<FileManagerAction>
 >(() => {});
@@ -68,7 +35,7 @@ const FileManagerDispatchContext = createContext<
 
 export const FileManagerProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(fileManagerReducer, initialState);
-  const { operations } = useFileManagerOperations({ dispatch, state});
+  const operations  = useFileManagerOperations({ dispatch });
 
   return (
     <FileManagerStateContext.Provider value={{ ...state, operations }}>
