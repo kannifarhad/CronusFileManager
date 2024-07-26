@@ -1,25 +1,12 @@
-import {  useMemo, useCallback } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum } from "../types";
+import {  useMemo, useCallback, useEffect } from "react";
+import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList } from "../types";
 import { ActionTypes, CreateContextType } from '../ContextStore/types';
 import { getFilesList } from '../Api/fileManagerServices';
 import { DropResult } from "react-beautiful-dnd";
 
-export const useFileManagerOperations = ({ dispatch , state }: {dispatch: any, state: CreateContextType}) => {
+export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
 
-  const handlingHistory = (
-    historyInfo: { action: string; path: string },
-    index: number
-  ) => {
-    // props?.setHistoryIndex(index);
-    // props?.unsetSelectedFiles();
-    switch (historyInfo.action) {
-      case "folderChange":
-        // operations.handleSetMainFolder(historyInfo.path, true);
-        break;
-      default:
-        break;
-    }
-  };
+
 
   const setMessages = useCallback((messages: any[]) => {
     dispatch({
@@ -31,12 +18,34 @@ export const useFileManagerOperations = ({ dispatch , state }: {dispatch: any, s
   //   const setLoading = useCallback(() => {}, []); // (loading: boolean) => void,
   //   const setEditImage = useCallback(() => {}, []); // (editImage: EditImage) => void
 
+  const handlingHistory = useCallback((
+    historyInfo: HistoryStep,
+    index: number
+  ) => {
+    dispatch({
+      type: ActionTypes.SET_HISTORY_INDEX,
+      payload: {
+        index
+      },
+    });
+
+    switch (historyInfo.action) {
+      case HistoryStepTypeEnum.FOLDERCHANGE:
+        operations.handleSelectFolder(historyInfo.payload, true);
+        break;
+      default:
+        break;
+    }
+  }, [dispatch]);
+
+
+
   const operations = useMemo(
     () => ({
       handleSelectFolder: (folder: FolderType, history: boolean = false) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_FOLDER,
-          payload: {folder, history, loading: true},
+          payload: {folder: {...folder, children:[]}, history, loading: true},
         });
         getFilesList({ path: folder.path }).then((data) => {
           dispatch({
@@ -166,25 +175,24 @@ export const useFileManagerOperations = ({ dispatch , state }: {dispatch: any, s
           payload: null
         })
       },
-
-      handleGotoParent: () => {
+      handleGoBackWard: (history: HistoryType) => {
+        const historyIndex =  Math.max(0, history.currentIndex - 1);
+        let historyInfo = history.steps[historyIndex];
+        handlingHistory(historyInfo, historyIndex);
+      },
+      handleGoForWard: (history: HistoryType) => {
+        if (history.currentIndex + 1 < history.steps.length) {
+          let historyIndex = history.currentIndex + 1;
+          let historyInfo = history.steps[historyIndex];
+          handlingHistory(historyInfo, historyIndex);
+        }
+      },
+      handleGotoParent: (foldersList: FolderList) => {
         operations.handleUnsetSelected();
-        // operations.handleSetMainFolder(props?.foldersList.path);
+        operations.handleSelectFolder(foldersList);
       },
-      
-      handleGoBackWard: () => {
-        // let historyIndex =
-        //   props?.history.currentIndex > 0 ? props?.history.currentIndex - 1 : 0;
-        // let historyInfo = props?.history.steps[historyIndex];
-        // handlingHistory(historyInfo, historyIndex);
-      },
-      handleGoForWard: () => {
-        // if (props?.history.currentIndex + 1 < props?.history.steps.length) {
-        //   let historyIndex = props?.history.currentIndex + 1;
-        //   let historyInfo = props?.history.steps[historyIndex];
-        //   handlingHistory(historyInfo, historyIndex);
-        // }
-      },
+
+
       handleCopy: () => {
         // props?.copyToBufferFiles();
         // setMessages([
@@ -556,15 +564,11 @@ export const useFileManagerOperations = ({ dispatch , state }: {dispatch: any, s
         // });
       },
     }),
-    [dispatch]
+    [dispatch, handlingHistory]
   );
 
-  const stateOperations = useMemo(()=>{
 
-  },[state]);
-
-
-  return { operations, stateOperations };
+  return operations ;
 };
 
 export default useFileManagerOperations;
