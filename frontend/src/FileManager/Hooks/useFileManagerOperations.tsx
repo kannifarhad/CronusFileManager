@@ -1,17 +1,17 @@
 import {  useMemo, useCallback, useEffect } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList } from "../types";
+import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList, Message, BufferedItemsType, ItemMoveActionTypeEnum, ItemsList } from "../types";
 import { ActionTypes, CreateContextType } from '../ContextStore/types';
-import { getFilesList } from '../Api/fileManagerServices';
+import { getFilesList, copyFilesToFolder, cutFilesToFolder, deleteItems } from '../Api/fileManagerServices';
 import { DropResult } from "react-beautiful-dnd";
 
 export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
 
 
 
-  const setMessages = useCallback((messages: any[]) => {
+  const setMessage = useCallback((message: Message) => {
     dispatch({
       type: ActionTypes.SET_MESSAGES,
-      payload: messages,
+      payload: message,
     });
   }, [dispatch]);
   //   const setPopup = useCallback(() => {}, []); // (popupData: PopupData) => void,
@@ -191,91 +191,119 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         operations.handleUnsetSelected();
         operations.handleSelectFolder(foldersList);
       },
-
-
       handleCopy: () => {
-        // props?.copyToBufferFiles();
-        // setMessages([
-        //   {
-        //     title: `File Successfully Copied`,
-        //     type: "info",
-        //     message: "You can paste it in any folder",
-        //     timer: 3000,
-        //   },
-        // ]);
+        dispatch({
+          type: ActionTypes.COPY_FILES_TOBUFFER,
+          payload: null
+        })     
+          setMessage({
+            id: String(Date.now()),
+            title: `File Successfully Copied`,
+            type: "info",
+            message: "You can paste it in any folder",
+            timer: 3000,
+          });
       },
       handleCut: () => {
-        // props?.cutToBufferFiles();
-        // setMessages([
-        //   {
-        //     title: `File Successfully Cut`,
-        //     type: "info",
-        //     message: "You can paste it in any folder",
-        //     timer: 3000,
-        //   },
-        // ]);
+        dispatch({
+          type: ActionTypes.CUT_FILES_TOBUFFER,
+          payload: null
+        })     
+        setMessage({
+          id: String(Date.now()),
+          title: `File Successfully Cut`,
+          type: "info",
+          message: "You can paste it in any folder",
+          timer: 3000,
+        });
       },
-      handlePaste: () => {
-        // let files = props?.bufferedItems.files.map((item) => item.path);
-        // props
-        //   .pasteFiles(files, props?.bufferedItems.type, props?.selectedFolder)
-        //   .then(() => {
-        //     operations.handleReload();
-        //     setMessages([
-        //       {
-        //         title: `File Successfully Pasted`,
-        //         type: "success",
-        //         message: "You can paste it in any folder",
-        //         timer: 3000,
-        //       },
-        //     ]);
-        //   })
-        //   .catch((error) => {
-        //     setMessages([
-        //       {
-        //         title: `Error happened while paste items`,
-        //         type: "error",
-        //         message: error?.message,
-        //       },
-        //     ]);
-        //   });
-      },
+      handlePaste: (bufferedItems: BufferedItemsType, selectedFolder: FolderList) => {
+        const files: string[] = Array.from(bufferedItems.files).map((item: Items) => item.path);
+        const apiFunction = bufferedItems.type === ItemMoveActionTypeEnum.CUT ? cutFilesToFolder : copyFilesToFolder;
 
-      handleDelete: () => {
-        // let files = props?.selectedFiles.map((item) => item.path) as any;
-        // const handleDeleteSubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .deleteItems(files)
-        //     .then(() => {
-        //       props?.unsetSelectedFiles();
-        //       operations.handleReload();
-        //       setMessages([
-        //         {
-        //           title: `Delete files and folders request`,
-        //           type: "success",
-        //           message: "All files and folders successfully deleted",
-        //         },
-        //       ]);
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while removing`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Deleting selected files and folders: ${props?.selectedFiles.length} items`,
-        //   description: `All selected files and folder will remove without recover`,
-        //   handleClose: handleClose,
-        //   handleSubmit: handleDeleteSubmit,
-        //   nameInputSets: {},
-        // });
+        apiFunction({ items: files, destination: selectedFolder.path})
+          .then(() => {
+            operations.handleClearBuffer();
+            operations.handleSelectFolder(selectedFolder);
+            setMessage(
+              {
+                id: String(Date.now()),
+                title: `File Successfully Pasted`,
+                type: "success",
+                message: "You can paste it in any folder",
+                timer: 3000,
+              }
+            );
+          })
+          .catch((error) => {
+            setMessage(
+              {
+                id: String(Date.now()),
+                title: `Error happened while paste items`,
+                type: "error",
+                message: error?.message,
+              },
+            );
+          });
+      },
+      handleDelete: (selectedFiles: ItemsList, selectedFolder: FolderList) => {
+        const items: string[] = Array.from(selectedFiles).map((item: Items) => item.path);
+        const handleDeleteSubmit = () => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          });  
+          deleteItems({items})
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder);
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              });  
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Delete files and folders request`,
+                  type: "success",
+                  message: "All files and folders successfully deleted",
+                },
+              );
+            })
+            .catch((error) => {
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              }); 
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while removing`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+        const handleCloseClick = ()=>{
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+        }
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+            title: `Deleting selected files and folders: ${selectedFiles.length} items`,
+            description: `All selected files and folder will remove without recover`,
+            handleClose: handleCloseClick,
+            handleSubmit: handleDeleteSubmit,
+            nameInputSets: {},
+          }
+        }); 
       },
       handleEmptyFolder: () => {
         // var path = props?.selectedFolder;
@@ -450,23 +478,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         //   nameInputSets: {},
         // });
       },
-      handleReload: () => {
-        // setLoading(true);
-        // props
-        //   .getFilesList(props?.selectedFolder)
-        //   .then(() => {
-        //     setLoading(false);
-        //   })
-        //   .catch((error) => {
-        //     setMessages([
-        //       {
-        //         title: `Error happened while reloading`,
-        //         type: "error",
-        //         message: error.message,
-        //       },
-        //     ]);
-        //   });
-      },
+  
       handleCreateZip: () => {
         // var files = props?.selectedFiles.map((item) => item.path);
         // var name = "archive.zip";

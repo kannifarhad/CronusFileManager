@@ -2,8 +2,7 @@ import React, { createContext, useReducer, ReactNode } from "react";
 import useFileManagerOperations from "../Hooks/useFileManagerOperations";
 import { FileManagerAction, CreateContextType } from './types'
 import fileManagerReducer from './FileManagerReducer';
-import { ContextMenuTypeEnum, FolderList, FolderType, HistoryType, ImagesThumbTypeEnum, Items, OrderByFieldEnum, OrderByType, SortByFieldEnum, ViewTypeEnum,} from "../types";
-import { DropResult } from "react-beautiful-dnd";
+import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum, ViewTypeEnum } from "../types";
 
 const initialState = {
   selectedFiles: new Set([]),
@@ -21,9 +20,7 @@ const initialState = {
   },
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
-  popUpData: {
-    open: false,
-  },
+  popUpData: null,
 };
 
 

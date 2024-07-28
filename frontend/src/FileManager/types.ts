@@ -37,17 +37,16 @@ export interface Operations {
   handleGoBackWard: (history:HistoryType) => void,
   handleGoForWard: (history:HistoryType) => void,
   handleGotoParent: (folderList: FolderList) => void;
-
   handleCopy: () => void;
   handleCut: () => void;
-  handlePaste: () => void;
-  handleDelete: () => void;
+  handlePaste: (bufferedItems: BufferedItemsType, selectedFolder: FolderList) => void;
+  handleDelete: (selectedFiles: ItemsList, selectedFolder: FolderList) => void;
+
   handleEmptyFolder: () => void;
   handleNewFile: () => void;
   handleNewFolder: () => void;
   handleRename: () => void;
   handleDuplicate: () => void;
-  handleReload: () => void;
   handleCreateZip: () => void;
   handleExtractZip: () => void;
   handleEdit: () => void;
@@ -67,13 +66,19 @@ export type ButtonObject = {
   [key: string]: Button;
 };
 
+export type PopupStoreType = PopupData | null;
+interface NameInputSets {
+  value: string;
+  label: string;
+  callBack: (value: string) => void;
+}
+
 export interface PopupData {
-  open: boolean;
-  title?: string;
+  title: string;
   description?: string;
-  handleClose?: () => void;
-  handleSubmit?: () => void;
-  nameInputSets?: any;
+  handleClose: () => void;
+  handleSubmit: () => void;
+  nameInputSets?: NameInputSets;
 }
 
 export interface EditImage {
@@ -131,7 +136,7 @@ export type OrderByType = {
 }
 
 export interface BufferedItemsType{
-  files: Set<Items | unknown>;
+  files: Set<Items>;
   type: ItemMoveActionTypeEnum | null
 };
 

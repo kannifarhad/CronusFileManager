@@ -13,7 +13,8 @@ import {
   ItemsList,
   HistoryStep,
   OrderByType,
-  HistoryType
+  HistoryType,
+  PopupStoreType
 } from "../types";
 import {
   AvailableButtons,
@@ -35,13 +36,12 @@ export enum ActionTypes {
   INVERSE_SELECTED_FILES = "INVERSE_SELECTED_FILES",
   SET_SORT_ORDER_BY = "SET_SORT_ORDER_BY",
   SET_IMAGE_SETTINGS = "SET_IMAGE_SETTINGS",
-
-    COPY_FILES_TOBUFFER = "COPY_FILES_TOBUFFER",
-    CUT_FILES_TOBUFFER = "CUT_FILES_TOBUFFER",
-    PASTE_FILES = "PASTE_FILES",
-    SET_FOLDERS_LIST = "SET_FOLDERS_LIST",
-    SET_HISTORY_INDEX = "SET_HISTORY_INDEX",
-    SET_ITEM_VIEW = "SET_ITEM_VIEW",
+  COPY_FILES_TOBUFFER = "COPY_FILES_TOBUFFER",
+  CUT_FILES_TOBUFFER = "CUT_FILES_TOBUFFER",
+  SET_FOLDERS_LIST = "SET_FOLDERS_LIST",
+  SET_HISTORY_INDEX = "SET_HISTORY_INDEX",
+  SET_ITEM_VIEW = "SET_ITEM_VIEW",
+  SET_POPUP_DATA = "SET_POPUP_DATA"
 }
 
 export interface FileManagerState {
@@ -62,8 +62,7 @@ export interface FileManagerState {
   filesList: ItemsList;
   orderFiles: OrderByType;
   history: HistoryType;
-  
-  popUpData: PopupData;
+  popUpData: PopupStoreType;
 }
 
 export interface FileManagerAction {

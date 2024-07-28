@@ -21,7 +21,6 @@ export interface CreateNewFolderParams {
 
 export interface PasteFilesParams {
   items: string[];
-  type: "cut" | "copy";
   destination: string;
 }
 

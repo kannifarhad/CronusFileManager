@@ -5,7 +5,6 @@ import StatusBar from "./StatusBar";
 import FilesListContainer from './FilesListContainer';
 
 function FileBarWrapper() {
-  console.log('FileBarWrapper');
   return (
     <StyledFilesBarWrapper item xs={9} sm={10}>
       {/* <PerfectScrollbar> */}

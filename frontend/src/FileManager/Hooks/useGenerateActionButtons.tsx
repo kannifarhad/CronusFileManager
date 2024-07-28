@@ -12,7 +12,6 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
 
 export const generateAllButtons = (operations: any, stateOperations: any, state: any): ButtonObject => {
   const { selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
-  console.log('generateAllButtons', history);
   const isItemFocusedOrSelected = ((contextMenu, selectedFiles)=>
     Boolean(contextMenu?.item) || selectedFiles.size === 1
   )(contextMenu, selectedFiles)
@@ -35,13 +34,13 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     paste: {
       title: "Paste",
       icon: "icon-paste",
-      onClick: operations.handlePaste,
+      onClick: ()=>operations.handlePaste(bufferedItems, selectedFolder),
       disabled: !(bufferedItems.files.size > 0),
     },
     delete: {
       title: "Delete",
       icon: "icon-trash",
-      onClick: operations.handleDelete,
+      onClick: ()=> operations.handleDelete(selectedFiles, selectedFolder),
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     emptyFolder: {
@@ -113,7 +112,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     reload: {
       title: "Reload",
       icon: "icon-refresh",
-      onClick: operations.handleReload,
+      onClick: ()=>operations.handleSelectFolder(selectedFolder),
     },
     dubplicate: {
       title: "Duplicate",
