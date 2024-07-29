@@ -128,7 +128,10 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     dubplicate: {
       title: "Duplicate",
       icon: "icon-layers",
-      onClick: operations.handleDuplicate,
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu.item;
+        operations.handleDuplicate(item, selectedFolder);
+      },
       disabled: !isSelectedFileType(ItemExtensionCategoryFilter.FILE, contextMenu, selectedFiles),
     },
 
@@ -148,13 +151,19 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     createZip: {
       title: "Create archive",
       icon: "icon-zip",
-      onClick: operations.handleCreateZip,
+      onClick: () => {
+        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu.item]);
+        operations.handleCreateZip(items, selectedFolder);
+      },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     extractZip: {
       title: "Extract files from archive",
       icon: "icon-zip-1",
-      onClick: operations.handleExtractZip,
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu.item;
+        operations.handleExtractZip(item, selectedFolder);
+      },
       disabled: !isSelectedFileType(ItemExtensionCategoryFilter.ARCHIVE, contextMenu, selectedFiles),
     },
     uploadFile: {

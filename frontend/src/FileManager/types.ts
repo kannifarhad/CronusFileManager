@@ -45,10 +45,10 @@ export interface Operations {
   handleNewFile: (selectedFolder: FolderList) => void;
   handleNewFolder: (selectedFolder: FolderList) => void;
   handleRename: (selectedFile: Items, selectedFolder: FolderList) => void;
-  handleDuplicate: (selectedFile: Items) => void;
-  handleCreateZip: (selectedFiles: Set<ItemsList>) => void;
-  handleExtractZip: (selectedFile: Items) => void;
-  handleEdit: (selectedFile: Items) => void;
+  handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
+  handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleEdit: (selectedFile: Items,selectedFolder: FolderList) => void;
 }
 export interface Message {
     title: string;
