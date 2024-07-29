@@ -1,4 +1,4 @@
-import React, { useState, ForwardRefRenderFunction } from "react";
+import React, { useState, ForwardRefRenderFunction, memo } from "react";
 import {
   Button,
   DialogActions,
@@ -8,10 +8,10 @@ import {
   Zoom,
   ZoomProps,
 } from "@mui/material";
-import Translate from "../../Utils/Translate";
 import InputField from "./InputField";
 import { StyledPopUpDialog } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
+import { PopupData } from "../types";
 
 const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (props, ref) => {
   return <Zoom ref={ref} {...props} />;
@@ -19,38 +19,45 @@ const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (props, ref) =>
 
 const AlertDialogSlide: React.FC<{}> = () => {
   const { popUpData } = useFileManagerState();
-  const { title, description, handleClose, handleSubmit, nameInputSets } = popUpData || {};
-  const [renameText, setRenameText] = useState<string>(
-    nameInputSets?.value ?? ""
-  );
   if(!popUpData) return null;
-  const handleNameChange = (value: string) => {
-    setRenameText(value);
-    nameInputSets?.callBack(value);
-  };
 
   return (
     <StyledPopUpDialog
-      open={true}
+      open={Boolean(popUpData)}
       TransitionComponent={React.forwardRef(Transition)}
       keepMounted
-      onClose={handleClose}
+      onClose={popUpData.handleClose}
       className="dialogBlock"
     >
+      <AlertDialog {...popUpData} />
+    </StyledPopUpDialog>
+  );
+};
+
+const AlertDialog: React.FC<PopupData> = (props) => {
+  const { title, description, handleClose, handleSubmit, nameInputSets } = props;
+  const [renameText, setRenameText] = useState<string>(
+    nameInputSets?.value ?? ""
+  );
+  return (
+    <>
       <DialogTitle className="dialogTitle">{title}</DialogTitle>
 
       <DialogContent>
         {description &&
           <DialogContentText className="dialogDescription">
-            <div dangerouslySetInnerHTML={{ __html: description }}></div>
+            <div>{description}</div>
           </DialogContentText>
         }
         {nameInputSets && (
           <div className="form-group">
             <InputField
+            sx={{
+              marginTop: '20px'
+            }}
               type="text"
-              label={<Translate>{nameInputSets.label}</Translate>}
-              onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleNameChange(e.target.value)}
+              label={nameInputSets.label}
+              onChange={setRenameText}
               value={renameText}
               variant="outlined"
             />
@@ -60,16 +67,16 @@ const AlertDialogSlide: React.FC<{}> = () => {
 
       <DialogActions className="dialogButtons">
         <Button onClick={handleClose} variant="contained" color="secondary">
-          <Translate>Cancel</Translate>
+          Cancel
         </Button>
         {handleSubmit && (
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            <Translate>Submit</Translate>
+          <Button onClick={()=>handleSubmit(renameText)} variant="contained" color="primary">
+            Submit
           </Button>
         )}
       </DialogActions>
-    </StyledPopUpDialog>
+    </>
   );
 };
 
-export default AlertDialogSlide;
+export default memo(AlertDialogSlide);

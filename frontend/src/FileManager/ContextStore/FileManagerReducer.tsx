@@ -11,21 +11,28 @@ export const fileManagerReducer = (
       return { ...state, foldersList: action.payload };
 
     case ActionTypes.SET_SELECTED_FOLDER: {
-      let newHistory = { ...state.history };
-      const {folder, history, loading} = action.payload;
-      if (!history) {
-        newHistory.steps.push({
-          action: HistoryStepTypeEnum.FOLDERCHANGE,
-          payload: folder,
-        });
-        newHistory.currentIndex = Math.max(0, newHistory.steps.length - 1);
-      }
-      return {
+      const {folder, history, loading, clearBuffer} = action.payload;
+      const newState = {
         ...state,
-        history: newHistory,
         selectedFolder: folder,
         loading: loading !== undefined ? loading : state.loading
       };
+
+      if (!history) {
+        newState.history.steps.push({
+          action: HistoryStepTypeEnum.FOLDERCHANGE,
+          payload: folder,
+        });
+        newState.history.currentIndex = Math.max(0, newState.history.steps.length - 1);
+      }
+      if(clearBuffer){
+        newState.bufferedItems = {
+          type: null,
+          files: new Set([]),
+        };
+        newState.selectedFiles = new Set([])
+      }
+      return newState;
     }
     case ActionTypes.SET_LOADING:
       return { ...state, loading: action.payload };
@@ -39,7 +46,7 @@ export const fileManagerReducer = (
       return { 
         ...state, 
         filesList, 
-        messages: [...state.messages, message],
+        messages: Boolean(message) ? [...state.messages, message] : state.messages,
         loading: loading !== undefined ? loading : state.loading
       };
     }
@@ -116,19 +123,21 @@ export const fileManagerReducer = (
       return { ...state, history: { ...state.history, currentIndex: action.payload.index}};
     }
     case ActionTypes.COPY_FILES_TOBUFFER: {
+      const files = state.selectedFiles.size > 0 ? state.selectedFiles : state.contextMenu?.item ? new Set([state.contextMenu?.item]): new Set([]);
       const bufferedItems = {
         type: ItemMoveActionTypeEnum.COPY,
-        files: new Set(state.selectedFiles),
+        files,
       };
-      return { ...state, bufferedItems, selectedFiles: new Set() };
+      return { ...state, bufferedItems, selectedFiles: new Set([]) };
     }
 
     case ActionTypes.CUT_FILES_TOBUFFER: {
+      const files = state.selectedFiles.size > 0 ? state.selectedFiles : state.contextMenu?.item ? new Set([state.contextMenu?.item]): new Set([]);
       const bufferedItems = {
         type: ItemMoveActionTypeEnum.CUT,
-        files: new Set(state.selectedFiles),
+        files,
       };
-      return { ...state, bufferedItems, selectedFiles: new Set() };
+      return { ...state, bufferedItems, selectedFiles: new Set([]) };
     }
 
     default:

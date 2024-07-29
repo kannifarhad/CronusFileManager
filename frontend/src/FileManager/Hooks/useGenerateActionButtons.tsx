@@ -40,29 +40,40 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     delete: {
       title: "Delete",
       icon: "icon-trash",
-      onClick: ()=> operations.handleDelete(selectedFiles, selectedFolder),
+      onClick: () => {
+        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu.item]);
+        operations.handleDelete(items, selectedFolder)
+      },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     emptyFolder: {
       title: "Empty Folder",
       icon: "icon-delete-folder",
-      onClick: operations.handleEmptyFolder,
+      onClick: ()=>operations.handleEmptyFolder(selectedFolder),
+      disabled: !selectedFolder,
     },
     rename: {
       title: "Rename",
       icon: "icon-text",
-      onClick: operations.handleRename,
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu.item;
+        operations.handleRename(item, selectedFolder);
+      },
       disabled: !isItemFocusedOrSelected,
     },
     newFile: {
       title: "Few File",
       icon: "icon-add",
-      onClick: operations.handleNewFile,
+      onClick: ()=>operations.handleNewFile(selectedFolder),
+      disabled: !selectedFolder,
+
     },
     newFolder: {
       title: "New Folder",
       icon: "icon-add-folder",
-      onClick: operations.handleNewFolder,
+      onClick: ()=>operations.handleNewFolder(selectedFolder),
+      disabled: !selectedFolder,
+
     },
     goForwad: {
       title: "Forwad",
@@ -112,7 +123,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     reload: {
       title: "Reload",
       icon: "icon-refresh",
-      onClick: ()=>operations.handleSelectFolder(selectedFolder),
+      onClick: ()=>operations.handleSelectFolder(selectedFolder, true, true),
     },
     dubplicate: {
       title: "Duplicate",
@@ -150,6 +161,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "Upload Files",
       icon: "icon-cloud-computing",
       onClick: operations.handleUpload,
+      disabled: !selectedFolder,
     },
     searchFile: {
       title: "Search File",
@@ -260,6 +272,7 @@ export const useGenerateActionButtons = ({ state }: { state: CreateContextType})
       container: [
         [allButtons.goBack, allButtons.goForwad, allButtons.goParent],
         [
+          allButtons.paste,
           allButtons.newFile,
           allButtons.newFolder,
           allButtons.emptyFolder,

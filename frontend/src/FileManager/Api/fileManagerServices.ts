@@ -55,14 +55,9 @@ export const deleteItems = async ({
     .then((response) => response?.data);
 };
 
-
-
-export const renameFiles = async ({
-  path,
-  newname,
-}: RenameFilesParams): Promise<any> => {
+export const emptydir = async ({ path }: PathParam): Promise<any> => {
   return axiosInstance
-    .post("/fm/rename", { path, newname })
+    .post("emptydir", { path })
     .then((response) => response.data);
 };
 
@@ -71,7 +66,7 @@ export const createNewFile = async ({
   file,
 }: CreateNewFileParams): Promise<any> => {
   return axiosInstance
-    .post("/fm/createfile", { path, file })
+    .post("createfile", { path, file })
     .then((response) => response.data);
 };
 
@@ -80,16 +75,22 @@ export const createNewFolder = async ({
   folder,
 }: CreateNewFolderParams): Promise<any> => {
   return axiosInstance
-    .post("/fm/createfolder", { path, folder })
+    .post("createfolder", { path, folder })
     .then((response) => response.data);
 };
 
-
-export const emptydir = async ({ path }: PathParam): Promise<any> => {
+export const renameFiles = async ({
+  path,
+  newname,
+}: RenameFilesParams): Promise<any> => {
   return axiosInstance
-    .post("/fm/emptydir", { path })
+    .post("rename", { path, newname })
     .then((response) => response.data);
 };
+
+
+
+
 
 
 
