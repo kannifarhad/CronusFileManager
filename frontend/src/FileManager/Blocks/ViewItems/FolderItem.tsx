@@ -20,7 +20,7 @@ const FolderItem:  React.FC<{
   },[handleContextClick]);
 
   const doubleClick = useCallback((item: FolderType) => {
-    handleSelectFolder(item, true);
+    handleSelectFolder(item);
   },[handleSelectFolder]);
 
   const isCuted = useMemo(() => bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item)

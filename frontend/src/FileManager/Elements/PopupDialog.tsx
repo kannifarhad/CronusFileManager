@@ -11,35 +11,19 @@ import {
 import Translate from "../../Utils/Translate";
 import InputField from "./InputField";
 import { StyledPopUpDialog } from "./styled";
-
-interface NameInputSets {
-  value: string;
-  label: string;
-  callBack: (value: string) => void;
-}
-
-interface AlertDialogSlideProps {
-  open: boolean;
-  title: string;
-  description: string;
-  handleClose: () => void;
-  handleSubmit?: () => void;
-  nameInputSets?: NameInputSets;
-}
+import { useFileManagerState } from "../ContextStore/FileManagerContext";
 
 const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (props, ref) => {
   return <Zoom ref={ref} {...props} />;
 };
 
-const AlertDialogSlide: React.FC<AlertDialogSlideProps> = (props) => {
-  const { open, title, description, handleClose, handleSubmit, nameInputSets } = props;
-
+const AlertDialogSlide: React.FC<{}> = () => {
+  const { popUpData } = useFileManagerState();
+  const { title, description, handleClose, handleSubmit, nameInputSets } = popUpData || {};
   const [renameText, setRenameText] = useState<string>(
     nameInputSets?.value ?? ""
   );
-
-  if (!open) return null;
-
+  if(!popUpData) return null;
   const handleNameChange = (value: string) => {
     setRenameText(value);
     nameInputSets?.callBack(value);
@@ -47,7 +31,7 @@ const AlertDialogSlide: React.FC<AlertDialogSlideProps> = (props) => {
 
   return (
     <StyledPopUpDialog
-      open={open}
+      open={true}
       TransitionComponent={React.forwardRef(Transition)}
       keepMounted
       onClose={handleClose}
@@ -56,9 +40,11 @@ const AlertDialogSlide: React.FC<AlertDialogSlideProps> = (props) => {
       <DialogTitle className="dialogTitle">{title}</DialogTitle>
 
       <DialogContent>
-        <DialogContentText className="dialogDescription">
-          <div dangerouslySetInnerHTML={{ __html: description }}></div>
-        </DialogContentText>
+        {description &&
+          <DialogContentText className="dialogDescription">
+            <div dangerouslySetInnerHTML={{ __html: description }}></div>
+          </DialogContentText>
+        }
         {nameInputSets && (
           <div className="form-group">
             <InputField

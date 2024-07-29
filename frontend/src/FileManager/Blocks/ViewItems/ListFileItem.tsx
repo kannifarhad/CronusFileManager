@@ -8,7 +8,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { StyledListTableCell } from "./styled";
 import { convertDate, formatBytes } from "../../../Utils/Utils";
 import { getThumb, classNames } from "../../helpers";
-import { FileType , ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../types"; // Assuming you have a FileType defined in your types file
+import { FileType , ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 
 const ListFileItem: React.FC<{

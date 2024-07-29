@@ -27,6 +27,36 @@ export const getFilesList = async ({ path }: PathParam): Promise<GetFilesListRes
     .then((response) => response.data);
 };
 
+export const copyFilesToFolder = async ({
+  items,
+  destination,
+}: PasteFilesParams): Promise<any> => {
+  const url = "copy";
+  return axiosInstance
+    .post(url, { items, destination })
+    .then((response) => response.data);
+};
+
+export const cutFilesToFolder = async ({
+  items,
+  destination,
+}: PasteFilesParams): Promise<any> => {
+  const url = "move";
+  return axiosInstance
+    .post(url, { items, destination })
+    .then((response) => response.data);
+};
+
+export const deleteItems = async ({
+  items,
+}: DeleteItemsParams): Promise<any> => {
+  return axiosInstance
+    .post("delete", { items })
+    .then((response) => response?.data);
+};
+
+
+
 export const renameFiles = async ({
   path,
   newname,
@@ -54,27 +84,6 @@ export const createNewFolder = async ({
     .then((response) => response.data);
 };
 
-export const copyFilesToFolder = async ({
-  items,
-  type,
-  destination,
-}: PasteFilesParams): Promise<any> => {
-  const url = "/fm/copy";
-  return axiosInstance
-    .post(url, { items, destination })
-    .then((response) => response.data);
-};
-
-export const cutFilesToFolder = async ({
-  items,
-  type,
-  destination,
-}: PasteFilesParams): Promise<any> => {
-  const url = "/fm/move";
-  return axiosInstance
-    .post(url, { items, destination })
-    .then((response) => response.data);
-};
 
 export const emptydir = async ({ path }: PathParam): Promise<any> => {
   return axiosInstance
@@ -82,13 +91,7 @@ export const emptydir = async ({ path }: PathParam): Promise<any> => {
     .then((response) => response.data);
 };
 
-export const deleteItems = async ({
-  items,
-}: DeleteItemsParams): Promise<any> => {
-  return axiosInstance
-    .post("/fm/delete", { items })
-    .then((response) => response.data);
-};
+
 
 export const duplicateItem = async ({ path }: PathParam): Promise<any> => {
   return axiosInstance

@@ -69,13 +69,15 @@ export const fileManagerReducer = (
     case ActionTypes.CLEAR_BUFFER: {
         const bufferedItems = {
           type: null,
-          files: new Set(),
+          files: new Set([]),
         };
         return { ...state, bufferedItems };
       }
 
     case ActionTypes.SET_ITEM_VIEW:
         return { ...state, itemsViewType: action.payload };
+    case ActionTypes.SET_POPUP_DATA:
+          return { ...state, popUpData: action.payload };
 
     case ActionTypes.SET_IMAGE_SETTINGS:
         return { ...state, showImages: action.payload };
@@ -113,10 +115,6 @@ export const fileManagerReducer = (
     case ActionTypes.SET_HISTORY_INDEX: {
       return { ...state, history: { ...state.history, currentIndex: action.payload.index}};
     }
-
-
-
- 
     case ActionTypes.COPY_FILES_TOBUFFER: {
       const bufferedItems = {
         type: ItemMoveActionTypeEnum.COPY,
@@ -132,8 +130,6 @@ export const fileManagerReducer = (
       };
       return { ...state, bufferedItems, selectedFiles: new Set() };
     }
-
-
 
     default:
       return state;
