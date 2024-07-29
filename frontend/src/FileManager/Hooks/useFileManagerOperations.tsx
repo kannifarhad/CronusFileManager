@@ -1,7 +1,7 @@
 import {  useMemo, useCallback, useEffect } from "react";
 import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList, Message, BufferedItemsType, ItemMoveActionTypeEnum, ItemsList } from "../types";
 import { ActionTypes, CreateContextType } from '../ContextStore/types';
-import { getFilesList, copyFilesToFolder, cutFilesToFolder, deleteItems } from '../Api/fileManagerServices';
+import { getFilesList, copyFilesToFolder, cutFilesToFolder, deleteItems, emptydir, createNewFile, createNewFolder, renameFiles } from '../Api/fileManagerServices';
 import { DropResult } from "react-beautiful-dnd";
 
 export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
@@ -42,10 +42,10 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
 
   const operations = useMemo(
     () => ({
-      handleSelectFolder: (folder: FolderType, history: boolean = false) => {
+      handleSelectFolder: (folder: FolderType, history: boolean = false, clearBuffer: boolean = false, showMessage: boolean = true) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_FOLDER,
-          payload: {folder: {...folder, children:[]}, history, loading: true},
+          payload: {folder: {...folder, children:[]}, history, loading: true, clearBuffer},
         });
         getFilesList({ path: folder.path }).then((data) => {
           dispatch({
@@ -53,13 +53,13 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
             payload: { 
               data,
               loading: false,
-              message: {
+              message: showMessage ? {
                 title: `File Successfully Loaded`,
                 type: "success",
                 message: "You can paste it in any folder",
                 timer: 1000,
                 id: Date.now().toString() + Math.random().toString()
-              }
+              } : null
             },
           });
         });
@@ -223,8 +223,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
 
         apiFunction({ items: files, destination: selectedFolder.path})
           .then(() => {
-            operations.handleClearBuffer();
-            operations.handleSelectFolder(selectedFolder);
+            operations.handleSelectFolder(selectedFolder, true, true, false);
             setMessage(
               {
                 id: String(Date.now()),
@@ -246,7 +245,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
             );
           });
       },
-      handleDelete: (selectedFiles: ItemsList, selectedFolder: FolderList) => {
+      handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => {
         const items: string[] = Array.from(selectedFiles).map((item: Items) => item.path);
         const handleDeleteSubmit = () => {
           dispatch({
@@ -259,11 +258,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
           });  
           deleteItems({items})
             .then(() => {
-              operations.handleSelectFolder(selectedFolder);
-              dispatch({
-                type: ActionTypes.SET_LOADING,
-                payload: false
-              });  
+              operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage(
                 {
                   id: String(Date.now()),
@@ -297,160 +292,232 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
-            title: `Deleting selected files and folders: ${selectedFiles.length} items`,
+            title: `Deleting selected files and folders: ${selectedFiles.size} items`,
             description: `All selected files and folder will remove without recover`,
             handleClose: handleCloseClick,
             handleSubmit: handleDeleteSubmit,
-            nameInputSets: {},
           }
         }); 
       },
-      handleEmptyFolder: () => {
-        // var path = props?.selectedFolder;
-        // const handleEmptySubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .emptydir(path)
-        //     .then(() => {
-        //       props?.unsetSelectedFiles();
-        //       operations.handleReload();
-        //       setMessages([
-        //         {
-        //           title: `Empty folder request`,
-        //           type: "success",
-        //           message: "All files and folders successfully removed",
-        //         },
-        //       ]);
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while empty folder`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Deleting all files and folders in ${path}`,
-        //   description: `All files and folder will remove without recover`,
-        //   handleClose: handleClose,
-        //   handleSubmit: handleEmptySubmit,
-        //   nameInputSets: {},
-        // });
+      handleEmptyFolder: ( selectedFolder: FolderList) => {
+        var path = selectedFolder.path;
+        const handleEmptySubmit = () => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          });  
+          emptydir({ path })
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Empty folder request`,
+                  type: "success",
+                  message: "All files and folders successfully removed",
+                },
+              );
+            })
+            .catch((error) => {
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while empty folder`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+        const handleCloseClick = ()=>{
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+        }
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+            title: `Deleting all files and folders in ${selectedFolder.name}`,
+            description: `All files and folder will remove without recover`,
+            handleClose: handleCloseClick,
+            handleSubmit: handleEmptySubmit,
+          }
+        }); 
+
       },
-      handleNewFile: () => {
-        // var fileName = "new_file.txt";
-        // const handleNewFileChange = (value: string) => {
-        //   fileName = value;
-        // };
-        // const handleNewFileSubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .createNewFile(props?.selectedFolder, fileName)
-        //     .then(() => {
-        //       operations.handleReload();
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while creating file`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Creating new file`,
-        //   description:
-        //     "Only allowed file extensions can be created. Otherwise will be ignored by server.",
-        //   handleClose: handleClose,
-        //   handleSubmit: handleNewFileSubmit,
-        //   nameInputSets: {
-        //     label: "File Name",
-        //     value: fileName,
-        //     callBack: handleNewFileChange,
-        //   },
-        // });
+      handleNewFile: ( selectedFolder: FolderList) => {      
+        const handleNewFileSubmit = (fileName: string) => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          }); 
+
+          createNewFile({ path: selectedFolder.path, file: fileName })
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Create new file`,
+                  type: "success",
+                  message: `Successfully created new file with the name: ${fileName}`,
+                },
+              );
+            })
+            .catch((error) => {
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while creating file`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+        const handleCloseClick = ()=>{
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+        }
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+            title: `Creating new file`,
+            description:"Only allowed file extensions can be created. Otherwise will be ignored by server.",
+            handleClose: handleCloseClick,
+            handleSubmit: handleNewFileSubmit,
+            nameInputSets: {
+              label: "File Name",
+              value: "new_file.txt",
+            },
+          },
+        }); 
       },
-      handleNewFolder: () => {
-        // var folderName = "newfolder";
-        // const handleNewFolderChange = (value: string) => {
-        //   folderName = value;
-        // };
-        // const handleNewFolderSubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .createNewFolder(props?.selectedFolder, folderName)
-        //     .then(() => {
-        //       operations.handleReload();
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while creating folder`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Creating new folder`,
-        //   description:
-        //     "Dont use spaces, localised symbols or emojies. This can affect problems",
-        //   handleClose: handleClose,
-        //   handleSubmit: handleNewFolderSubmit,
-        //   nameInputSets: {
-        //     label: "Folder Name",
-        //     value: folderName,
-        //     callBack: handleNewFolderChange,
-        //   },
-        // });
+      handleNewFolder: ( selectedFolder: FolderList) => {
+
+        const handleNewFolderSubmit = (folderName: string) => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          }); 
+
+          createNewFolder({ path: selectedFolder.path, folder: folderName })
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Create new folder`,
+                  type: "success",
+                  message: `Successfully created new folder with the name: ${folderName}`,
+                },
+              );
+            })
+            .catch((error) => {
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while creating folder`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+            title: `Creating new folder`,
+            description:
+            "Dont use spaces, localised symbols or emojies. This can affect problems",
+            handleClose: ()=>{
+              dispatch({
+                type: ActionTypes.SET_POPUP_DATA,
+                payload: null
+              })
+            },
+            handleSubmit: handleNewFolderSubmit,
+            nameInputSets: {
+              label: "Folder Name",
+              value: "newfolder",
+            },
+          },
+        }); 
       },
-      handleRename: () => {
-        // var item = props?.selectedFiles[0];
-        // var newName = item.name;
-        // const handleRenameChange = (value: string) => {
-        //   newName = value;
-        // };
-        // const handleRenameSubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .renameFiles(item.path, newName)
-        //     .then(() => {
-        //       operations.handleReload();
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while renaming file`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Renaming ${item.name}`,
-        //   description:
-        //     "Dont use spaces, localised symbols or emojies. This can affect problems",
-        //   handleClose: handleClose,
-        //   handleSubmit: handleRenameSubmit,
-        //   nameInputSets: {
-        //     label: "New Name",
-        //     value: newName,
-        //     callBack: handleRenameChange,
-        //   },
-        // });
+      handleRename: (selectedFile: Items, selectedFolder: FolderList) => {
+
+
+        const handleRenameSubmit = (folderName: string) => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          }); 
+
+          renameFiles({ path: selectedFile.path, newname: folderName })
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Renaming selected item`,
+                  type: "success",
+                  message: <>Successfully renamed selected item from <strong>{selectedFile.name}</strong> to <strong>{folderName}</strong></>,
+                },
+              );
+            })
+            .catch((error) => {
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while renaming file`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+            title: `Renaming ${selectedFile.name}`,
+            description: "Dont use spaces, localised symbols or emojies. This can affect problems",
+            handleClose: ()=>{
+              dispatch({
+                type: ActionTypes.SET_POPUP_DATA,
+                payload: null
+              })
+            },
+            handleSubmit: handleRenameSubmit,
+            nameInputSets: {
+              label: "New Name",
+              value: selectedFile.name,
+            },
+          },
+        }); 
+
       },
-      handleDuplicate: () => {
+      handleDuplicate: (selectedFile: Items) => {
         // var item = props?.selectedFiles[0];
         // const handleDuplicateSubmit = () => {
         //   setPopup({ open: false });
@@ -478,8 +545,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         //   nameInputSets: {},
         // });
       },
-  
-      handleCreateZip: () => {
+      handleCreateZip: (selectedFiles: Set<ItemsList>) => {
         // var files = props?.selectedFiles.map((item) => item.path);
         // var name = "archive.zip";
         // const handleArchiveChange = (value: string) => {
@@ -516,7 +582,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         //   },
         // });
       },
-      handleExtractZip: () => {
+      handleExtractZip: (selectedFile: Items) => {
         // var item = props?.selectedFiles[0];
         // var destination = props?.selectedFolder;
         // const handleExtractSubmit = () => {
@@ -544,7 +610,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         //   nameInputSets: {},
         // });
       },
-      handleEdit: () => {
+      handleEdit: (selectedFile: Items) => {
         // var item = props?.selectedFiles[0];
         // const handleCloseEdit = () => {
         //   setEditImage({ open: false });

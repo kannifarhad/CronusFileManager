@@ -1,6 +1,7 @@
 import { AlertColor } from '@mui/material/Alert';
 import config from "./Elements/config.json";
 import { DropResult } from 'react-beautiful-dnd';
+import { ReactNode } from 'react';
 export interface FileManagerProps {
   height?: string;
   callback?: (filePath: string) => void;
@@ -20,7 +21,6 @@ export interface AvailableButtons {
   file: ButtonGroup[];
   container: ButtonGroup[];
 }
-
 export interface Operations {
   handleSelectFolder: (value: FolderType, history?: boolean) => void;
   handleAddSelected: (item: Items) => void;
@@ -40,20 +40,19 @@ export interface Operations {
   handleCopy: () => void;
   handleCut: () => void;
   handlePaste: (bufferedItems: BufferedItemsType, selectedFolder: FolderList) => void;
-  handleDelete: (selectedFiles: ItemsList, selectedFolder: FolderList) => void;
-
-  handleEmptyFolder: () => void;
-  handleNewFile: () => void;
-  handleNewFolder: () => void;
-  handleRename: () => void;
-  handleDuplicate: () => void;
-  handleCreateZip: () => void;
-  handleExtractZip: () => void;
-  handleEdit: () => void;
+  handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
+  handleEmptyFolder: (selectedFolder: FolderList) => void;
+  handleNewFile: (selectedFolder: FolderList) => void;
+  handleNewFolder: (selectedFolder: FolderList) => void;
+  handleRename: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleDuplicate: (selectedFile: Items) => void;
+  handleCreateZip: (selectedFiles: Set<ItemsList>) => void;
+  handleExtractZip: (selectedFile: Items) => void;
+  handleEdit: (selectedFile: Items) => void;
 }
 export interface Message {
     title: string;
-    message: string;
+    message: string | ReactNode;
     type: AlertColor;
     disableClose?: boolean;
     progress?: boolean;
@@ -77,7 +76,7 @@ export interface PopupData {
   title: string;
   description?: string;
   handleClose: () => void;
-  handleSubmit: () => void;
+  handleSubmit: ( fieldValus :any ) => void;
   nameInputSets?: NameInputSets;
 }
 
