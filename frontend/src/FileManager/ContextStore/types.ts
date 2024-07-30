@@ -14,7 +14,8 @@ import {
   HistoryStep,
   OrderByType,
   HistoryType,
-  PopupStoreType
+  PopupStoreType,
+  FileEditPopupProps
 } from "../types";
 import {
   AvailableButtons,
@@ -63,6 +64,7 @@ export interface FileManagerState {
   orderFiles: OrderByType;
   history: HistoryType;
   popUpData: PopupStoreType;
+  fileEdit: FileEditPopupProps | null;
 }
 
 export interface FileManagerAction {

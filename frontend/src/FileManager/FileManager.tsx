@@ -5,12 +5,14 @@ import { FileManagerProps } from "./types";
 import { FileManagerWrapper } from "./styled";
 import FileManagerContainer from "./FileManagerContainer";
 import PopupDialog from "./Elements/PopupDialog";
+import ImageEditPopup from "./Elements/ImageEditor";
 
 const FileManager: React.FC<FileManagerProps> = ({ height, callback }) => {
   const expanded = false;
 
   return (
     <FileManagerWrapper expanded={expanded}>
+      <ImageEditPopup />
       <PopupDialog />
       <FileManagerContainer />
     </FileManagerWrapper>
