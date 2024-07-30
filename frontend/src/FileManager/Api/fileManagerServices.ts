@@ -88,15 +88,9 @@ export const renameFiles = async ({
     .then((response) => response.data);
 };
 
-
-
-
-
-
-
 export const duplicateItem = async ({ path }: PathParam): Promise<any> => {
   return axiosInstance
-    .post("/fm/duplicate", { path })
+    .post("duplicate", { path })
     .then((response) => response.data);
 };
 
@@ -105,7 +99,7 @@ export const unzip = async ({
   destination,
 }: UnzipParams): Promise<any> => {
   return axiosInstance
-    .post("/fm/unzip", { file, destination })
+    .post("unzip", { file, destination })
     .then((response) => response.data);
 };
 
@@ -115,7 +109,7 @@ export const archive = async ({
   name,
 }: ArchiveParams): Promise<any> => {
   return axiosInstance
-    .post("/fm/archive", { files, destination, name })
+    .post("archive", { files, destination, name })
     .then((response) => response.data);
 };
 
@@ -125,12 +119,12 @@ export const saveimage = async ({
   isnew,
 }: SaveImageParams): Promise<any> => {
   return axiosInstance
-    .post("/fm/saveimage", { file, path, isnew })
+    .post("saveimage", { file, path, isnew })
     .then((response) => response.data);
 };
 
 export const uploadFile = async (body: any): Promise<any> => {
   return axiosInstance
-    .post("/fm/upload", body)
+    .post("/upload", body)
     .then((response) => response.data);
 };

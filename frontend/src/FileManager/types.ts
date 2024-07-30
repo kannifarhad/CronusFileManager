@@ -22,7 +22,7 @@ export interface AvailableButtons {
   container: ButtonGroup[];
 }
 export interface Operations {
-  handleSelectFolder: (value: FolderType, history?: boolean) => void;
+  handleSelectFolder: (value: FolderType, history?: boolean, clearBuffer?: boolean, showMessage?: boolean) => void;
   handleAddSelected: (item: Items) => void;
   handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeEnum}) => void;
   handleClearBuffer: () => void;
@@ -45,10 +45,10 @@ export interface Operations {
   handleNewFile: (selectedFolder: FolderList) => void;
   handleNewFolder: (selectedFolder: FolderList) => void;
   handleRename: (selectedFile: Items, selectedFolder: FolderList) => void;
-  handleDuplicate: (selectedFile: Items) => void;
-  handleCreateZip: (selectedFiles: Set<ItemsList>) => void;
-  handleExtractZip: (selectedFile: Items) => void;
-  handleEdit: (selectedFile: Items) => void;
+  handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
+  handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleEdit: (selectedFile: Items,selectedFolder: FolderList) => void;
 }
 export interface Message {
     title: string;
@@ -78,6 +78,14 @@ export interface PopupData {
   handleClose: () => void;
   handleSubmit: ( fieldValus :any ) => void;
   nameInputSets?: NameInputSets;
+}
+export interface FileEditPopupProps {
+  closeCallBack: () => void;
+  submitCallback: (imageData: string, asNew: boolean) => void;
+  name: string;
+  extension: string;
+  path: string;
+  open: boolean;
 }
 
 export interface EditImage {

@@ -1,12 +1,10 @@
-import {  useMemo, useCallback, useEffect } from "react";
-import { ButtonObject, PopupData, EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList, Message, BufferedItemsType, ItemMoveActionTypeEnum, ItemsList } from "../types";
-import { ActionTypes, CreateContextType } from '../ContextStore/types';
-import { getFilesList, copyFilesToFolder, cutFilesToFolder, deleteItems, emptydir, createNewFile, createNewFolder, renameFiles } from '../Api/fileManagerServices';
+import {  useMemo, useCallback } from "react";
+import { EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList, Message, BufferedItemsType, ItemMoveActionTypeEnum, ItemsList } from "../types";
+import { ActionTypes } from '../ContextStore/types';
+import { getFilesList, copyFilesToFolder, cutFilesToFolder, deleteItems, emptydir, createNewFile, createNewFolder, renameFiles, duplicateItem, saveimage, uploadFile, unzip, archive } from '../Api/fileManagerServices';
 import { DropResult } from "react-beautiful-dnd";
 
 export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
-
-
 
   const setMessage = useCallback((message: Message) => {
     dispatch({
@@ -14,9 +12,6 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
       payload: message,
     });
   }, [dispatch]);
-  //   const setPopup = useCallback(() => {}, []); // (popupData: PopupData) => void,
-  //   const setLoading = useCallback(() => {}, []); // (loading: boolean) => void,
-  //   const setEditImage = useCallback(() => {}, []); // (editImage: EditImage) => void
 
   const handlingHistory = useCallback((
     historyInfo: HistoryStep,
@@ -37,8 +32,6 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         break;
     }
   }, [dispatch]);
-
-
 
   const operations = useMemo(
     () => ({
@@ -235,6 +228,10 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
             );
           })
           .catch((error) => {
+            dispatch({
+              type: ActionTypes.SET_LOADING,
+              payload: false
+            }); 
             setMessage(
               {
                 id: String(Date.now()),
@@ -300,7 +297,7 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         }); 
       },
       handleEmptyFolder: ( selectedFolder: FolderList) => {
-        var path = selectedFolder.path;
+        const path = selectedFolder.path;
         const handleEmptySubmit = () => {
           dispatch({
             type: ActionTypes.SET_POPUP_DATA,
@@ -323,6 +320,11 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
               );
             })
             .catch((error) => {
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              }); 
+
               setMessage(
                 {
                   id: String(Date.now()),
@@ -374,6 +376,11 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
               );
             })
             .catch((error) => {
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              }); 
+
               setMessage(
                 {
                   id: String(Date.now()),
@@ -429,6 +436,11 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
               );
             })
             .catch((error) => {
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              }); 
+
               setMessage(
                 {
                   id: String(Date.now()),
@@ -486,6 +498,10 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
               );
             })
             .catch((error) => {
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              }); 
               setMessage(
                 {
                   id: String(Date.now()),
@@ -517,98 +533,169 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
         }); 
 
       },
-      handleDuplicate: (selectedFile: Items) => {
-        // var item = props?.selectedFiles[0];
-        // const handleDuplicateSubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .dublicateItem(item.path)
-        //     .then(() => {
-        //       operations.handleReload();
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while duplicating file`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Duplicating ${item.name}`,
-        //   description: 'New file will be named "copy_of_[original_name]"',
-        //   handleClose: handleClose,
-        //   handleSubmit: handleDuplicateSubmit,
-        //   nameInputSets: {},
-        // });
+      handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => {
+        const handleDuplicateSubmit = () => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          }); 
+
+          duplicateItem({ path: selectedFile.path })
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Duplicating selected item`,
+                  type: "success",
+                  message: <>Successfully Duplicating selected item</>,
+                },
+              );
+            })
+            .catch((error) => {
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while duplicating file`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+           title: `Duplicating ${selectedFile.name}`,
+          description: <>New file will be named "copy_of_[original_name]"</>,
+            handleClose: ()=>{
+              dispatch({
+                type: ActionTypes.SET_POPUP_DATA,
+                payload: null
+              })
+            },
+            handleSubmit: handleDuplicateSubmit,
+          },
+        }); 
       },
-      handleCreateZip: (selectedFiles: Set<ItemsList>) => {
-        // var files = props?.selectedFiles.map((item) => item.path);
-        // var name = "archive.zip";
-        // const handleArchiveChange = (value: string) => {
-        //   name = value;
-        // };
-        // const handleArchiveSubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .archive(files, props?.selectedFolder, name)
-        //     .then(() => {
-        //       operations.handleReload();
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while creating archive`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Creating archive for ${props?.selectedFiles.length} items`,
-        //   description:
-        //     "Dont use spaces, localised symbols or emojies. This can affect problems",
-        //   handleClose: handleClose,
-        //   handleSubmit: handleArchiveSubmit,
-        //   nameInputSets: {
-        //     label: "Archive name",
-        //     value: name,
-        //     callBack: handleArchiveChange,
-        //   },
-        // });
+      handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => {
+        const files: string[] = Array.from(selectedFiles).map((item: Items) => item.path);
+        const handleArchiveSubmit = (fileName: string) => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          }); 
+
+          archive({files, destination: selectedFolder.path, name: fileName })
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Archiving selected items`,
+                  type: "success",
+                  message: <>Successfully archived selected items</>,
+                },
+              );
+            })
+            .catch((error) => {
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              }); 
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while creating archive`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+            title: `Creating archive for ${selectedFiles.size} items`,
+            description: <>Dont use spaces, localised symbols or emojies. This can affect problems</>,
+            handleClose: ()=>{
+              dispatch({
+                type: ActionTypes.SET_POPUP_DATA,
+                payload: null
+              })
+            },
+            handleSubmit: handleArchiveSubmit,
+            nameInputSets: {
+              label: "Archive name",
+              value: "archive.zip",
+            }
+          },
+        }); 
       },
-      handleExtractZip: (selectedFile: Items) => {
-        // var item = props?.selectedFiles[0];
-        // var destination = props?.selectedFolder;
-        // const handleExtractSubmit = () => {
-        //   setPopup({ open: false });
-        //   props
-        //     .extract(item.path, destination)
-        //     .then(() => {
-        //       operations.handleReload();
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while extracting archive`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setPopup({
-        //   open: true,
-        //   title: `Extracting archive ${item.name}`,
-        //   handleClose: handleClose,
-        //   handleSubmit: handleExtractSubmit,
-        //   nameInputSets: {},
-        // });
+      handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => {
+
+        const handleExtractSubmit = () => {
+          dispatch({
+            type: ActionTypes.SET_POPUP_DATA,
+            payload: null
+          });
+          dispatch({
+            type: ActionTypes.SET_LOADING,
+            payload: true
+          }); 
+
+          unzip({file: selectedFile.path, destination: selectedFolder.path})
+            .then(() => {
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Extracting selected archive`,
+                  type: "success",
+                  message: <>Successfully extracted selected archive</>,
+                },
+              );
+            })
+            .catch((error) => {
+              dispatch({
+                type: ActionTypes.SET_LOADING,
+                payload: false
+              }); 
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while extracting archive`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+
+        dispatch({
+          type: ActionTypes.SET_POPUP_DATA,
+          payload: {
+            title: `Extracting archive ${selectedFile.name}`,
+            description: <>Do you want extract selected archive in this folder</>,
+            handleClose: ()=>{
+              dispatch({
+                type: ActionTypes.SET_POPUP_DATA,
+                payload: null
+              })
+            },
+            handleSubmit: handleExtractSubmit,
+          },
+        }); 
       },
       handleEdit: (selectedFile: Items) => {
         // var item = props?.selectedFiles[0];

@@ -1,8 +1,9 @@
 import {  useMemo } from "react";
-import { ButtonObject, ViewTypeEnum, ItemType, ItemExtensionCategoryFilter, Items } from "../types";
+import { ButtonObject, ViewTypeEnum, ItemType, ItemExtensionCategoryFilter, Items, Operations } from "../types";
 import { checkSelectedFileType } from "../helpers";
-import {  CreateContextType } from '../ContextStore/types';
+import {  CreateContextType, FileManagerState } from '../ContextStore/types';
 
+type GenerateButtonsStateProps = Pick<FileManagerState, 'selectedFiles' | 'contextMenu' | 'filesList' | 'itemsViewType' | 'bufferedItems' | 'history' | 'selectedFolder' | 'foldersList'>;
 const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: CreateContextType['contextMenu'], selectedFiles: CreateContextType['selectedFiles'])=>{
   if(selectedFiles.size !== 1 && !Boolean(contextMenu?.item)) return false;
   const selectedItem = contextMenu?.item ?? Array.from(selectedFiles)[0];
@@ -10,7 +11,8 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
   return checkSelectedFileType(type, selectedItem);
 };
 
-export const generateAllButtons = (operations: any, stateOperations: any, state: any): ButtonObject => {
+// export const generateAllButtons = (operations: Operations, state: FileManagerState): ButtonObject => {
+  export const generateAllButtons = (operations: any, state: GenerateButtonsStateProps): ButtonObject => {
   const { selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
   const isItemFocusedOrSelected = ((contextMenu, selectedFiles)=>
     Boolean(contextMenu?.item) || selectedFiles.size === 1
@@ -41,7 +43,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "Delete",
       icon: "icon-trash",
       onClick: () => {
-        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu.item]);
+        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
         operations.handleDelete(items, selectedFolder)
       },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
@@ -56,7 +58,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
       title: "Rename",
       icon: "icon-text",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleRename(item, selectedFolder);
       },
       disabled: !isItemFocusedOrSelected,
@@ -128,7 +130,10 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     dubplicate: {
       title: "Duplicate",
       icon: "icon-layers",
-      onClick: operations.handleDuplicate,
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        operations.handleDuplicate(item, selectedFolder);
+      },
       disabled: !isSelectedFileType(ItemExtensionCategoryFilter.FILE, contextMenu, selectedFiles),
     },
 
@@ -148,13 +153,19 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
     createZip: {
       title: "Create archive",
       icon: "icon-zip",
-      onClick: operations.handleCreateZip,
+      onClick: () => {
+        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
+        operations.handleCreateZip(items, selectedFolder);
+      },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     extractZip: {
       title: "Extract files from archive",
       icon: "icon-zip-1",
-      onClick: operations.handleExtractZip,
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        operations.handleExtractZip(item, selectedFolder);
+      },
       disabled: !isSelectedFileType(ItemExtensionCategoryFilter.ARCHIVE, contextMenu, selectedFiles),
     },
     uploadFile: {
@@ -216,8 +227,7 @@ export const generateAllButtons = (operations: any, stateOperations: any, state:
 
 export const useGenerateActionButtons = ({ state }: { state: CreateContextType}) => {
   const { operations, selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
-
-  const allButtons = useMemo(() =>  generateAllButtons(operations, null, {selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList }), [operations, selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList ]);
+  const allButtons = useMemo(() =>  generateAllButtons(operations, {selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList }), [operations, selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList ]);
 
   const aviableButtons = useMemo(
     () => ({

@@ -21,6 +21,7 @@ const initialState = {
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
   popUpData: null,
+  fileEdit: null
 };
 
 
