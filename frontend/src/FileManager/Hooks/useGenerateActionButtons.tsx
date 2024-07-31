@@ -147,7 +147,10 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
     editImage: {
       title: "Resize & Rotate",
       icon: "icon-paint-palette",
-      onClick: operations.handleEditImage,
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        operations.handleEditFile(item, selectedFolder);
+      },
       disabled: !isSelectedItemImage
     },
     createZip: {

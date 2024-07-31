@@ -30,13 +30,38 @@ export const StyledButton = styled(Button)(({
   padding: "10px 5px",
   minWidth: "35px !important",
   background: "#fff",
-  "& span": {},
   "& .buttonTitle": {
     fontSize: "12px",
     textTransform: "none",
     lineHeight: "11px",
     padding: "0px 5px",
   },
+}));
+export const StyledActionButton = styled(Button)(({
+  theme
+}) => ({
+  fontSize: "14px",
+  padding: "10px 15px",
+  "& .MuiButton-icon span": {
+    fontSize: '14px !important',
+  },
+  "& .actionButtonLabel": {
+    fontSize: "14px",
+    textTransform: "none",
+    lineHeight: "11px",
+    padding: "0px 5px",
+  },
+}));
+
+
+export const StyledFileEditFooter = styled(Box)(({
+  theme
+}) => ({
+    textAlign: 'center',
+    borderTop: '1px solid #E9eef9',
+    overflow:'hidden',
+    padding: '10px',
+    background:'#fff'
 }));
 
 export const StyledPopUpDialog = styled(Dialog)(({
