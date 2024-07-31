@@ -1,28 +1,43 @@
-import React, { forwardRef, useRef } from "react";
-// import '../Assets/tui-image-editor.css';
+import React, { forwardRef, useCallback, useMemo, useRef } from "react";
 import ImageEditor from './ImageEditorComponent';
 import whiteTheme from '../Assets/whiteTheme';
-import ButtonList from './ButtonGroup';
+import ButtonList, { ButtonGroupProps } from './ButtonGroup';
 import Dialog from '@mui/material/Dialog';
 import Zoom from '@mui/material/Zoom';
 import { FileEditPopupProps } from "../types";
-import {ImageEditorContainer} from './styledImageeditor'
+import { ImageEditorContainer } from './styledImageeditor'
+import { StyledFileEditFooter } from "./styled";
+import { useFileManagerState } from "../ContextStore/FileManagerContext";
 
-
-const props:FileEditPopupProps  = {
-  open: true,
-  extension:'.jpg',
-  name: 'File name',
-  closeCallBack:()=>{ console.log('close')},
-  path: 'http://localhost:3131/uploads/bigl.jpg',
-  submitCallback:()=>{ console.log('submit')}
-}
+const Transition = forwardRef(function Transition(
+  transitionProps: any,
+  ref: React.Ref<unknown>
+) {
+  return <Zoom in={transitionProps.open} ref={ref} {...transitionProps} />;
+});
 
 const ImageEditPopup: React.FC<{}> = () => {
-  const { closeCallBack, submitCallback, name, extension, path, open } = props;
+  const { fileEdit } = useFileManagerState();
+  if(!fileEdit) return null;
+
+  return (
+    <Dialog
+      open={Boolean(fileEdit)}
+      TransitionComponent={Transition}
+      fullWidth
+      maxWidth={'xl'}
+      onClose={fileEdit.closeCallBack}
+      className='dialog'
+    >
+      <ImageEditContent {...fileEdit} />
+    </Dialog>
+  );
+};
+
+const ImageEditContent: React.FC<FileEditPopupProps> = ({ closeCallBack, submitCallback, name, extension, path } ) => {
   const editorRef = useRef<any>(null);
 
-  const handleClickButton = (asNew: boolean) => {
+  const handleClickButton = useCallback((isnew: boolean) => {
     const format = extension !== '.jpg' ? 'jpeg' : 'png';
     const editorInstance = editorRef.current?.getInstance();
     if (editorInstance) {
@@ -30,56 +45,44 @@ const ImageEditPopup: React.FC<{}> = () => {
         quality: 0.7,
         format,
       });
-      submitCallback(imageData, asNew);
+      submitCallback({ file: imageData, path, isnew });
     }
-  };
+  },[extension, submitCallback]);
 
-  const buttons = [
+  const buttons = useMemo(()=>[
     {
-      name: 'submit',
       icon: 'icon-exit',
       label: 'Save & Quit',
-      class: 'green',
+      variant:'outlined',
+      color:'primary',
       onClick: () => handleClickButton(false),
     },
     {
-      name: 'update',
       icon: 'icon-save',
       label: 'Save as new file',
-      class: 'blue',
+      variant:'outlined',
+      color:'success',
       onClick: () => handleClickButton(true),
     },
     {
-      name: 'submit',
       icon: 'icon-ban',
       label: 'Cancel',
-      class: 'red',
+      variant:'outlined',
+      color:'error',
       onClick: () => closeCallBack(),
     },
-  ];
+  ] as ButtonGroupProps['buttons'],[handleClickButton, closeCallBack]);
 
-  const Transition = forwardRef(function Transition(
-    transitionProps: any,
-    ref: React.Ref<unknown>
-  ) {
-    return <Zoom in={transitionProps.open} ref={ref} {...transitionProps} />;
-  });
-
+  const pathToFile = `http://localhost:3131${path}`;
+  console.log('pathToFile',pathToFile);
   return (
-    <Dialog
-      open={Boolean(open)}
-      TransitionComponent={Transition}
-      fullWidth
-      maxWidth={'xl'}
-      onClose={closeCallBack}
-      className='dialog'
-    >
-<ImageEditorContainer>
+   <>
+    <ImageEditorContainer>
       <ImageEditor
         ref={editorRef}
         includeUI={{
           loadImage: {
-            path: path,
+            path: pathToFile,
             name: name,
           },
           theme: whiteTheme,
@@ -98,10 +101,10 @@ const ImageEditPopup: React.FC<{}> = () => {
         usageStatistics={true}
       />
       </ImageEditorContainer>
-      <div className='buttonsCont'>
+      <StyledFileEditFooter>
         <ButtonList buttons={buttons} />
-      </div>
-    </Dialog>
+      </StyledFileEditFooter>
+      </>
   );
 };
 

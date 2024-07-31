@@ -140,6 +140,9 @@ export const fileManagerReducer = (
       return { ...state, bufferedItems, selectedFiles: new Set([]) };
     }
 
+    case ActionTypes.SET_FILEEDIT_DATA:
+      return { ...state, fileEdit: action.payload };
+      
     default:
       return state;
   }

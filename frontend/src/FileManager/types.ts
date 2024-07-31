@@ -2,6 +2,7 @@ import { AlertColor } from '@mui/material/Alert';
 import config from "./Elements/config.json";
 import { DropResult } from 'react-beautiful-dnd';
 import { ReactNode } from 'react';
+import { SaveFileParams } from './Api/types';
 export interface FileManagerProps {
   height?: string;
   callback?: (filePath: string) => void;
@@ -48,7 +49,7 @@ export interface Operations {
   handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
   handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
-  handleEdit: (selectedFile: Items,selectedFolder: FolderList) => void;
+  handleEditFile: (selectedFile: FileType,selectedFolder: FolderList) => void;
 }
 export interface Message {
     title: string;
@@ -81,11 +82,10 @@ export interface PopupData {
 }
 export interface FileEditPopupProps {
   closeCallBack: () => void;
-  submitCallback: (imageData: string, asNew: boolean) => void;
+  submitCallback: (data: SaveFileParams) => void;
   name: string;
   extension: string;
   path: string;
-  open: boolean;
 }
 
 export interface EditImage {

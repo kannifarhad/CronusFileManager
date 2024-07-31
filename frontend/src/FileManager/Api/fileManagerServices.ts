@@ -8,7 +8,7 @@ import {
   DeleteItemsParams,
   UnzipParams,
   ArchiveParams,
-  SaveImageParams,
+  SaveFileParams,
   GetFoldersListResponse,
   GetFilesListResponse
 } from "./types";
@@ -113,11 +113,11 @@ export const archive = async ({
     .then((response) => response.data);
 };
 
-export const saveimage = async ({
+export const saveFile = async ({
   file,
   path,
   isnew,
-}: SaveImageParams): Promise<any> => {
+}: SaveFileParams): Promise<any> => {
   return axiosInstance
     .post("saveimage", { file, path, isnew })
     .then((response) => response.data);

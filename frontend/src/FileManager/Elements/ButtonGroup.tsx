@@ -1,12 +1,11 @@
 import React from 'react';
 import Icon from '@mui/material/Icon';
-import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { ButtonProps } from '@mui/material/Button';
+import { StyledActionButton } from './styled';
 
-interface InputFieldProps {
+export interface ButtonGroupProps {
   buttons: {
-    class?: string;
     variant?: ButtonProps['variant'];
     color?: ButtonProps['color'];
     size?: ButtonProps['size'];
@@ -16,10 +15,9 @@ interface InputFieldProps {
   }[];
 }
 
-const InputField: React.FC<InputFieldProps> = ({ buttons }) => {
+const CustomButtonGroup: React.FC<ButtonGroupProps> = ({ buttons }) => {
   const buttonComponents = buttons.map((button, i) => (
-    <Button
-      className={`customIconButton ${button.class || ''}`}
+    <StyledActionButton
       key={i}
       variant={button.variant || 'contained'}
       color={button.color || 'primary'}
@@ -27,8 +25,8 @@ const InputField: React.FC<InputFieldProps> = ({ buttons }) => {
       startIcon={<Icon className={button.icon}></Icon>}
       onClick={button.onClick}
     >
-      {button.label}
-    </Button>
+      <span className='actionButtonLabel'>{button.label}</span>
+    </StyledActionButton>
   ));
 
   return (
@@ -38,4 +36,4 @@ const InputField: React.FC<InputFieldProps> = ({ buttons }) => {
   );
 }
 
-export default InputField;
+export default CustomButtonGroup;

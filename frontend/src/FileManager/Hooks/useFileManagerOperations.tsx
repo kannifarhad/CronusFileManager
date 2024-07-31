@@ -1,8 +1,9 @@
 import {  useMemo, useCallback } from "react";
-import { EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList, Message, BufferedItemsType, ItemMoveActionTypeEnum, ItemsList } from "../types";
+import { EditImage, FolderType, Items, ContextMenuTypeEnum, ViewTypeEnum, OrderByType, ImagesThumbTypeEnum, HistoryType, HistoryStepTypeEnum, HistoryStep, FolderList, Message, BufferedItemsType, ItemMoveActionTypeEnum, ItemsList, FileType } from "../types";
 import { ActionTypes } from '../ContextStore/types';
-import { getFilesList, copyFilesToFolder, cutFilesToFolder, deleteItems, emptydir, createNewFile, createNewFolder, renameFiles, duplicateItem, saveimage, uploadFile, unzip, archive } from '../Api/fileManagerServices';
+import { getFilesList, copyFilesToFolder, cutFilesToFolder, deleteItems, emptydir, createNewFile, createNewFolder, renameFiles, duplicateItem, saveFile, uploadFile, unzip, archive } from '../Api/fileManagerServices';
 import { DropResult } from "react-beautiful-dnd";
+import { SaveFileParams } from "../Api/types";
 
 export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
 
@@ -697,39 +698,51 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
           },
         }); 
       },
-      handleEdit: (selectedFile: Items) => {
-        // var item = props?.selectedFiles[0];
-        // const handleCloseEdit = () => {
-        //   setEditImage({ open: false });
-        // };
-        // const handleSubmitEdit = (data: any) => {
-        //   props
-        //     .submitEdit(data)
-        //     .then((result) => {
-        //       setEditImage({ open: false });
-        //       operations.handleReload();
-        //     })
-        //     .catch((error) => {
-        //       setMessages([
-        //         {
-        //           title: `Error happened while editing`,
-        //           type: "error",
-        //           message: error.message,
-        //         },
-        //       ]);
-        //     });
-        // };
-        // setEditImage({
-        //   open: true,
-        //   closeCallBack: handleCloseEdit,
-        //   submitCallback: handleSubmitEdit,
-        //   name: item.name,
-        //   path: item.path,
-        //   extension: item.extension,
-        // });
+      handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => {
+        const handleCloseEdit = () => {
+          dispatch({
+            type: ActionTypes.SET_FILEEDIT_DATA,
+            payload: null
+          });
+        };
+        const handleSubmitEdit = (data: SaveFileParams) => {
+          saveFile(data)
+            .then(() => {
+              handleCloseEdit();
+              operations.handleSelectFolder(selectedFolder, true, true, false);
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `File changes`,
+                  type: "success",
+                  message: <>File changes for <strong>{selectedFile.name}</strong> successfully saved</>,
+                },
+              );
+            })
+            .catch((error) => {
+              setMessage(
+                {
+                  id: String(Date.now()),
+                  title: `Error happened while editing`,
+                  type: "error",
+                  message: error.message,
+                },
+              );
+            });
+        };
+        dispatch({
+          type: ActionTypes.SET_FILEEDIT_DATA,
+          payload: {
+            closeCallBack: handleCloseEdit,
+            submitCallback: handleSubmitEdit,
+            name: selectedFile.name,
+            path: selectedFile.path,
+            extension: selectedFile.extension,
+          }
+        });
       },
     }),
-    [dispatch, handlingHistory]
+    [dispatch, handlingHistory, setMessage]
   );
 
 

@@ -43,7 +43,7 @@ export interface ArchiveParams {
   name: string;
 }
 
-export interface SaveImageParams {
+export interface SaveFileParams {
   file: string;
   path: string;
   isnew: boolean;
