@@ -145,6 +145,9 @@ export const fileManagerReducer = (
 
     case ActionTypes.TOGGLE_FULLSCREEN:
       return { ...state, fullScreen: !state.fullScreen };
+    
+    case ActionTypes.TOGGLE_UPLOAD_POPUP:
+      return { ...state, uploadPopup: !state.uploadPopup };
       
     default:
       return state;

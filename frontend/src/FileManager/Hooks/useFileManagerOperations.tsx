@@ -601,6 +601,9 @@ export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dis
     },
     handleToggleFullScreen: ()=>{
       dispatch({ type: ActionTypes.TOGGLE_FULLSCREEN, payload: null });
+    },
+    handleToggleUploadPopUp:()=>{
+      dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: null });
     }
   }),
   [dispatch, setMessage, handleApiError]

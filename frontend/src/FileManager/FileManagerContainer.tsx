@@ -1,13 +1,12 @@
 import React, {
   memo,
 } from "react";
-import { Paper, Grid, Hidden } from "@mui/material";
+import { Paper, Grid } from "@mui/material";
 import TopBar from "./Blocks/TopBar";
 import FolderBar from "./Blocks/FolderBar";
 import FilesBar from "./Blocks/FilesBar";
 
 const FileManager: React.FC<{}> = () => {
-  // console.log('rerender');
   return (
     <Paper 
       style={{
@@ -20,7 +19,6 @@ const FileManager: React.FC<{}> = () => {
       <TopBar />
       <Grid container
         style={{
-          // height: '100%',
           flex: 1,
           display: 'flex',
           flexDirection: 'row',

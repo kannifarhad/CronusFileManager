@@ -23,6 +23,7 @@ const initialState = {
   popUpData: null,
   fileEdit: null,
   fullScreen: false,
+  uploadPopup: null
 };
 
 

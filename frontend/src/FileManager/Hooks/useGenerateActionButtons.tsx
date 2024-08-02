@@ -203,19 +203,18 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       onClick: operations.handleToggleFullScreen,
       disabled: false,
     },
-
     uploadFile: {
       title: "Upload Files",
       icon: "icon-cloud-computing",
-      onClick: operations.handleUpload,
+      onClick: operations.handleToggleUploadPopUp,
       disabled: !selectedFolder,
     },
+
     searchFile: {
       title: "Search File",
       icon: "icon-search",
       onClick: operations.handleSearchFile,
     },
-  
     editFile: {
       title: "Edit File",
       icon: "icon-pencil",
