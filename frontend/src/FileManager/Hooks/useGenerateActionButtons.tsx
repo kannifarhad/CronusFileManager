@@ -116,12 +116,6 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
           selectedFiles.size > 0
         ),
     },
-    selectFile: {
-      title: "Select file",
-      icon: "icon-outbox",
-      onClick: operations.handleReturnCallBack,
-      //   disabled: typeof selectCallback === "undefined",
-    },
     reload: {
       title: "Reload",
       icon: "icon-refresh",
@@ -136,14 +130,6 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       },
       disabled: !isSelectedFileType(ItemExtensionCategoryFilter.FILE, contextMenu, selectedFiles),
     },
-
-    editFile: {
-      title: "Edit File",
-      icon: "icon-pencil",
-      onClick: operations.handleEditText,
-      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.TEXT,contextMenu, selectedFiles),
-    },
-
     editImage: {
       title: "Resize & Rotate",
       icon: "icon-paint-palette",
@@ -171,40 +157,6 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       },
       disabled: !isSelectedFileType(ItemExtensionCategoryFilter.ARCHIVE, contextMenu, selectedFiles),
     },
-    uploadFile: {
-      title: "Upload Files",
-      icon: "icon-cloud-computing",
-      onClick: operations.handleUpload,
-      disabled: !selectedFolder,
-    },
-    searchFile: {
-      title: "Search File",
-      icon: "icon-search",
-      onClick: operations.handleSearchFile,
-    },
-    saveFile: {
-      title: "Save Changes",
-      icon: "icon-save",
-      onClick: operations.handleSaveFileChanges,
-    },
-    preview: {
-      title: "View",
-      icon: "icon-view",
-      onClick: operations.handlePreview,
-      disabled: !isSelectedItemImage
-    },
-    getInfo: {
-      title: "Get Info",
-      icon: "icon-information",
-      onClick: operations.handleGetInfo,
-      disabled: !isItemFocusedOrSelected,
-    },
-    download: {
-      title: "Download File",
-      icon: "icon-download-1",
-      onClick: operations.handleDownload,
-      disabled: !isItemFocusedOrSelected,
-    },
     gridView: {
       title: "Grid view",
       icon: "icon-layout-1",
@@ -216,6 +168,61 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       icon: "icon-layout-2",
       onClick: () => operations.handleSetViewItemType(ViewTypeEnum.LIST),
       disabled: itemsViewType === ViewTypeEnum.LIST,
+    },
+    getInfo: {
+      title: "Get Info",
+      icon: "icon-information",
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        operations.handleGetInfo(item);
+      },
+      disabled: !isItemFocusedOrSelected,
+    },
+    preview: {
+      title: "View",
+      icon: "icon-view",
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        operations.handlePreview(item);
+      },
+      disabled: !isSelectedItemImage
+    },
+    download: {
+      title: "Download File",
+      icon: "icon-download-1",
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        operations.handleDownload(item);
+      },
+      disabled: !isItemFocusedOrSelected,
+    },
+
+    uploadFile: {
+      title: "Upload Files",
+      icon: "icon-cloud-computing",
+      onClick: operations.handleUpload,
+      disabled: !selectedFolder,
+    },
+    searchFile: {
+      title: "Search File",
+      icon: "icon-search",
+      onClick: operations.handleSearchFile,
+    },
+  
+    editFile: {
+      title: "Edit File",
+      icon: "icon-pencil",
+      onClick: () => {
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        operations.handleEditFile(item, selectedFolder);
+      },
+      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.TEXT,contextMenu, selectedFiles),
+    },
+    selectFile: {
+      title: "Select file",
+      icon: "icon-outbox",
+      onClick: operations.handleReturnCallBack,
+      //   disabled: typeof selectCallback === "undefined",
     },
     fullScreen: {
       title: "Full Screen",
