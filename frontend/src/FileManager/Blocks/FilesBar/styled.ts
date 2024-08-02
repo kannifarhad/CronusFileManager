@@ -3,6 +3,9 @@ import { Grid, Box } from "@mui/material";
 
 export const StyledFilesBarWrapper = styled(Grid)(({ theme }) => ({
   position: "relative",
+  overflow: 'auto',
+  flex: 1,
+  height: '100%',
   "& .infoMessages": {
     position: "absolute",
     width: "100%",

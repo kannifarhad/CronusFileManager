@@ -196,19 +196,25 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       },
       disabled: !isItemFocusedOrSelected,
     },
-
+    fullScreen: {
+      title: "Full Screen",
+      //   icon: expand ? "icon-minimize" : "icon-resize",
+      icon: "icon-resize",
+      onClick: operations.handleToggleFullScreen,
+      disabled: false,
+    },
     uploadFile: {
       title: "Upload Files",
       icon: "icon-cloud-computing",
-      onClick: operations.handleUpload,
+      onClick: operations.handleToggleUploadPopUp,
       disabled: !selectedFolder,
     },
+
     searchFile: {
       title: "Search File",
       icon: "icon-search",
       onClick: operations.handleSearchFile,
     },
-  
     editFile: {
       title: "Edit File",
       icon: "icon-pencil",
@@ -224,13 +230,7 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       onClick: operations.handleReturnCallBack,
       //   disabled: typeof selectCallback === "undefined",
     },
-    fullScreen: {
-      title: "Full Screen",
-      //   icon: expand ? "icon-minimize" : "icon-resize",
-      icon: "icon-resize",
-      onClick: operations.handleFullExpand,
-      disabled: false,
-    },
+
   };
   return allButtons;
 };

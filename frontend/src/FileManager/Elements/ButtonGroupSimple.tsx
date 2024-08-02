@@ -11,13 +11,12 @@ interface ButtonData {
 
 interface ButtonGroupSimpleProps {
   buttons: ButtonData[];
-  index: number;
 }
 
-const ButtonGroupSimple: React.FC<ButtonGroupSimpleProps> = ({ buttons, index }) => {
+const ButtonGroupSimple: React.FC<ButtonGroupSimpleProps> = ({ buttons }) => {
   return (
     <div className="root">
-      <ButtonGroup key={index} color="primary" aria-label="outlined primary button group">
+      <ButtonGroup color="primary" aria-label="outlined primary button group">
         {buttons.map((button, index) => (
           <Button
             key={index}

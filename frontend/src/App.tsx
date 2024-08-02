@@ -6,7 +6,7 @@ const App: React.FC = () => {
     console.log("Image Path Returned", filePath);
   };
 
-  return <FileManager height="580" callback={handleCallBack} />;
+  return <FileManager height={580} selectItemCallback={handleCallBack} />;
 };
 
 export default App;

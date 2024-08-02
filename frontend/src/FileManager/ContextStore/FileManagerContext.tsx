@@ -21,7 +21,9 @@ const initialState = {
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
   popUpData: null,
-  fileEdit: null
+  fileEdit: null,
+  fullScreen: false,
+  uploadPopup: null
 };
 
 
@@ -31,9 +33,9 @@ const FileManagerDispatchContext = createContext<
 >(() => {});
 
 
-export const FileManagerProvider = ({ children }: { children: ReactNode }) => {
+export const FileManagerProvider = ({ children, selectItemCallback }: { children: ReactNode, selectItemCallback: ((filePath: string) => void) | undefined, }) => {
   const [state, dispatch] = useReducer(fileManagerReducer, initialState);
-  const operations  = useFileManagerOperations({ dispatch });
+  const operations  = useFileManagerOperations({ dispatch, selectItemCallback });
 
   return (
     <FileManagerStateContext.Provider value={{ ...state, operations }}>

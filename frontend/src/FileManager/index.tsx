@@ -16,8 +16,8 @@ import { ThemeProvider } from "@mui/system";
 import { customTheme } from "./theme";
 import FileManager from "./FileManager";
 
-const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
-  (props, ref) => {
+const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef((props, ref) => {
+    const {selectItemCallback, height} = props;
     useImperativeHandle(ref, () => ({
       refresh: () => {
         console.log("refresh requested");
@@ -26,8 +26,8 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
 
     return (
       // <ThemeProvider theme={customTheme}>
-        <FileManagerProvider>
-          <FileManager {...props} />
+        <FileManagerProvider selectItemCallback={selectItemCallback}>
+          <FileManager height={height} />
         </FileManagerProvider>
       // </ThemeProvider>
     );
