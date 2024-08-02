@@ -18,7 +18,7 @@ import { SaveFileParams } from "../Api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
 import mainconfig from '../../Data/Config';
 
-export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
+export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dispatch: any, selectItemCallback: ((filePath: string) => void) | undefined,}) => {
 
   const setMessage = useCallback((message: Omit<Message, 'id'>) => {
     dispatch({
@@ -599,6 +599,9 @@ export const useFileManagerOperations = ({ dispatch }: {dispatch: any}) => {
           window.open(`${mainconfig.serverPath}${selectedFile.path}`);
         }, 100);
     },
+    handleToggleFullScreen: ()=>{
+      dispatch({ type: ActionTypes.TOGGLE_FULLSCREEN, payload: null });
+    }
   }),
   [dispatch, setMessage, handleApiError]
 );

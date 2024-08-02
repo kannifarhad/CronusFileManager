@@ -196,6 +196,13 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       },
       disabled: !isItemFocusedOrSelected,
     },
+    fullScreen: {
+      title: "Full Screen",
+      //   icon: expand ? "icon-minimize" : "icon-resize",
+      icon: "icon-resize",
+      onClick: operations.handleToggleFullScreen,
+      disabled: false,
+    },
 
     uploadFile: {
       title: "Upload Files",
@@ -224,13 +231,7 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       onClick: operations.handleReturnCallBack,
       //   disabled: typeof selectCallback === "undefined",
     },
-    fullScreen: {
-      title: "Full Screen",
-      //   icon: expand ? "icon-minimize" : "icon-resize",
-      icon: "icon-resize",
-      onClick: operations.handleFullExpand,
-      disabled: false,
-    },
+
   };
   return allButtons;
 };

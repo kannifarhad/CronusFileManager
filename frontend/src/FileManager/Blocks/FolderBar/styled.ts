@@ -90,7 +90,9 @@ export const StyledFolderMenuItem = styled(ListItem, {
 
 export const FileManagerFolderBarGrid = styled(Grid)(({ theme }) => {
   return {
-    flexGrow: 1,
+    flex: 1,
+    overflow: 'auto',
+    height: '100%',
     background: "#f9fafc",
     borderRight: "1px solid #E9eef9",
     "& .FileManagerFolderBarWrapper": {},

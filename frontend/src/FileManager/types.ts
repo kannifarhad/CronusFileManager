@@ -4,8 +4,8 @@ import { DropResult } from 'react-beautiful-dnd';
 import { ReactNode } from 'react';
 import { SaveFileParams } from './Api/types';
 export interface FileManagerProps {
-  height?: string;
-  callback?: (filePath: string) => void;
+  height?: number;
+  selectItemCallback?: (filePath: string) => void;
 }
 
 export interface Button {
@@ -50,6 +50,7 @@ export interface Operations {
   handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
   handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleEditFile: (selectedFile: FileType,selectedFolder: FolderList) => void;
+  handleToggleFullScreen: ()=>void
 }
 export interface Message {
     title: string;

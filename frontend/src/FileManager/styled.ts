@@ -5,7 +5,7 @@ interface FileManagerWrapperProps extends BoxProps {
 }
 export const FileManagerWrapper = styled(Box, {
   shouldForwardProp: (prop: string) => !["expanded"].includes(prop),
-})<FileManagerWrapperProps>(({ theme, expanded }) => {
+})<FileManagerWrapperProps>(({ theme, expanded, height }) => {
   if (expanded) {
     return {
       position: "fixed",
@@ -18,5 +18,9 @@ export const FileManagerWrapper = styled(Box, {
       background: "rgba(255, 255, 255, 0.7)",
     };
   }
-  return {};
+  return {
+    height: '500px',
+    display: 'flex',
+    alignItems: 'stretch',
+  };
 });

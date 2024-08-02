@@ -5,6 +5,8 @@ export const TopBarWrapper = styled(Grid)(({ theme }) => ({
   padding: "5px",
   borderBottom: "1px solid #868DAA",
   background: "#f6f7fd",
+  flex: 'none',
+  overflow: 'hidden',
 }));
 
 export const StyledTopBarMenuItem = styled(MenuItem)(({ theme }) => ({

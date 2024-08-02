@@ -44,6 +44,7 @@ export enum ActionTypes {
   SET_ITEM_VIEW = "SET_ITEM_VIEW",
   SET_POPUP_DATA = "SET_POPUP_DATA",
   SET_FILEEDIT_DATA = "SET_FILEEDIT_DATA",
+  TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN'
 }
 
 export interface FileManagerState {
@@ -66,6 +67,7 @@ export interface FileManagerState {
   history: HistoryType;
   popUpData: PopupStoreType;
   fileEdit: FileEditPopupProps | null;
+  fullScreen: boolean,
 }
 
 export interface FileManagerAction {

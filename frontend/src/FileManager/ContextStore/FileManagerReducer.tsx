@@ -142,6 +142,9 @@ export const fileManagerReducer = (
 
     case ActionTypes.SET_FILEEDIT_DATA:
       return { ...state, fileEdit: action.payload };
+
+    case ActionTypes.TOGGLE_FULLSCREEN:
+      return { ...state, fullScreen: !state.fullScreen };
       
     default:
       return state;

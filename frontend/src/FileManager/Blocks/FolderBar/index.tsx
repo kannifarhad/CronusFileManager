@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from "react";
+import { useEffect, memo } from "react";
 import { StyledFolderBar } from "./styled";
 import MenuItem from "./MenuItem";
 import {
@@ -11,19 +11,12 @@ import {
   FileManagerFolderBarGrid,
   FileManagerFolderBarWrapper,
 } from "./styled";
+
 const FolderBar = () => {
   const dispatch = useFileManagerDispatch();
-  const { foldersList, operations: { handleSelectFolder } }  = useFileManagerState();
+  const { foldersList }  = useFileManagerState();
   
   useEffect(() => {
-      // getFoldersList({ path: "/" }).then((result) => {
-      //   console.log('result',result);
-      //   dispatch({
-      //     type: ActionTypes.SET_FOLDERS_LIST,
-      //     payload: result.children,
-      //   });
-      // });
-
       getFolderTree().then((result) => {
         dispatch({
           type: ActionTypes.SET_FOLDERS_LIST,
@@ -33,7 +26,6 @@ const FolderBar = () => {
     
   }, [dispatch]);
 
-  // console.log('foldersList', foldersList)
   return (
       <FileManagerFolderBarGrid item xs={3} sm={2}>
         <FileManagerFolderBarWrapper>

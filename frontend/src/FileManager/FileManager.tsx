@@ -6,16 +6,20 @@ import { FileManagerWrapper } from "./styled";
 import FileManagerContainer from "./FileManagerContainer";
 import PopupDialog from "./Elements/PopupDialog";
 import ImageEditPopup from "./Elements/ImageEditor";
+import { useFileManagerState } from "./ContextStore/FileManagerContext";
 
-const FileManager: React.FC<FileManagerProps> = ({ height, callback }) => {
-  const expanded = false;
+const FileManager: React.FC<{height?: number}> = ({ height = 300 }) => {
+  const { fullScreen } = useFileManagerState();
 
   return (
-    <FileManagerWrapper expanded={expanded}>
-      <ImageEditPopup />
-      <PopupDialog />
+    <>
+    <ImageEditPopup />
+    <PopupDialog />
+    <FileManagerWrapper expanded={fullScreen} height={height}>
       <FileManagerContainer />
     </FileManagerWrapper>
+    </>
+
   );
 };
 
