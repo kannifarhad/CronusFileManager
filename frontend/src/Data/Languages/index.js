@@ -4,7 +4,6 @@
 // const path = require('path');
 // const basename = path.basename(__filename);
 
-
 // fs
 //   .readdirSync(__dirname)
 //   .filter(file => {
@@ -24,4 +23,3 @@
 // //   }
 // // });
 // const lang = 'ru';
-

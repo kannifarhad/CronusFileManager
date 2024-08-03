@@ -1,3 +1,3 @@
-export default { 
-    "serverPath": "http://localhost:3131/admin"
-}
+export default {
+  serverPath: "http://localhost:3131",
+};
