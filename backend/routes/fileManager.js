@@ -24,7 +24,7 @@ const upload = multer({
     }
 });
 
-router.post('/foldertree', fileManagerController.folderTree);
+router.get('/foldertree', fileManagerController.folderTree);
 router.post('/folder', fileManagerController.folderInfo);
 router.post('/all', fileManagerController.all);
 router.post('/rename', fileManagerController.rename);

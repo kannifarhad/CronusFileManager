@@ -329,7 +329,9 @@ module.exports = {
     async uploadFiles(req, res, next) {
         let { path } = req.body;
         path = escapePath(path);
-
+        if(!Array.isArray(req.files) || req.files.length === 0){
+            return next(new AppError('No files had been sent or files list is empty', 400));
+        }
         try { 
             req.files.forEach(function (element, index, array) {
                 if(checkExtension(nodePath.extname(element.originalname))){
