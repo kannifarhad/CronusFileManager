@@ -1,7 +1,6 @@
 import React, {
   memo,
 } from "react";
-import { FileManagerProps } from "./types";
 import { FileManagerWrapper } from "./styled";
 import FileManagerContainer from "./FileManagerContainer";
 import PopupDialog from "./Elements/PopupDialog";

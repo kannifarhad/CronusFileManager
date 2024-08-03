@@ -4,24 +4,17 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { ButtonProps } from '@mui/material/Button';
 import { StyledActionButton } from './styled';
 
-export interface ButtonGroupProps {
-  buttons: {
-    variant?: ButtonProps['variant'];
-    color?: ButtonProps['color'];
-    size?: ButtonProps['size'];
-    icon: string;
-    label: string;
-    onClick: () => void;
-  }[];
+interface ButtonItem extends Omit<ButtonProps, 'sx'> {
+  icon: string;
+  label: string;
 }
+export type ButtonGroupProps = { buttons: ButtonItem[]}
 
 const CustomButtonGroup: React.FC<ButtonGroupProps> = ({ buttons }) => {
   const buttonComponents = buttons.map((button, i) => (
     <StyledActionButton
       key={i}
-      variant={button.variant || 'contained'}
-      color={button.color || 'primary'}
-      size={button.size}
+      {...button}
       startIcon={<Icon className={button.icon}></Icon>}
       onClick={button.onClick}
     >

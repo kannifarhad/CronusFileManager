@@ -138,7 +138,7 @@ export const StyledAcceptedFilesList = styled('section')(({
   theme
 }) => ({
   fontSize: '12px',
-  padding: '0px',
+  padding: '10px 0px',
   margin: '0px',
 }));
 
