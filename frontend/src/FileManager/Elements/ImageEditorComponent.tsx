@@ -1,14 +1,15 @@
-import React, { Component, createRef, RefObject } from 'react';
-import TuiImageEditor from 'tui-image-editor';
+import React, { Component, createRef, RefObject } from "react";
+import TuiImageEditor from "tui-image-editor";
 
 interface ImageEditorProps {
   [key: string]: any;
 }
-interface TuiImageEditorType extends TuiImageEditor  {
+interface TuiImageEditorType extends TuiImageEditor {
   off(eventName: string): void;
 }
 export default class ImageEditor extends Component<ImageEditorProps> {
   rootEl: RefObject<HTMLDivElement>;
+
   imageEditorInst: TuiImageEditorType | null = null;
 
   constructor(props: ImageEditorProps) {

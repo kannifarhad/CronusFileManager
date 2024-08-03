@@ -4,20 +4,13 @@ import MenuItem from "./MenuItem";
 import { FolderList, FolderType } from "../../types";
 
 interface MenuSubmenuProps {
-  folderList: FolderList['children'];
+  folderList: FolderList["children"];
 }
 
-const MenuSubmenu: FC<MenuSubmenuProps> = ({
-  folderList,
-}) => (
+const MenuSubmenu: FC<MenuSubmenuProps> = ({ folderList }) => (
   <List className="folderSubmenu">
     {Array.isArray(folderList) &&
-      folderList.map((child) => (
-        <MenuItem
-          key={child.name}
-          item={child}
-        />
-      ))}
+      folderList.map((child) => <MenuItem key={child.name} item={child} />)}
   </List>
 );
 

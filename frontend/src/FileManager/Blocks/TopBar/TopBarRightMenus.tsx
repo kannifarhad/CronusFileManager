@@ -1,22 +1,29 @@
-import React, { memo,useState, forwardRef, useImperativeHandle } from "react";
+import React, { memo, useState, forwardRef, useImperativeHandle } from "react";
 import { Menu, Radio, Divider, FormControlLabel } from "@mui/material";
 import { StyledTopBarMenuItem } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum } from "../../types";
+import {
+  ImagesThumbTypeEnum,
+  OrderByFieldEnum,
+  SortByFieldEnum,
+} from "../../types";
 
 export enum SettingsMenuEnum {
-  SETTINGS = 'SETTINGS',
-  SEARCH = 'SEARCH',
-  SORTING = 'SORTING'
+  SETTINGS = "SETTINGS",
+  SEARCH = "SEARCH",
+  SORTING = "SORTING",
 }
 
 interface MenuRef {
-  handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: SettingsMenuEnum) => void;
+  handleOpenMenu: (
+    event: React.MouseEvent<HTMLElement>,
+    name: SettingsMenuEnum,
+  ) => void;
 }
 
 const orderOptions: {
   name: string;
-  value: OrderByFieldEnum ;
+  value: OrderByFieldEnum;
 }[] = [
   { name: "By Name", value: OrderByFieldEnum.NAME },
   { name: "By Size", value: OrderByFieldEnum.SIZE },
@@ -25,11 +32,11 @@ const orderOptions: {
 
 const sortOptions: {
   name: string;
-  value: SortByFieldEnum ;
+  value: SortByFieldEnum;
 }[] = [
   { name: "Ascending", value: SortByFieldEnum.ASC },
   { name: "Descending", value: SortByFieldEnum.DESC },
-]
+];
 
 const imageViewOptions: {
   name: string;
@@ -37,10 +44,14 @@ const imageViewOptions: {
 }[] = [
   { name: "Show Thumbs", value: ImagesThumbTypeEnum.THUMB },
   { name: "Show Icons", value: ImagesThumbTypeEnum.ICONS },
-]
+];
 
 const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
-  const { showImages, orderFiles, operations:{ handleSetOrder, handleSetThumbView } } = useFileManagerState();
+  const {
+    showImages,
+    orderFiles,
+    operations: { handleSetOrder, handleSetThumbView },
+  } = useFileManagerState();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState<SettingsMenuEnum | null>(null);
 
@@ -51,13 +62,12 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
     },
   }));
 
-
   const handleClose = () => {
     setAnchorEl(null);
     setOpen(null);
   };
 
-  if(!open) return null;
+  if (!open) return null;
 
   return (
     <>
@@ -68,11 +78,13 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
         open={open === SettingsMenuEnum.SORTING}
         onClose={handleClose}
       >
-        {orderOptions.map((option, index) => (
+        {orderOptions.map((option) => (
           <StyledTopBarMenuItem
-            key={index}
+            key={option.value}
             selected={option.value === orderFiles?.field}
-            onClick={() => handleSetOrder({ ...orderFiles, field: option.value })}
+            onClick={() =>
+              handleSetOrder({ ...orderFiles, field: option.value })
+            }
           >
             <FormControlLabel
               value={option.value}
@@ -88,11 +100,13 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
           </StyledTopBarMenuItem>
         ))}
         <Divider />
-        {sortOptions.map((option, index) => (
+        {sortOptions.map((option) => (
           <StyledTopBarMenuItem
-            key={index}
+            key={option.value}
             selected={option.value === orderFiles.orderBy}
-            onClick={() => handleSetOrder({ ...orderFiles, orderBy: option.value })}
+            onClick={() =>
+              handleSetOrder({ ...orderFiles, orderBy: option.value })
+            }
           >
             <FormControlLabel
               value={option.value}
@@ -116,11 +130,11 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
         open={open === SettingsMenuEnum.SETTINGS}
         onClose={handleClose}
       >
-        {imageViewOptions.map((option, index) => (
+        {imageViewOptions.map((option) => (
           <StyledTopBarMenuItem
-            key={index}
+            key={option.name}
             selected={option.value === showImages}
-            onClick={() => handleSetThumbView(option.value)}        
+            onClick={() => handleSetThumbView(option.value)}
           >
             <FormControlLabel
               value={option.value}

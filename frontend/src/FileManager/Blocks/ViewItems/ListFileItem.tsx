@@ -1,31 +1,44 @@
 import React, { memo, useCallback, useMemo } from "react";
-
-import {
-  TableRow,
-  Checkbox,
-} from "@mui/material";
+import { TableRow, Checkbox } from "@mui/material";
 import { Draggable } from "react-beautiful-dnd";
 import { StyledListTableCell } from "./styled";
-import { convertDate, formatBytes } from "../../../Utils/Utils";
-import { getThumb, classNames } from "../../helpers";
-import { FileType , ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../types";
+import { convertDate, formatBytes, getThumb, classNames } from "../../helpers";
+import {
+  FileType,
+  ItemMoveActionTypeEnum,
+  ContextMenuTypeEnum,
+} from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 
 const ListFileItem: React.FC<{
   item: FileType;
   index: number;
 }> = ({ item, index }) => {
-  const { operations:{ handleContextClick, handleAddSelected}, selectedFiles, bufferedItems, showImages } = useFileManagerState();
-  
-  const handleContextMenuClick = useCallback((item: FileType, event: React.MouseEvent) => {
-    handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
-  },[handleContextClick]);
+  const {
+    operations: { handleContextClick, handleAddSelected },
+    selectedFiles,
+    bufferedItems,
+    showImages,
+  } = useFileManagerState();
 
-  const isCuted = useMemo(() => bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item)
-  , [item, bufferedItems]);
+  const handleContextMenuClick = useCallback(
+    (item: FileType, event: React.MouseEvent) => {
+      handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
+    },
+    [handleContextClick],
+  );
 
+  const isCuted = useMemo(
+    () =>
+      bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
+      bufferedItems.files.has(item),
+    [item, bufferedItems],
+  );
 
-  const isSelected = useMemo(()=> selectedFiles.has(item),[selectedFiles, item]);
+  const isSelected = useMemo(
+    () => selectedFiles.has(item),
+    [selectedFiles, item],
+  );
 
   return (
     <Draggable draggableId={item.id} index={index}>
@@ -33,11 +46,11 @@ const ListFileItem: React.FC<{
         <TableRow
           onContextMenu={(event) => handleContextMenuClick(item, event)}
           className={classNames({
-            'tableListRow': true,
-            'selected': selectedFiles.has(item),
-            'selectmodeTable': selectedFiles.size > 0,
-            'notDragging': !snapshot.isDragging,
-            'fileCuted': isCuted,
+            tableListRow: true,
+            selected: selectedFiles.has(item),
+            selectmodeTable: selectedFiles.size > 0,
+            notDragging: !snapshot.isDragging,
+            fileCuted: isCuted,
           })}
           ref={provided.innerRef}
           {...provided.draggableProps}
@@ -57,9 +70,7 @@ const ListFileItem: React.FC<{
               src={getThumb(item, showImages)}
             />
           </StyledListTableCell>
-          <StyledListTableCell align="left">
-            {item.name}
-          </StyledListTableCell>
+          <StyledListTableCell align="left">{item.name}</StyledListTableCell>
           <StyledListTableCell align="left">
             {formatBytes(item.size)}
           </StyledListTableCell>

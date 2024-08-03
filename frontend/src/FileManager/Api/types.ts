@@ -49,25 +49,23 @@ export interface SaveFileParams {
   isnew: boolean;
 }
 
-export interface GetFoldersListResponse extends FolderList {
-}
+export interface GetFoldersListResponse extends FolderList {}
 
-export interface GetFilesListResponse extends ItemsList {
-}
+export interface GetFilesListResponse extends ItemsList {}
 export interface Premissions {
-  others: string
-  group: string
-  owner: string
+  others: string;
+  group: string;
+  owner: string;
 }
 
 export interface Children {
-  path: string
-  name: string
-  created: string
-  modified: string
-  type: string
-  id: string
-  premissions: Premissions
-  size?: number
-  extension?: string
+  path: string;
+  name: string;
+  created: string;
+  modified: string;
+  type: string;
+  id: string;
+  premissions: Premissions;
+  size?: number;
+  extension?: string;
 }

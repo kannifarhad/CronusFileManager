@@ -1,11 +1,15 @@
 import React, { memo } from "react";
 import { Box } from "@mui/material";
-import { Droppable, DroppableProvided, DroppableStateSnapshot } from "react-beautiful-dnd";
-import FolderItem from './FolderItem';
-import FileItem from './FileItem';
-import { StyledGridViewContainer } from './styled';
+import {
+  Droppable,
+  DroppableProvided,
+  DroppableStateSnapshot,
+} from "react-beautiful-dnd";
+import FolderItem from "./FolderItem";
+import FileItem from "./FileItem";
+import { StyledGridViewContainer } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { Items, ItemType} from "../../types";
+import { Items, ItemType } from "../../types";
 
 const GridView: React.FC = () => {
   const { filesList } = useFileManagerState();
@@ -19,13 +23,13 @@ const GridView: React.FC = () => {
       >
         {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
           <Box ref={provided.innerRef} {...provided.droppableProps}>
-            {filesList.map((item: Items, index: number) => (
+            {filesList.map((item: Items, index: number) =>
               item.type === ItemType.FOLDER ? (
                 <FolderItem key={item.id} index={index} item={item} />
               ) : item.type === ItemType.FILE ? (
                 <FileItem key={item.id} index={index} item={item} />
-              ) : null
-            ))}
+              ) : null,
+            )}
             {provided.placeholder}
           </Box>
         )}

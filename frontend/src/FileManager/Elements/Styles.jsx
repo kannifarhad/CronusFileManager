@@ -15,7 +15,7 @@
 //     menu:{
 //     },
 //     menuItem:{
- 
+
 //     },
 //     trash: {
 //       width:'60px',
@@ -32,16 +32,16 @@
 //     itemTitle:{
 //     },
 //     checkbox:{
-     
+
 //     },
 //     locked:{
-     
+
 //     },
 //     extension:{
 
 //     },
 //     infoBox: {
-   
+
 //     },
 //     loadingBlock: {
 //       position: 'absolute',
@@ -58,5 +58,5 @@
 //         height:"100%",
 //       }
 //     },
-//     messagesBox:{} 
+//     messagesBox:{}
 //   }));

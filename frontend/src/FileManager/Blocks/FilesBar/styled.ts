@@ -1,11 +1,11 @@
 import { styled } from "@mui/system";
 import { Grid, Box } from "@mui/material";
 
-export const StyledFilesBarWrapper = styled(Grid)(({ theme }) => ({
+export const StyledFilesBarWrapper = styled(Grid)(({}) => ({
   position: "relative",
-  overflow: 'auto',
+  overflow: "auto",
   flex: 1,
-  height: '100%',
+  height: "100%",
   "& .infoMessages": {
     position: "absolute",
     width: "100%",
@@ -19,7 +19,7 @@ export const StyledFilesBarWrapper = styled(Grid)(({ theme }) => ({
   },
 }));
 
-export const StyledFilesLoadingOverlay = styled(Box)(({ theme }) => ({
+export const StyledFilesLoadingOverlay = styled(Box)(({}) => ({
   position: "absolute",
   zIndex: "55",
   top: "0px",
@@ -35,22 +35,22 @@ export const StyledFilesLoadingOverlay = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const StyledToasterMessages = styled(Box)(({ theme }) => ({
-    zIndex: '66',
-    position:'absolute',
-    top:'20px',
-    right:'20px',
-    width:'300px',
-    float:'right'
+export const StyledToasterMessages = styled(Box)(({}) => ({
+  zIndex: "66",
+  position: "absolute",
+  top: "20px",
+  right: "20px",
+  width: "300px",
+  float: "right",
 }));
 
-export const StyledFilesListContainer = styled(Box)(({ theme }) => ({
-  padding: '10px',
-  minHeight: '400px',
-  position:"relative",
-  paddingBottom:"60px"
+export const StyledFilesListContainer = styled(Box)(({}) => ({
+  padding: "10px",
+  minHeight: "400px",
+  position: "relative",
+  paddingBottom: "60px",
 }));
 
-export const StyledFilesListWrapper = styled(Box)(({ theme }) => ({
-  position:"relative",
+export const StyledFilesListWrapper = styled(Box)(({}) => ({
+  position: "relative",
 }));

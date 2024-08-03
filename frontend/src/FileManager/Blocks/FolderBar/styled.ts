@@ -1,19 +1,9 @@
-import {
-  styled
-} from "@mui/system";
-import {
-  Box,
-  Grid,
-  ListItem,
-  ListItemProps,
-  BoxProps,  GridProps
-} from "@mui/material";
+import { styled } from "@mui/system";
+import { Box, Grid, ListItem, ListItemProps, BoxProps } from "@mui/material";
 
-export const StyledFolderBar = styled(Grid)(({
-  theme
-}) => ({
+export const StyledFolderBar = styled(Grid)(({}) => ({
   padding: "10px 0px",
-  overflow:'hidden',
+  overflow: "hidden",
   "& .folderItem": {
     display: "block !important",
     width: "100%",
@@ -59,12 +49,8 @@ interface StyledFolderMenuItemProps extends ListItemProps {
 }
 export const StyledFolderMenuItem = styled(ListItem, {
   shouldForwardProp: (prop: string) => !["isOpen", "isActive"].includes(prop),
-}) < StyledFolderMenuItemProps > (({
-  theme,
-  isOpen,
-  isActive
-}) => {
-  let styles = {}
+})<StyledFolderMenuItemProps>(({ theme, isOpen, isActive }) => {
+  let styles = {};
   if (isActive) {
     styles = {
       ...styles,
@@ -88,16 +74,14 @@ export const StyledFolderMenuItem = styled(ListItem, {
   return styles;
 });
 
-export const FileManagerFolderBarGrid = styled(Grid)(({ theme }) => {
-  return {
-    flex: 1,
-    overflow: 'auto',
-    height: '100%',
-    background: "#f9fafc",
-    borderRight: "1px solid #E9eef9",
-    "& .FileManagerFolderBarWrapper": {},
-  };
-});
+export const FileManagerFolderBarGrid = styled(Grid)(({}) => ({
+  flex: 1,
+  overflow: "auto",
+  height: "100%",
+  background: "#f9fafc",
+  borderRight: "1px solid #E9eef9",
+  "& .FileManagerFolderBarWrapper": {},
+}));
 
 interface FileManagerFolderBarWrapperProps extends BoxProps {
   height?: number;
@@ -112,6 +96,5 @@ export const FileManagerFolderBarWrapper = styled(Box, {
   const maxHeight = expanded ? bigHeight : heightInPx;
   return {
     // maxHeight,
-    
   };
 });

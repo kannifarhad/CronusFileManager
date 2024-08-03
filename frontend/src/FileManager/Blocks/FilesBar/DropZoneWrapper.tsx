@@ -6,9 +6,7 @@ function DropZoneWrapper() {
   const { uploadPopup } = useFileManagerState();
 
   if (!uploadPopup) return null;
-  return (
-    <Dropzone/>
-  );
+  return <Dropzone />;
 }
 
 export default memo(DropZoneWrapper);

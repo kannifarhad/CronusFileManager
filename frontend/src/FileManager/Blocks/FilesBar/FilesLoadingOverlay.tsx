@@ -9,9 +9,9 @@ const FilesLoadingOverlay: FC = () => {
 
   return (
     <StyledFilesLoadingOverlay>
-      <div className="opaOverlaw"></div>
+      <div className="opaOverlaw" />
     </StyledFilesLoadingOverlay>
   );
-}
+};
 
 export default memo(FilesLoadingOverlay);

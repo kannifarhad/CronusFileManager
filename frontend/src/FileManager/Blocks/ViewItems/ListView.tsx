@@ -1,6 +1,5 @@
 import React, { memo } from "react";
 import {
-  Table,
   TableBody,
   TableCell,
   TableContainer,
@@ -9,11 +8,11 @@ import {
   Box,
 } from "@mui/material";
 import { Droppable } from "react-beautiful-dnd";
-import ListFolderItem from './ListFolderItem';
-import ListFileItem from './ListFileItem';
-import { StyledListTable } from './styled';
+import ListFolderItem from "./ListFolderItem";
+import ListFileItem from "./ListFileItem";
+import { StyledListTable } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { Items, ItemType} from "../../types";
+import { ItemType } from "../../types";
 
 const ListView: React.FC<{}> = () => {
   const { filesList } = useFileManagerState();
@@ -22,9 +21,9 @@ const ListView: React.FC<{}> = () => {
     <TableContainer component={Box}>
       <StyledListTable size="small" aria-label="a dense table">
         <TableHead>
-          <TableRow className='tableHead'>
-            <TableCell style={{ width: "20px" }}></TableCell>
-            <TableCell style={{ width: "35px" }} align="left"></TableCell>
+          <TableRow className="tableHead">
+            <TableCell style={{ width: "20px" }} />
+            <TableCell style={{ width: "35px" }} align="left" />
             <TableCell align="left">Name</TableCell>
             <TableCell style={{ width: "100px" }} align="left">
               Size
@@ -42,13 +41,13 @@ const ListView: React.FC<{}> = () => {
         >
           {(provided, snapshot) => (
             <TableBody ref={provided.innerRef} {...provided.droppableProps}>
-              {filesList.map((item, index) => (
+              {filesList.map((item, index) =>
                 item.type === ItemType.FOLDER ? (
                   <ListFolderItem key={item.id} index={index} item={item} />
                 ) : item.type === ItemType.FILE ? (
                   <ListFileItem key={item.id} index={index} item={item} />
-                ) : null
-              ))}
+                ) : null,
+              )}
               {provided.placeholder}
             </TableBody>
           )}

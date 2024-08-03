@@ -1,15 +1,15 @@
 import { styled } from "@mui/system";
 import { Grid, MenuItem } from "@mui/material";
 
-export const TopBarWrapper = styled(Grid)(({ theme }) => ({
+export const TopBarWrapper = styled(Grid)(({}) => ({
   padding: "5px",
   borderBottom: "1px solid #868DAA",
   background: "#f6f7fd",
-  flex: 'none',
-  overflow: 'hidden',
+  flex: "none",
+  overflow: "hidden",
 }));
 
-export const StyledTopBarMenuItem = styled(MenuItem)(({ theme }) => ({
+export const StyledTopBarMenuItem = styled(MenuItem)(({}) => ({
   padding: "0px",
   fontSize: "13px",
   width: "250px",

@@ -1,19 +1,23 @@
 import React, { memo, useRef, useMemo, useCallback } from "react";
-import TopBarButtonGroups from "./TopBarButtonGroups";
 import { Grid } from "@mui/material";
+import TopBarButtonGroups from "./TopBarButtonGroups";
 import TopBarRightMenus, { SettingsMenuEnum } from "./TopBarRightMenus";
 import { TopBarWrapper } from "./styled";
 import { Button } from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import useGenerateActionButtons from "../../Hooks/useGenerateActionButtons";
+
 interface MenuRef {
-  handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: SettingsMenuEnum) => void;
+  handleOpenMenu: (
+    event: React.MouseEvent<HTMLElement>,
+    name: SettingsMenuEnum,
+  ) => void;
 }
 
 const TopBar: React.FC<{}> = () => {
   const menuListRef = useRef<MenuRef>(null);
   const state = useFileManagerState();
-  const { topbar } = useGenerateActionButtons({ state }) 
+  const { topbar } = useGenerateActionButtons({ state });
 
   const handleOpenMenu = useCallback(
     (...props: [React.MouseEvent<HTMLElement>, SettingsMenuEnum]) => {
@@ -23,7 +27,7 @@ const TopBar: React.FC<{}> = () => {
         console.error("Topbar menu doesn't have handleOpenMenu function");
       }
     },
-    [menuListRef]
+    [menuListRef],
   );
 
   const additionalButtons: Button[] = useMemo(
@@ -41,7 +45,7 @@ const TopBar: React.FC<{}> = () => {
         disabled: false,
       },
     ],
-    [handleOpenMenu]
+    [handleOpenMenu],
   );
 
   return (
