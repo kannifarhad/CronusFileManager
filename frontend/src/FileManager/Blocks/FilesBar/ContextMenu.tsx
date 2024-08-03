@@ -39,7 +39,10 @@ const ContextMenu: React.FC = () => {
                 <StyledContextMenuItem
                   key={index}
                   disabled={button.disabled}
-                  onClick={button.onClick}
+                  onClick={(e) => {
+                    handleContextClose();
+                    button.onClick(e);
+                  }}
                 >
                   <span className={`${button.icon}`} />
                   {button.title}
@@ -54,7 +57,10 @@ const ContextMenu: React.FC = () => {
                 <StyledContextMenuItem
                   key={index}
                   disabled={button.disabled}
-                  onClick={button.onClick}
+                  onClick={(e) => {
+                    button.onClick(e);
+                    handleContextClose();
+                  }}
                 >
                   <span className={`${button.icon}`} />
                   {button.title}

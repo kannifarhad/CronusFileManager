@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 import config from "./Elements/config.json";
 import { SaveFileParams } from "./Api/types";
 import { FileWithPreview } from "./Elements/Dropzone";
+import { ButtonItemType } from "./Elements/ButtonGroup";
 
 // Define enums
 export enum ItemType {
@@ -206,7 +207,7 @@ export interface Operations {
     menuType: ContextMenuTypeEnum;
   }) => void;
   handleClearBuffer: () => void;
-  handleContextClose: (event: React.MouseEvent) => void;
+  handleContextClose: () => void;
   handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => void;
   handleSetViewItemType: (view: ViewTypeEnum) => void;
   handleSetOrder: (order: OrderByType) => void;
@@ -270,10 +271,11 @@ interface NameInputSets {
 
 export interface PopupData {
   title: string;
-  description?: string;
-  handleClose: () => void;
-  handleSubmit: (fieldValus: any) => void;
+  description?: string | JSX.Element;
+  handleClose?: () => void;
+  handleSubmit?: (fieldValus: any) => void;
   nameInputSets?: NameInputSets;
+  actionButtons?: ButtonItemType[];
 }
 
 export interface FileEditPopupProps {

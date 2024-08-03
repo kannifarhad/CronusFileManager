@@ -1,7 +1,19 @@
-import { styled } from "@mui/system";
+import { fontSize, styled } from "@mui/system";
 import { Box, Checkbox, Table, TableCell } from "@mui/material";
 
 export const StyledGridViewContainer = styled(Box)(({}) => ({}));
+
+export const StyledEmptyFolderContainer = styled(Box)(({}) => ({
+  height: "100%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
+  "& h6": {
+    fontSize: "25px",
+    opacity: "0.2",
+  },
+}));
 
 export const StyledFileItem = styled(Box)(({}) => ({
   margin: "5px",
