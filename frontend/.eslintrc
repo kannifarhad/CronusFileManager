@@ -8,7 +8,9 @@
     "import/extensions": "off",
     "no-plusplus": "off",
     "no-empty-pattern": "off",
+    "react/function-component-definition": "off",
     "react/jsx-props-no-spreading": "off",
+    "no-underscore-dangle": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {

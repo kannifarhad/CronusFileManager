@@ -46,7 +46,7 @@ export const StyledToasterMessages = styled(Box)(({}) => ({
 
 export const StyledFilesListContainer = styled(Box)(({}) => ({
   padding: "10px",
-  minHeight: "400px",
+  minHeight: "300px",
   position: "relative",
   paddingBottom: "60px",
 }));

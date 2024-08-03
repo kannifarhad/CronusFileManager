@@ -34,15 +34,19 @@ const ListFolderItem: React.FC<{
   } = useFileManagerState();
 
   const handleContextMenuClick = useCallback(
-    (item: FolderType, event: React.MouseEvent) => {
-      handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
+    (clickedItem: FolderType, event: React.MouseEvent) => {
+      handleContextClick({
+        item: clickedItem,
+        event,
+        menuType: ContextMenuTypeEnum.ITEM,
+      });
     },
     [handleContextClick],
   );
 
   const doubleClick = useCallback(
-    (item: FolderType) => {
-      handleSelectFolder(item, true);
+    (clickedItem: FolderType) => {
+      handleSelectFolder(clickedItem, true);
     },
     [handleSelectFolder],
   );
