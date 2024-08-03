@@ -15,8 +15,9 @@ interface InfoBoxesProps {
 
 const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
   const dispatch = useFileManagerDispatch();
-  const closeTimer = useRef<NodeJS.Timeout | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [open, setOpen] = useState(true);
+
   useEffect(() => {
     if (alert.timer) {
       closeTimer.current = setTimeout(() => {
@@ -26,12 +27,12 @@ const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
           payload: { id: alert.id },
         });
       }, alert.timer);
-      return () => {
-        if (closeTimer.current) {
-          clearTimeout(closeTimer.current); // Cleanup the timer on unmount or when alert changes
-        }
-      };
     }
+    return () => {
+      if (closeTimer.current) {
+        clearTimeout(closeTimer.current); // Cleanup the timer on unmount or when alert changes
+      }
+    };
   }, [alert, dispatch]);
 
   return (

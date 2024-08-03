@@ -12,7 +12,7 @@ import ListFolderItem from "./ListFolderItem";
 import ListFileItem from "./ListFileItem";
 import { StyledListTable } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { ItemType } from "../../types";
+import { Items, ItemType } from "../../types";
 
 const ListView: React.FC<{}> = () => {
   const { filesList } = useFileManagerState();
@@ -41,7 +41,7 @@ const ListView: React.FC<{}> = () => {
         >
           {(provided, snapshot) => (
             <TableBody ref={provided.innerRef} {...provided.droppableProps}>
-              {filesList.map((item, index) =>
+              {filesList.map((item: Items, index: number) =>
                 item.type === ItemType.FOLDER ? (
                   <ListFolderItem key={item.id} index={index} item={item} />
                 ) : item.type === ItemType.FILE ? (

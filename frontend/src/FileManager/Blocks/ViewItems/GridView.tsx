@@ -7,12 +7,19 @@ import {
 } from "react-beautiful-dnd";
 import FolderItem from "./FolderItem";
 import FileItem from "./FileItem";
-import { StyledGridViewContainer } from "./styled";
+import { StyledGridViewContainer, StyledEmptyFolderContainer } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { Items, ItemType } from "../../types";
 
 const GridView: React.FC = () => {
   const { filesList } = useFileManagerState();
+  if (filesList.length === 0) {
+    return (
+      <StyledEmptyFolderContainer>
+        <h6>The folder is empty!</h6>
+      </StyledEmptyFolderContainer>
+    );
+  }
 
   return (
     <StyledGridViewContainer>

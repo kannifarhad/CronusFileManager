@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { List } from "@mui/material";
 import MenuItem from "./MenuItem";
-import { FolderList, FolderType } from "../../types";
+import { FolderList } from "../../types";
 
 interface MenuSubmenuProps {
   folderList: FolderList["children"];

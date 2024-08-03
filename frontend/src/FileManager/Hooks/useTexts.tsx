@@ -1,9 +1,7 @@
-import { useState, useMemo, useCallback } from "react";
-import { ButtonObject, PopupData, EditImage } from "../types";
-import { checkSelectedFileType } from "../helpers";
+import { useMemo } from "react";
 
 export const useText = (props: any) => {
-  const allTexts = useMemo(() => ({}), []);
+  const allTexts = useMemo(() => ({ ...props }), []);
   return allTexts;
 };
 

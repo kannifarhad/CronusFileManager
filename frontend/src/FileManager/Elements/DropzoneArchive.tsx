@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList from "./ButtonGroupSimple";

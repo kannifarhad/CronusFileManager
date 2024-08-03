@@ -11,7 +11,9 @@
 div ,li {
     box-sizing: border-box;
 }
-
+body > iframe {
+    display: none;
+}
 [class*=" cronus-"], [class^=cronus-]  {
     font-family: 'cronus' !important;
     speak: none;

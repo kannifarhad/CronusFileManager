@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import ButtonList, { ButtonGroupProps } from "./ButtonGroup";
+import ButtonList, { ButtonItemType } from "./ButtonGroup";
 import { formatBytes } from "../helpers";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
@@ -56,7 +56,7 @@ export default function UploadFiles() {
     [files, removeFile],
   );
 
-  const buttons: ButtonGroupProps["buttons"] = useMemo(
+  const buttons: ButtonItemType[] = useMemo(
     () => [
       {
         icon: "icon-save",

@@ -30,7 +30,7 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
         submitCallback({ file: imageData, path, isnew });
       }
     },
-    [extension, submitCallback],
+    [extension, submitCallback, path],
   );
 
   const buttons = useMemo(
@@ -62,7 +62,7 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
   );
 
   const pathToFile = `http://localhost:3131${path}`;
-  console.log("pathToFile", pathToFile);
+
   return (
     <>
       <ImageEditorContainer>
