@@ -3,6 +3,7 @@ import config from "./Elements/config.json";
 import { DropResult } from 'react-beautiful-dnd';
 import { ReactNode } from 'react';
 import { SaveFileParams } from './Api/types';
+import { FileWithPreview } from './Elements/Dropzone';
 export interface FileManagerProps {
   height?: number;
   selectItemCallback?: (filePath: string) => void;
@@ -50,7 +51,10 @@ export interface Operations {
   handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
   handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleEditFile: (selectedFile: FileType,selectedFolder: FolderList) => void;
-  handleToggleFullScreen: ()=>void
+  handleToggleFullScreen: ()=>void,
+  handleToggleUploadPopUp: ()=> void,
+  handleUploadFiles:(files: FileWithPreview[], selectedFolder: FolderList )=>void,
+  handlingHistory :(historyInfo: HistoryStep, index: number)=> void,
 }
 export interface Message {
     title: string;

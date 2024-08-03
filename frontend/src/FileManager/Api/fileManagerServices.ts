@@ -125,6 +125,10 @@ export const saveFile = async ({
 
 export const uploadFile = async (body: any): Promise<any> => {
   return axiosInstance
-    .post("/upload", body)
+    .post("upload", body, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+  })
     .then((response) => response.data);
 };

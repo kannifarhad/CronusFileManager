@@ -5,7 +5,8 @@ import {
   HistoryStep, FolderList, Message, BufferedItemsType, ItemMoveActionTypeEnum, 
   ItemsList, FileType, 
   ItemExtensionCategoryFilter,
-  ItemType
+  ItemType,
+  Operations
 } from "../types";
 import { ActionTypes } from '../ContextStore/types';
 import { 
@@ -18,13 +19,14 @@ import { SaveFileParams } from "../Api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
 import mainconfig from '../../Data/Config';
 
-export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dispatch: any, selectItemCallback: ((filePath: string) => void) | undefined,}) => {
+export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dispatch: any, selectItemCallback: ((filePath: string) => void) | undefined}): Operations => {
 
   const setMessage = useCallback((message: Omit<Message, 'id'>) => {
     dispatch({
       type: ActionTypes.SET_MESSAGES,
       payload: {
         id: String(Date.now()),
+        ...message,
       },
     });
   }, [dispatch]);
@@ -45,7 +47,7 @@ export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dis
     });
   },[dispatch]);
 
-  const operations = useMemo(() => ({
+  const operations:Operations = useMemo(() => ({
     handleSelectFolder: (folder: FolderType, history: boolean = false, clearBuffer: boolean = false, showMessage: boolean = true) => {
       dispatch({
         type: ActionTypes.SET_SELECTED_FOLDER,
@@ -518,40 +520,6 @@ export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dis
         }
       });
     },
-
-    handleDragEnd: (result: DropResult) => {
-      dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-      try {
-        // let files = [];
-            // let destination;
-            // props.filesList.forEach(file => {
-            //   if(file.id === result.draggableId){
-            //     files = [file.path];
-            //   }
-            //   if(file.id === result.destination.droppableId){
-            //     destination = file.path;
-            //   }
-            // });
-    
-            // if(destination !== undefined && files.length !== 0){
-            //     props.pasteFiles(files, 'cut', destination).then(result =>{
-            //         operations.handleReload();
-            //         setMessages([{
-            //             title: `File Successfully Moved`,
-            //             type:'success',
-            //             message: 'File that you dragged successfully moved',
-            //             timer: 3000,
-            //         }]);
-            //     }).catch((error)=>{
-                  
-            //     });
-            // }
-      } catch (error) {
-        console.error('Error happened while dropping item', error);
-      } finally {
-        dispatch({ type: ActionTypes.SET_LOADING, payload: false });
-      }
-    },
     handleGetInfo: (selectedFile: Items) => {
       const handleClose = ()=> dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
       const isImage = selectedFile.type === ItemType.FILE && checkSelectedFileType(ItemExtensionCategoryFilter.IMAGE, selectedFile);
@@ -604,7 +572,65 @@ export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dis
     },
     handleToggleUploadPopUp:()=>{
       dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: null });
-    }
+    },
+    
+    handleUploadFiles:(files, selectedFolder) => {
+      const handleCloseEdit = () => dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: null });
+
+      const formData = new FormData();
+      formData.append('path', selectedFolder.path);
+      files.forEach((file) => {
+        formData.append('files', file, file.name);
+      });
+
+      uploadFile(formData)
+        .then(() => {
+          handleCloseEdit();
+          setTimeout(()=> operations.handleSelectFolder(selectedFolder, true, true, false), 1000);
+          setMessage(
+            {
+              title: `File upload`,
+              type: "success",
+              message: <>File had been successfully uploaded into <strong>{selectedFolder.name}</strong> folder </>,
+            },
+          );
+        })
+        .catch(error => handleApiError(error, `Error happened while uploading files.`));
+    },
+
+    handleDragEnd: (result: DropResult) => {
+      dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+      try {
+        // let files = [];
+            // let destination;
+            // props.filesList.forEach(file => {
+            //   if(file.id === result.draggableId){
+            //     files = [file.path];
+            //   }
+            //   if(file.id === result.destination.droppableId){
+            //     destination = file.path;
+            //   }
+            // });
+    
+            // if(destination !== undefined && files.length !== 0){
+            //     props.pasteFiles(files, 'cut', destination).then(result =>{
+            //         operations.handleReload();
+            //         setMessages([{
+            //             title: `File Successfully Moved`,
+            //             type:'success',
+            //             message: 'File that you dragged successfully moved',
+            //             timer: 3000,
+            //         }]);
+            //     }).catch((error)=>{
+                  
+            //     });
+            // }
+      } catch (error) {
+        console.error('Error happened while dropping item', error);
+      } finally {
+        dispatch({ type: ActionTypes.SET_LOADING, payload: false });
+      }
+    },
   }),
   [dispatch, setMessage, handleApiError]
 );
