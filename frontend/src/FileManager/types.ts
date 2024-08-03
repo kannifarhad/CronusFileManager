@@ -29,7 +29,7 @@ export interface Operations {
   handleContextClick: (args: { item: Items | null, event: React.MouseEvent, menuType: ContextMenuTypeEnum}) => void;
   handleClearBuffer: () => void;
   handleContextClose: (event: React.MouseEvent) => void;
-  handleDragEnd: (result: DropResult) => void;
+  handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => void,
   handleSetViewItemType: (view: ViewTypeEnum)=> void,
   handleSetOrder: (order: OrderByType)=> void,
   handleSetThumbView: (view: ImagesThumbTypeEnum)=> void,

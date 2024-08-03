@@ -586,7 +586,8 @@ export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dis
       uploadFile(formData)
         .then(() => {
           handleCloseEdit();
-          setTimeout(()=> operations.handleSelectFolder(selectedFolder, true, true, false), 1000);
+          //setTimeout(()=> operations.handleSelectFolder(selectedFolder, true, true, false), 1000);
+          operations.handleSelectFolder(selectedFolder, true, true, false);
           setMessage(
             {
               title: `File upload`,
@@ -598,38 +599,21 @@ export const useFileManagerOperations = ({ dispatch , selectItemCallback }: {dis
         .catch(error => handleApiError(error, `Error happened while uploading files.`));
     },
 
-    handleDragEnd: (result: DropResult) => {
+    handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => {
       dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-      try {
-        // let files = [];
-            // let destination;
-            // props.filesList.forEach(file => {
-            //   if(file.id === result.draggableId){
-            //     files = [file.path];
-            //   }
-            //   if(file.id === result.destination.droppableId){
-            //     destination = file.path;
-            //   }
-            // });
-    
-            // if(destination !== undefined && files.length !== 0){
-            //     props.pasteFiles(files, 'cut', destination).then(result =>{
-            //         operations.handleReload();
-            //         setMessages([{
-            //             title: `File Successfully Moved`,
-            //             type:'success',
-            //             message: 'File that you dragged successfully moved',
-            //             timer: 3000,
-            //         }]);
-            //     }).catch((error)=>{
-                  
-            //     });
-            // }
-      } catch (error) {
-        console.error('Error happened while dropping item', error);
-      } finally {
-        dispatch({ type: ActionTypes.SET_LOADING, payload: false });
-      }
+      const files: string[] = draggedItems.map((item: Items) => item.path);
+
+      cutFilesToFolder({ items: files, destination: destination.path })
+        .then(() => {
+          operations.handleSelectFolder(destination, true, true, false);
+          setMessage({
+            title: `Files successfully moved`,
+            type: "success",
+            message: "",
+            timer: 1500,
+          });
+        })
+        .catch(error => handleApiError(error, "Error moving items"));
     },
   }),
   [dispatch, setMessage, handleApiError]
