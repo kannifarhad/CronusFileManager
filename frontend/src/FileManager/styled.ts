@@ -1,5 +1,6 @@
 import { styled } from "@mui/system";
-import { Box, BoxProps, } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
+
 interface FileManagerWrapperProps extends BoxProps {
   expanded: boolean;
 }
@@ -19,8 +20,8 @@ export const FileManagerWrapper = styled(Box, {
     };
   }
   return {
-    height: '500px',
-    display: 'flex',
-    alignItems: 'stretch',
+    height: "500px",
+    display: "flex",
+    alignItems: "stretch",
   };
 });

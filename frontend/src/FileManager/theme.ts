@@ -1,12 +1,37 @@
-import * as React from "react";
-import { createTheme } from "@mui/system";
+import React from "react";
+import { createTheme } from "@mui/material/styles";
 
-export const customTheme = createTheme({
+declare module "@mui/material/styles" {
+  interface Theme {
+    status: {
+      danger: React.CSSProperties["color"];
+    };
+  }
+  interface ThemeOptions {
+    status?: {
+      danger?: React.CSSProperties["color"];
+    };
+  }
+}
+
+const theme = createTheme({
+  status: {
+    danger: "#ff0000",
+  },
   palette: {
-    mode: 'light',
     primary: {
-      main: "#1976d2",
-      contrastText: "white",
+      main: "#556cd6",
+    },
+    secondary: {
+      main: "#19857b",
+    },
+    error: {
+      main: "#f00",
+    },
+    background: {
+      default: "#fff",
     },
   },
 });
+
+export default theme;

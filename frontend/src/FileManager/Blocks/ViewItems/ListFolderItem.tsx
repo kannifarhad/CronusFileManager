@@ -1,34 +1,63 @@
 import React, { memo, useMemo, useCallback } from "react";
+import { TableRow, Checkbox } from "@mui/material";
 import {
-  TableRow,
-  Checkbox,
-} from "@mui/material";
-import { Droppable, Draggable, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from "react-beautiful-dnd";
-import { toAbsoluteUrl, convertDate, formatBytes } from "../../helpers";
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DraggableStateSnapshot,
+  DroppableProvided,
+  DroppableStateSnapshot,
+} from "react-beautiful-dnd";
+import {
+  toAbsoluteUrl,
+  convertDate,
+  formatBytes,
+  classNames,
+} from "../../helpers";
 import config from "../../Elements/config.json";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { FolderType,  ItemMoveActionTypeEnum, ContextMenuTypeEnum  } from "../../types";
+import {
+  FolderType,
+  ItemMoveActionTypeEnum,
+  ContextMenuTypeEnum,
+} from "../../types";
 import { StyledListTableCell } from "./styled";
-import { classNames } from "../../helpers";
 
 const ListFolderItem: React.FC<{
   item: FolderType;
   index: number;
 }> = ({ item, index }) => {
-  const { operations:{ handleContextClick, handleSelectFolder, handleAddSelected}, selectedFiles, bufferedItems } = useFileManagerState();
+  const {
+    operations: { handleContextClick, handleSelectFolder, handleAddSelected },
+    selectedFiles,
+    bufferedItems,
+  } = useFileManagerState();
 
-  const handleContextMenuClick = useCallback((item: FolderType, event: React.MouseEvent) => {
-    handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
-  },[handleContextClick]);
+  const handleContextMenuClick = useCallback(
+    (item: FolderType, event: React.MouseEvent) => {
+      handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
+    },
+    [handleContextClick],
+  );
 
-  const doubleClick = useCallback((item: FolderType) => {
-    handleSelectFolder(item, true);
-  },[handleSelectFolder]);
+  const doubleClick = useCallback(
+    (item: FolderType) => {
+      handleSelectFolder(item, true);
+    },
+    [handleSelectFolder],
+  );
 
-  const isCuted = useMemo(() => bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item)
-  , [item, bufferedItems]);
+  const isCuted = useMemo(
+    () =>
+      bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
+      bufferedItems.files.has(item),
+    [item, bufferedItems],
+  );
 
-  const isSelected = useMemo(()=> selectedFiles.has(item),[selectedFiles, item]);
+  const isSelected = useMemo(
+    () => selectedFiles.has(item),
+    [selectedFiles, item],
+  );
 
   // const getStyle = (style: React.CSSProperties, snapshot: DroppableStateSnapshot) => {
   //   if (!snapshot.isDraggingOver) {
@@ -46,10 +75,10 @@ const ListFolderItem: React.FC<{
         <TableRow
           ref={provided.innerRef}
           className={classNames({
-            'tableListRow': true,
-            'selected': selectedFiles?.has(item),
-            'selectmodeTable': selectedFiles?.size > 0,
-            'fileCuted': isCuted,
+            tableListRow: true,
+            selected: selectedFiles?.has(item),
+            selectmodeTable: selectedFiles?.size > 0,
+            fileCuted: isCuted,
           })}
           onDoubleClick={() => doubleClick(item)}
           onContextMenu={(event) => handleContextMenuClick(item, event)}
@@ -61,7 +90,10 @@ const ListFolderItem: React.FC<{
             type="CONTAINERITEM"
             isCombineEnabled
           >
-            {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
+            {(
+              provided: DroppableProvided,
+              snapshot: DroppableStateSnapshot,
+            ) => (
               <>
                 <StyledListTableCell>
                   <Checkbox

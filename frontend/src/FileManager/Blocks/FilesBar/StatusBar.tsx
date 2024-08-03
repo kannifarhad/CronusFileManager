@@ -4,7 +4,11 @@ import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { ItemMoveActionTypeEnum } from "../../types";
 
 const StatusBar: FC = () => {
-  const { operations :{ handleClearBuffer}, bufferedItems, selectedFiles }  = useFileManagerState();
+  const {
+    operations: { handleClearBuffer },
+    bufferedItems,
+    selectedFiles,
+  } = useFileManagerState();
   const selectIsActive = selectedFiles.size > 0 || bufferedItems.files.size > 0;
 
   return (
@@ -18,11 +22,17 @@ const StatusBar: FC = () => {
         {bufferedItems.files.size > 0 && (
           <Box className="text">
             <b>{bufferedItems.files.size}</b>
-            {bufferedItems.type === ItemMoveActionTypeEnum.CUT ? "cut" : "copied"} items in buffer (
-            <Button href="#" onClick={(e: MouseEvent<HTMLAnchorElement>)=>{
-              e.preventDefault();
-              handleClearBuffer();
-            }}>
+            {bufferedItems.type === ItemMoveActionTypeEnum.CUT
+              ? "cut"
+              : "copied"}{" "}
+            items in buffer (
+            <Button
+              href="#"
+              onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+                e.preventDefault();
+                handleClearBuffer();
+              }}
+            >
               Clear
             </Button>
             )

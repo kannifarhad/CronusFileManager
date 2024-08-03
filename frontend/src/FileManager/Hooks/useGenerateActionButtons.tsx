@@ -1,24 +1,63 @@
-import {  useMemo } from "react";
-import { ButtonObject, ViewTypeEnum, ItemType, ItemExtensionCategoryFilter, Items, Operations } from "../types";
+import { useMemo } from "react";
+import {
+  ButtonObject,
+  ViewTypeEnum,
+  ItemType,
+  ItemExtensionCategoryFilter,
+  // Operations,
+  CreateContextType,
+  FileManagerState,
+} from "../types";
 import { checkSelectedFileType } from "../helpers";
-import {  CreateContextType, FileManagerState } from '../ContextStore/types';
 
-type GenerateButtonsStateProps = Pick<FileManagerState, 'selectedFiles' | 'contextMenu' | 'filesList' | 'itemsViewType' | 'bufferedItems' | 'history' | 'selectedFolder' | 'foldersList'>;
-const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: CreateContextType['contextMenu'], selectedFiles: CreateContextType['selectedFiles'])=>{
-  if(selectedFiles.size !== 1 && !Boolean(contextMenu?.item)) return false;
+type GenerateButtonsStateProps = Pick<
+  FileManagerState,
+  | "selectedFiles"
+  | "contextMenu"
+  | "filesList"
+  | "itemsViewType"
+  | "bufferedItems"
+  | "history"
+  | "selectedFolder"
+  | "foldersList"
+>;
+const isSelectedFileType = (
+  type: ItemExtensionCategoryFilter,
+  contextMenu: CreateContextType["contextMenu"],
+  selectedFiles: CreateContextType["selectedFiles"],
+) => {
+  if (selectedFiles.size !== 1 && !contextMenu?.item) return false;
   const selectedItem = contextMenu?.item ?? Array.from(selectedFiles)[0];
-  if(selectedItem && selectedItem.type !==  ItemType.FILE) return false;
+  if (selectedItem && selectedItem.type !== ItemType.FILE) return false;
   return checkSelectedFileType(type, selectedItem);
 };
 
 // export const generateAllButtons = (operations: Operations, state: FileManagerState): ButtonObject => {
-  export const generateAllButtons = (operations: any, state: GenerateButtonsStateProps): ButtonObject => {
-  const { selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
-  const isItemFocusedOrSelected = ((contextMenu, selectedFiles)=>
-    Boolean(contextMenu?.item) || selectedFiles.size === 1
-  )(contextMenu, selectedFiles)
-  
-  const isSelectedItemImage = isSelectedFileType(ItemExtensionCategoryFilter.IMAGE, contextMenu, selectedFiles)
+export const generateAllButtons = (
+  operations: any,
+  state: GenerateButtonsStateProps,
+): ButtonObject => {
+  const {
+    selectedFiles,
+    contextMenu,
+    filesList,
+    itemsViewType,
+    bufferedItems,
+    history,
+    selectedFolder,
+    foldersList,
+  } = state;
+  const isItemFocusedOrSelected = ((contextMenu, selectedFiles) =>
+    Boolean(contextMenu?.item) || selectedFiles.size === 1)(
+    contextMenu,
+    selectedFiles,
+  );
+
+  const isSelectedItemImage = isSelectedFileType(
+    ItemExtensionCategoryFilter.IMAGE,
+    contextMenu,
+    selectedFiles,
+  );
 
   const allButtons: ButtonObject = {
     copy: {
@@ -36,29 +75,33 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
     paste: {
       title: "Paste",
       icon: "icon-paste",
-      onClick: ()=>operations.handlePaste(bufferedItems, selectedFolder),
+      onClick: () => operations.handlePaste(bufferedItems, selectedFolder),
       disabled: !(bufferedItems.files.size > 0),
     },
     delete: {
       title: "Delete",
       icon: "icon-trash",
       onClick: () => {
-        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
-        operations.handleDelete(items, selectedFolder)
+        const items =
+          selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
+        operations.handleDelete(items, selectedFolder);
       },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     emptyFolder: {
       title: "Empty Folder",
       icon: "icon-delete-folder",
-      onClick: ()=>operations.handleEmptyFolder(selectedFolder),
+      onClick: () => operations.handleEmptyFolder(selectedFolder),
       disabled: !selectedFolder,
     },
     rename: {
       title: "Rename",
       icon: "icon-text",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handleRename(item, selectedFolder);
       },
       disabled: !isItemFocusedOrSelected,
@@ -66,33 +109,31 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
     newFile: {
       title: "Few File",
       icon: "icon-add",
-      onClick: ()=>operations.handleNewFile(selectedFolder),
+      onClick: () => operations.handleNewFile(selectedFolder),
       disabled: !selectedFolder,
-
     },
     newFolder: {
       title: "New Folder",
       icon: "icon-add-folder",
-      onClick: ()=>operations.handleNewFolder(selectedFolder),
+      onClick: () => operations.handleNewFolder(selectedFolder),
       disabled: !selectedFolder,
-
     },
     goForwad: {
       title: "Forwad",
       icon: "icon-forward",
-      onClick: ()=>operations.handleGoForWard(history),
-        disabled: !(history.currentIndex + 1 < history.steps.length),
+      onClick: () => operations.handleGoForWard(history),
+      disabled: !(history.currentIndex + 1 < history.steps.length),
     },
     goParent: {
       title: "Go to parent folder",
       icon: "icon-backward",
-      onClick: ()=>operations.handleGotoParent(foldersList),
+      onClick: () => operations.handleGotoParent(foldersList),
       disabled: selectedFolder?.path === foldersList?.path,
     },
     goBack: {
       title: "Back",
       icon: "icon-backward",
-      onClick: ()=>operations.handleGoBackWard(history),
+      onClick: () => operations.handleGoBackWard(history),
       disabled: !(history.currentIndex > 0),
     },
     selectAll: {
@@ -111,39 +152,49 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       title: "Invert selection",
       icon: "icon-refresh",
       onClick: operations.handleInverseSelected,
-        disabled: !(
-          selectedFiles.size !== filesList.length &&
-          selectedFiles.size > 0
-        ),
+      disabled: !(
+        selectedFiles.size !== filesList.length && selectedFiles.size > 0
+      ),
     },
     reload: {
       title: "Reload",
       icon: "icon-refresh",
-      onClick: ()=>operations.handleSelectFolder(selectedFolder, true, true),
+      onClick: () => operations.handleSelectFolder(selectedFolder, true, true),
     },
     dubplicate: {
       title: "Duplicate",
       icon: "icon-layers",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handleDuplicate(item, selectedFolder);
       },
-      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.FILE, contextMenu, selectedFiles),
+      disabled: !isSelectedFileType(
+        ItemExtensionCategoryFilter.FILE,
+        contextMenu,
+        selectedFiles,
+      ),
     },
     editImage: {
       title: "Resize & Rotate",
       icon: "icon-paint-palette",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handleEditFile(item, selectedFolder);
       },
-      disabled: !isSelectedItemImage
+      disabled: !isSelectedItemImage,
     },
     createZip: {
       title: "Create archive",
       icon: "icon-zip",
       onClick: () => {
-        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
+        const items =
+          selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
         operations.handleCreateZip(items, selectedFolder);
       },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
@@ -152,10 +203,17 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       title: "Extract files from archive",
       icon: "icon-zip-1",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handleExtractZip(item, selectedFolder);
       },
-      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.ARCHIVE, contextMenu, selectedFiles),
+      disabled: !isSelectedFileType(
+        ItemExtensionCategoryFilter.ARCHIVE,
+        contextMenu,
+        selectedFiles,
+      ),
     },
     gridView: {
       title: "Grid view",
@@ -173,7 +231,10 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       title: "Get Info",
       icon: "icon-information",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handleGetInfo(item);
       },
       disabled: !isItemFocusedOrSelected,
@@ -182,16 +243,22 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       title: "View",
       icon: "icon-view",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handlePreview(item);
       },
-      disabled: !isSelectedItemImage
+      disabled: !isSelectedItemImage,
     },
     download: {
       title: "Download File",
       icon: "icon-download-1",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handleDownload(item);
       },
       disabled: !isItemFocusedOrSelected,
@@ -219,10 +286,17 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       title: "Edit File",
       icon: "icon-pencil",
       onClick: () => {
-        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
+        const item =
+          selectedFiles.size > 0
+            ? Array.from(selectedFiles)[0]
+            : contextMenu?.item;
         operations.handleEditFile(item, selectedFolder);
       },
-      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.TEXT,contextMenu, selectedFiles),
+      disabled: !isSelectedFileType(
+        ItemExtensionCategoryFilter.TEXT,
+        contextMenu,
+        selectedFiles,
+      ),
     },
     selectFile: {
       title: "Select file",
@@ -230,14 +304,50 @@ const isSelectedFileType = (type: ItemExtensionCategoryFilter, contextMenu: Crea
       onClick: operations.handleReturnCallBack,
       //   disabled: typeof selectCallback === "undefined",
     },
-
   };
   return allButtons;
 };
 
-export const useGenerateActionButtons = ({ state }: { state: CreateContextType}) => {
-  const { operations, selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } = state;
-  const allButtons = useMemo(() =>  generateAllButtons(operations, {selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList }), [operations, selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList ]);
+export const useGenerateActionButtons = ({
+  state,
+}: {
+  state: CreateContextType;
+}) => {
+  const {
+    operations,
+    selectedFiles,
+    contextMenu,
+    filesList,
+    itemsViewType,
+    bufferedItems,
+    history,
+    selectedFolder,
+    foldersList,
+  } = state;
+  const allButtons = useMemo(
+    () =>
+      generateAllButtons(operations, {
+        selectedFiles,
+        contextMenu,
+        filesList,
+        itemsViewType,
+        bufferedItems,
+        history,
+        selectedFolder,
+        foldersList,
+      }),
+    [
+      operations,
+      selectedFiles,
+      contextMenu,
+      filesList,
+      itemsViewType,
+      bufferedItems,
+      history,
+      selectedFolder,
+      foldersList,
+    ],
+  );
 
   const aviableButtons = useMemo(
     () => ({
@@ -307,7 +417,7 @@ export const useGenerateActionButtons = ({ state }: { state: CreateContextType})
         [allButtons.gridView, allButtons.listView, allButtons.fullScreen],
       ],
     }),
-    [allButtons]
+    [allButtons],
   );
 
   return aviableButtons;

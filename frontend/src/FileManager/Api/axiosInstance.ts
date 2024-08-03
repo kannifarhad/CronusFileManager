@@ -5,7 +5,7 @@ export const createAxiosInstance = (): AxiosInstance => {
 
   if (!baseURL) {
     throw new Error(
-      "Base URL is not defined. Please set REACT_APP_API_BASE_URL in your .env file."
+      "Base URL is not defined. Please set REACT_APP_API_BASE_URL in your .env file.",
     );
   }
 
@@ -20,25 +20,21 @@ export const createAxiosInstance = (): AxiosInstance => {
 
   // Optionally, you can add interceptors to handle requests or responses
   instance.interceptors.request.use(
-    (config) => {
+    (config) =>
       // Modify request configuration here if needed
-      return config;
-    },
-    (error) => {
+      config,
+    (error) =>
       // Handle request error here
-      return Promise.reject(error);
-    }
+      Promise.reject(error),
   );
 
   instance.interceptors.response.use(
-    (response) => {
+    (response) =>
       // Handle response data here
-      return response;
-    },
-    (error) => {
+      response,
+    (error) =>
       // Handle response error here
-      return Promise.reject(error);
-    }
+      Promise.reject(error),
   );
 
   return instance;

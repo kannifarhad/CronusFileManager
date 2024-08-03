@@ -1,30 +1,54 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { Tooltip } from "@mui/material";
-import { Droppable, Draggable, DraggableProvided, DraggableStateSnapshot, DroppableProvided, DroppableStateSnapshot } from "react-beautiful-dnd";
-import ItemSelectButton from './ItemSelectButton';
-import { toAbsoluteUrl, convertDate } from "../../../Utils/Utils";
-import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from './styled';
+import {
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DraggableStateSnapshot,
+  DroppableProvided,
+  DroppableStateSnapshot,
+} from "react-beautiful-dnd";
+import ItemSelectButton from "./ItemSelectButton";
+import { toAbsoluteUrl, convertDate, classNames } from "../../helpers";
+import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from "./styled";
 import config from "../../Elements/config.json";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { FolderType,  ItemMoveActionTypeEnum, ContextMenuTypeEnum  } from "../../types";
-import { classNames } from "../../helpers";
+import {
+  FolderType,
+  ItemMoveActionTypeEnum,
+  ContextMenuTypeEnum,
+} from "../../types";
 
-const FolderItem:  React.FC<{
+const FolderItem: React.FC<{
   item: FolderType;
   index: number;
 }> = ({ item, index }) => {
-  const { operations:{ handleContextClick, handleSelectFolder}, selectedFiles, bufferedItems } = useFileManagerState();
+  const {
+    operations: { handleContextClick, handleSelectFolder },
+    selectedFiles,
+    bufferedItems,
+  } = useFileManagerState();
 
-  const handleContextMenuClick = useCallback((item: FolderType, event: React.MouseEvent) => {
-    handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
-  },[handleContextClick]);
+  const handleContextMenuClick = useCallback(
+    (item: FolderType, event: React.MouseEvent) => {
+      handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
+    },
+    [handleContextClick],
+  );
 
-  const doubleClick = useCallback((item: FolderType) => {
-    handleSelectFolder(item);
-  },[handleSelectFolder]);
+  const doubleClick = useCallback(
+    (item: FolderType) => {
+      handleSelectFolder(item);
+    },
+    [handleSelectFolder],
+  );
 
-  const isCuted = useMemo(() => bufferedItems.type === ItemMoveActionTypeEnum.CUT  && bufferedItems.files.has(item)
-  , [item, bufferedItems]);
+  const isCuted = useMemo(
+    () =>
+      bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
+      bufferedItems.files.has(item),
+    [item, bufferedItems],
+  );
 
   // const getStyle = (style: React.CSSProperties, snapshot: DroppableStateSnapshot): React.CSSProperties => {
   //   if (!snapshot.isDraggingOver) {
@@ -37,23 +61,34 @@ const FolderItem:  React.FC<{
   // };
 
   return (
-    <Draggable index={index} draggableId={item.id} isDragDisabled={item.private}>
+    <Draggable
+      index={index}
+      draggableId={item.id}
+      isDragDisabled={item.private}
+    >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
         <StyledFileItem
           ref={provided.innerRef}
           className={classNames({
-            'selected': selectedFiles?.has(item),
-            'selectmode': selectedFiles?.size > 0,
-            'notDragging': !snapshot.isDragging,
-            'fileCuted': isCuted,
+            selected: selectedFiles?.has(item),
+            selectmode: selectedFiles?.size > 0,
+            notDragging: !snapshot.isDragging,
+            fileCuted: isCuted,
           })}
           onDoubleClick={() => doubleClick(item)}
           onContextMenu={(event) => handleContextMenuClick(item, event)}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <Droppable droppableId={item.id} type="CONTAINERITEM" isCombineEnabled>
-            {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
+          <Droppable
+            droppableId={item.id}
+            type="CONTAINERITEM"
+            isCombineEnabled
+          >
+            {(
+              provided: DroppableProvided,
+              snapshot: DroppableStateSnapshot,
+            ) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}

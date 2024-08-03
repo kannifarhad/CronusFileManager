@@ -1,16 +1,23 @@
 import React, { memo } from "react";
 import { Divider } from "@mui/material";
-import { StyledContextMenu, StyledContextMenuItem } from "../../Elements/styled";
+import {
+  StyledContextMenu,
+  StyledContextMenuItem,
+} from "../../Elements/styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { ContextMenuTypeEnum } from "../../types";
 import useGenerateActionButtons from "../../Hooks/useGenerateActionButtons";
 
 const ContextMenu: React.FC = () => {
   const state = useFileManagerState();
-  const { operations: { handleContextClose }, contextMenu } = state;
-  const { file: fileButtons, container: containerButtons } = useGenerateActionButtons({ state }) 
+  const {
+    operations: { handleContextClose },
+    contextMenu,
+  } = state;
+  const { file: fileButtons, container: containerButtons } =
+    useGenerateActionButtons({ state });
 
-  if(!contextMenu) return null;
+  if (!contextMenu) return null;
 
   return (
     <StyledContextMenu
@@ -25,38 +32,37 @@ const ContextMenu: React.FC = () => {
           : undefined
       }
     >
-      {contextMenu.menuType === ContextMenuTypeEnum.ITEM ?
-        fileButtons.map((buttonGroup, index) => (
-          <React.Fragment key={index}>
-            {buttonGroup.map((button, index) => (
-              <StyledContextMenuItem
-                key={index}
-                disabled={button.disabled}
-                onClick={button.onClick}
-              >
-                <span className={`${button.icon}`}></span>
-                {button.title}
-              </StyledContextMenuItem>
-            ))}
-            {fileButtons.length !== index + 1 && <Divider />}
-          </React.Fragment>
-        )) : 
-        containerButtons.map((buttonGroup, index) => (
-          <React.Fragment key={index}>
-            {buttonGroup.map((button, index) => (
-              <StyledContextMenuItem
-                key={index}
-                disabled={button.disabled}
-                onClick={button.onClick}
-              >
-                <span className={`${button.icon}`}></span>
-                {button.title}
-              </StyledContextMenuItem>
-            ))}
-            {containerButtons.length !== index + 1 && <Divider />}
+      {contextMenu.menuType === ContextMenuTypeEnum.ITEM
+        ? fileButtons.map((buttonGroup, index) => (
+            <React.Fragment key={index}>
+              {buttonGroup.map((button, index) => (
+                <StyledContextMenuItem
+                  key={index}
+                  disabled={button.disabled}
+                  onClick={button.onClick}
+                >
+                  <span className={`${button.icon}`} />
+                  {button.title}
+                </StyledContextMenuItem>
+              ))}
+              {fileButtons.length !== index + 1 && <Divider />}
             </React.Fragment>
-        ))
-      }
+          ))
+        : containerButtons.map((buttonGroup, index) => (
+            <React.Fragment key={index}>
+              {buttonGroup.map((button, index) => (
+                <StyledContextMenuItem
+                  key={index}
+                  disabled={button.disabled}
+                  onClick={button.onClick}
+                >
+                  <span className={`${button.icon}`} />
+                  {button.title}
+                </StyledContextMenuItem>
+              ))}
+              {containerButtons.length !== index + 1 && <Divider />}
+            </React.Fragment>
+          ))}
     </StyledContextMenu>
   );
 };
