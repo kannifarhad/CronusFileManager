@@ -37,8 +37,8 @@ const limiter = rateLimit({
 
 app.use('*', limiter);
 
-app.use('/admin/fm', fileManager);
-app.use('/admin/uploads', express.static(__dirname + '/uploads'));
+app.use('/fm', fileManager);
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
