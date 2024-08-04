@@ -3,15 +3,27 @@
 <h1 style="text-align:center">Cronus File Manager</h1>
 </div>
 
-### What would be in next releases
- - React upgrade to 18 version
- - Extract icons from font and use it like SVG. In this way developers can easly replace them with their own icons or add new ones.
- - Implement Virtual scroll loading. UI had some performance issues if folder was containing a lot of files (>500) and this feature will fix that issue.
- - Replace redux with react context (Nowadays a lot of people consider using other libraries rather than redux and because of that i had considered to switch to react features so nobody would face technical challenges with replacing it with their stack)
- - 100% usage od Typescript
- - Fixing perforamce issues and refacotring all structure
- - Add support for S3 bucket - interface would be same and user would be able interact with S3 bucket as its ordinary file storage
- - Refactor backend and add swagger documentation.
+
+# Upcoming Release Highlights
+
+We are excited to announce the upcoming release of our library, which will bring significant upgrades and new features to enhance your development experience.
+
+## Key Updates:
+
+- **React Upgrade to Version 18**: We will upgrade to React 18, allowing you to take advantage of the latest React features and improvements.
+- **Icon Management Overhaul**: Icons will be extracted from fonts and provided as SVGs. This will allow developers to easily replace existing icons or add new ones, providing greater flexibility and customization.
+- **Enhanced Drag and Drop**: Support for dragging and dropping multiple files will be added, streamlining the file upload process.
+- **Folder Tree Upload**: You will be able to upload an entire folder tree, including all files and subfolders, making bulk uploads more efficient.
+- **Direct File List Upload**: Files will be uploadable by directly dropping them into the file list area, simplifying the upload process.
+- **Virtual Scroll Loading**: We will implement virtual scroll loading to address performance issues when dealing with large folders containing more than 500 files. This feature will ensure a smoother and more responsive UI.
+- **State Management Transition**: We will replace Redux with React Context. This change aligns with modern state management preferences and ensures compatibility with various stacks without technical challenges.
+- **100% TypeScript Usage**: The entire codebase will be fully written in TypeScript, enhancing type safety and developer experience.
+- **Bug Fixes and Performance Improvements**: We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
+- **S3 Bucket Support**: We will add support for Amazon S3 buckets. Users will be able to interact with S3 storage as if it were a regular file storage system, with the same user interface.
+- **Backend Refactor and Swagger Documentation**: The backend will be refactored and will include Swagger documentation, providing clear and comprehensive API documentation.
+
+We believe these updates will significantly improve your development workflow and provide a more robust and flexible platform for your projects. Thank you for your continued support!
+
 
 
 Filemanager with React &amp; Nodejs 

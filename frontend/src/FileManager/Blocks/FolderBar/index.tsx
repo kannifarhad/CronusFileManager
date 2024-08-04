@@ -7,23 +7,14 @@ import {
 import MenuItem from "./MenuItem";
 import {
   useFileManagerState,
-  useFileManagerDispatch,
 } from "../../ContextStore/FileManagerContext";
-import { getFolderTree } from "../../Api/fileManagerServices";
-import { ActionTypes } from "../../types";
 
 function FolderBar() {
-  const dispatch = useFileManagerDispatch();
-  const { foldersList } = useFileManagerState();
+  const { foldersList, operations:{ handleReloadFolderTree } } = useFileManagerState();
 
   useEffect(() => {
-    getFolderTree().then((result) => {
-      dispatch({
-        type: ActionTypes.SET_FOLDERS_LIST,
-        payload: result,
-      });
-    });
-  }, [dispatch]);
+    handleReloadFolderTree();
+  }, [handleReloadFolderTree]);
 
   return (
     <FileManagerFolderBarGrid item xs={3} sm={2}>

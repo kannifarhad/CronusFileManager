@@ -1,6 +1,5 @@
 import React, { useState, ForwardRefRenderFunction, memo } from "react";
 import {
-  Button,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -12,18 +11,34 @@ import InputField from "./InputField";
 import { StyledPopUpDialog } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
 import { PopupData } from "../types";
+import CustomButtonGroup from "./ButtonGroup";
 
 const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (
   props,
   ref,
 ) => <Zoom ref={ref} {...props} />;
 
-const AlertDialog: React.FC<PopupData> = (props) => {
-  const { title, description, handleClose, handleSubmit, nameInputSets } =
-    props;
+const AlertDialog: React.FC<PopupData> = ({ title, description, nameInputSets, actionButtons }) => {
   const [renameText, setRenameText] = useState<string>(
     nameInputSets?.value ?? "",
   );
+
+  const ActionButtonsList = () => {
+    if (!Array.isArray(actionButtons) || actionButtons.length === 0)
+      return null;
+    if (nameInputSets) {
+      return (
+        <CustomButtonGroup
+          buttons={actionButtons.map((button) => ({
+            ...button,
+            onClick: () => button.onClick(renameText),
+          }))}
+        />
+      );
+    }
+    return <CustomButtonGroup buttons={actionButtons} />;
+  };
+
   return (
     <>
       <DialogTitle className="dialogTitle">{title}</DialogTitle>
@@ -51,18 +66,7 @@ const AlertDialog: React.FC<PopupData> = (props) => {
       </DialogContent>
 
       <DialogActions className="dialogButtons">
-        <Button onClick={handleClose} variant="contained" color="secondary">
-          Cancel
-        </Button>
-        {handleSubmit && (
-          <Button
-            onClick={() => handleSubmit(renameText)}
-            variant="contained"
-            color="primary"
-          >
-            Submit
-          </Button>
-        )}
+        <ActionButtonsList />
       </DialogActions>
     </>
   );

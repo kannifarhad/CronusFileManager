@@ -34,6 +34,7 @@ import {
   uploadFile,
   unzip,
   archive,
+  getFolderTree,
 } from "../Api/fileManagerServices";
 import { SaveFileParams } from "../Api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
@@ -117,6 +118,15 @@ export const useFileManagerOperations = ({
           .catch((error) => handleApiError(error, "Error loading files"));
       },
 
+      handleReloadFolderTree: ()=>{
+        getFolderTree().then((result) => {
+          dispatch({
+            type: ActionTypes.SET_FOLDERS_LIST,
+            payload: result,
+          });
+        });
+      },
+
       handleAddSelected: (item: Items) => {
         dispatch({
           type: ActionTypes.ADD_SELECTED_FILE,
@@ -146,9 +156,7 @@ export const useFileManagerOperations = ({
         });
       },
 
-      handleContextClose: (event: React.MouseEvent) => {
-        event.stopPropagation();
-        event.preventDefault();
+      handleContextClose: () => {
         dispatch({
           type: ActionTypes.SET_CONTEXT_MENU,
           payload: null,
@@ -300,6 +308,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Delete files and folders request",
                 type: "success",
+                timer:1500,
                 message: "All files and folders successfully deleted",
               });
             })
@@ -312,8 +321,22 @@ export const useFileManagerOperations = ({
             title: `Deleting selected files and folders: ${selectedFiles.size} items`,
             description:
               "All selected files and folder will remove without recover",
-            handleClose,
-            handleSubmit: handleDeleteSubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-trash",
+                label: "Yes, Delete",
+                onClick: handleDeleteSubmit,
+                variant: "outlined",
+                color: "error",
+              },
+            ],
           },
         });
       },
@@ -333,6 +356,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Empty folder request",
                 type: "success",
+                timer:1500,
                 message: "All files and folders successfully removed",
               });
             })
@@ -345,8 +369,22 @@ export const useFileManagerOperations = ({
             title: "Empty Folder",
             description:
               "Are you sure, you want to empty this folder? All content will be lost without recover!",
-            handleClose,
-            handleSubmit: handleEmptySubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-trash",
+                label: "Yes, Delete",
+                onClick: handleEmptySubmit,
+                variant: "outlined",
+                color: "error",
+              },
+            ],
           },
         });
       },
@@ -358,22 +396,14 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          dispatch({
-            type: ActionTypes.SET_POPUP_DATA,
-            payload: null,
-          });
-          dispatch({
-            type: ActionTypes.SET_LOADING,
-            payload: true,
-          });
-
           createNewFile({ path: selectedFolder.path, file: fileName })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
                 title: "Create new file",
                 type: "success",
-                message: `Successfully created new file with the name: ${fileName}`,
+                timer:1500,
+                message: <>Successfully created new file with the name: <strong>${fileName}</strong></>,
               });
             })
             .catch((error) =>
@@ -386,8 +416,22 @@ export const useFileManagerOperations = ({
             title: "Creating new file",
             description:
               "Only allowed file extensions can be created. Otherwise will be ignored by server.",
-            handleClose,
-            handleSubmit: handleNewFileSubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-add",
+                label: "Create file",
+                onClick: handleNewFileSubmit,
+                variant: "outlined",
+                color: "success",
+              },
+            ],
             nameInputSets: {
               label: "File Name",
               value: "new_file.txt",
@@ -405,11 +449,13 @@ export const useFileManagerOperations = ({
 
           createNewFolder({ path: selectedFolder.path, folder: folderName })
             .then(() => {
+              operations.handleReloadFolderTree();
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
                 title: "Create new folder",
                 type: "success",
-                message: `Successfully created new folder with the name: ${folderName}`,
+                timer:1500,
+                message: <>Successfully created new folder with the name: <strong>${folderName}</strong></>,
               });
             })
             .catch((error) =>
@@ -423,8 +469,22 @@ export const useFileManagerOperations = ({
             title: "Creating new folder",
             description:
               "Dont use spaces, localised symbols or emojies. This can affect problems",
-            handleClose,
-            handleSubmit: handleNewFolderSubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-add",
+                label: "Create folder",
+                onClick: handleNewFolderSubmit,
+                variant: "outlined",
+                color: "success",
+              },
+            ],
             nameInputSets: {
               label: "Folder Name",
               value: "newfolder",
@@ -446,6 +506,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Renaming selected item",
                 type: "success",
+                timer:1500,
                 message: (
                   <>
                     Successfully renamed selected item from
@@ -466,8 +527,22 @@ export const useFileManagerOperations = ({
             title: `Renaming ${selectedFile.name}`,
             description:
               "Dont use spaces, localised symbols or emojies. This can affect problems",
-            handleClose,
-            handleSubmit: handleRenameSubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-add",
+                label: "Yes, rename",
+                onClick: handleRenameSubmit,
+                variant: "outlined",
+                color: "success",
+              },
+            ],
             nameInputSets: {
               label: "New Name",
               value: selectedFile.name,
@@ -488,7 +563,8 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Duplicating selected item",
                 type: "success",
-                message: <>Successfully Duplicating selected item</>,
+                timer:1500,
+                message: <>Selected file <strong>{selectedFile.name}</strong> successfully duplicated</>,
               });
             })
             .catch((error) =>
@@ -501,8 +577,22 @@ export const useFileManagerOperations = ({
           payload: {
             title: `Duplicating ${selectedFile.name}`,
             description: <>New file will be named "copy_of_[original_name]"</>,
-            handleClose,
-            handleSubmit: handleDuplicateSubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-add",
+                label: "Yes, duplicate",
+                onClick: handleDuplicateSubmit,
+                variant: "outlined",
+                color: "success",
+              },
+            ],
           },
         });
       },
@@ -525,7 +615,8 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Archiving selected items",
                 type: "success",
-                message: <>Successfully archived selected items</>,
+                timer:1500,
+                message: <>Selected <strong></strong>{selectedFiles.size} items are successfully archived into file <strong>{fileName}</strong></>,
               });
             })
             .catch((error) =>
@@ -543,8 +634,22 @@ export const useFileManagerOperations = ({
                 problems
               </>
             ),
-            handleClose,
-            handleSubmit: handleArchiveSubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-add",
+                label: "Create archive",
+                onClick: handleArchiveSubmit,
+                variant: "outlined",
+                color: "success",
+              },
+            ],
             nameInputSets: {
               label: "Archive name",
               value: "archive.zip",
@@ -569,6 +674,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Extracting selected archive",
                 type: "success",
+                timer:1500,
                 message: <>Successfully extracted selected archive</>,
               });
             })
@@ -584,8 +690,22 @@ export const useFileManagerOperations = ({
             description: (
               <>Do you want extract selected archive in this folder</>
             ),
-            handleClose,
-            handleSubmit: handleExtractSubmit,
+            actionButtons: [
+              {
+                icon: "icon-ban",
+                label: "Cancel",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+              {
+                icon: "icon-add",
+                label: "Extract archive",
+                onClick: handleExtractSubmit,
+                variant: "outlined",
+                color: "success",
+              },
+            ],
           },
         });
       },
@@ -600,6 +720,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "File changes",
                 type: "success",
+                timer:1500,
                 message: (
                   <>
                     File changes for
@@ -678,7 +799,15 @@ export const useFileManagerOperations = ({
                 )}
               </>
             ),
-            handleClose,
+            actionButtons: [
+              {
+                icon: "icon-cancel-1",
+                label: "Close",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+            ],
           },
         });
       },
@@ -696,7 +825,15 @@ export const useFileManagerOperations = ({
                 src={`${mainconfig.serverPath}${selectedFile.path}`}
               />
             ),
-            handleClose,
+            actionButtons: [
+              {
+                icon: "icon-cancel-1",
+                label: "Close",
+                color: "warning",
+                onClick: handleClose,
+                variant: "outlined",
+              },
+            ],
           },
         });
       },
@@ -730,10 +867,11 @@ export const useFileManagerOperations = ({
             setMessage({
               title: "File upload",
               type: "success",
+              timer:1500,
               message: (
                 <>
                   File had been successfully uploaded into
-                  <strong>{selectedFolder.name}</strong> folder{" "}
+                  <strong>{selectedFolder.name}</strong> folder
                 </>
               ),
             });
