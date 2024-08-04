@@ -18,16 +18,27 @@ const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (
   ref,
 ) => <Zoom ref={ref} {...props} />;
 
-const AlertDialog: React.FC<PopupData> = (props) => {
-  const {
-    title,
-    description,
-    nameInputSets,
-    actionButtons,
-  } = props;
+const AlertDialog: React.FC<PopupData> = ({ title, description, nameInputSets, actionButtons }) => {
   const [renameText, setRenameText] = useState<string>(
     nameInputSets?.value ?? "",
   );
+
+  const ActionButtonsList = () => {
+    if (!Array.isArray(actionButtons) || actionButtons.length === 0)
+      return null;
+    if (nameInputSets) {
+      return (
+        <CustomButtonGroup
+          buttons={actionButtons.map((button) => ({
+            ...button,
+            onClick: () => button.onClick(renameText),
+          }))}
+        />
+      );
+    }
+    return <CustomButtonGroup buttons={actionButtons} />;
+  };
+
   return (
     <>
       <DialogTitle className="dialogTitle">{title}</DialogTitle>
@@ -55,7 +66,7 @@ const AlertDialog: React.FC<PopupData> = (props) => {
       </DialogContent>
 
       <DialogActions className="dialogButtons">
-        {actionButtons && <CustomButtonGroup buttons={actionButtons} />}
+        <ActionButtonsList />
       </DialogActions>
     </>
   );

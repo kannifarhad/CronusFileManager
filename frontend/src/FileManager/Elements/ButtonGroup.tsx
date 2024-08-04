@@ -7,6 +7,7 @@ import { StyledActionButton } from "./styled";
 export interface ButtonItemType extends Omit<ButtonProps, "sx"> {
   icon: string;
   label: string;
+  onClick: (params: any) => void;
 }
 export type ButtonGroupProps = { buttons: ButtonItemType[] };
 
@@ -16,7 +17,6 @@ const CustomButtonGroup: React.FC<ButtonGroupProps> = ({ buttons }) => {
       key={i}
       {...button}
       startIcon={<Icon className={button.icon} />}
-      onClick={button.onClick}
     >
       <span className="actionButtonLabel">{button.label}</span>
     </StyledActionButton>

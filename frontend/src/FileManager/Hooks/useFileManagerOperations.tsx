@@ -34,6 +34,7 @@ import {
   uploadFile,
   unzip,
   archive,
+  getFolderTree,
 } from "../Api/fileManagerServices";
 import { SaveFileParams } from "../Api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
@@ -115,6 +116,15 @@ export const useFileManagerOperations = ({
             });
           })
           .catch((error) => handleApiError(error, "Error loading files"));
+      },
+
+      handleReloadFolderTree: ()=>{
+        getFolderTree().then((result) => {
+          dispatch({
+            type: ActionTypes.SET_FOLDERS_LIST,
+            payload: result,
+          });
+        });
       },
 
       handleAddSelected: (item: Items) => {
@@ -298,6 +308,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Delete files and folders request",
                 type: "success",
+                timer:1500,
                 message: "All files and folders successfully deleted",
               });
             })
@@ -345,6 +356,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Empty folder request",
                 type: "success",
+                timer:1500,
                 message: "All files and folders successfully removed",
               });
             })
@@ -390,7 +402,8 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Create new file",
                 type: "success",
-                message: `Successfully created new file with the name: ${fileName}`,
+                timer:1500,
+                message: <>Successfully created new file with the name: <strong>${fileName}</strong></>,
               });
             })
             .catch((error) =>
@@ -436,11 +449,13 @@ export const useFileManagerOperations = ({
 
           createNewFolder({ path: selectedFolder.path, folder: folderName })
             .then(() => {
+              operations.handleReloadFolderTree();
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
                 title: "Create new folder",
                 type: "success",
-                message: `Successfully created new folder with the name: ${folderName}`,
+                timer:1500,
+                message: <>Successfully created new folder with the name: <strong>${folderName}</strong></>,
               });
             })
             .catch((error) =>
@@ -491,6 +506,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Renaming selected item",
                 type: "success",
+                timer:1500,
                 message: (
                   <>
                     Successfully renamed selected item from
@@ -547,7 +563,8 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Duplicating selected item",
                 type: "success",
-                message: <>Successfully Duplicating selected item</>,
+                timer:1500,
+                message: <>Selected file <strong>{selectedFile.name}</strong> successfully duplicated</>,
               });
             })
             .catch((error) =>
@@ -598,7 +615,8 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Archiving selected items",
                 type: "success",
-                message: <>Successfully archived selected items</>,
+                timer:1500,
+                message: <>Selected <strong></strong>{selectedFiles.size} items are successfully archived into file <strong>{fileName}</strong></>,
               });
             })
             .catch((error) =>
@@ -656,6 +674,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Extracting selected archive",
                 type: "success",
+                timer:1500,
                 message: <>Successfully extracted selected archive</>,
               });
             })
@@ -701,6 +720,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "File changes",
                 type: "success",
+                timer:1500,
                 message: (
                   <>
                     File changes for
@@ -847,10 +867,11 @@ export const useFileManagerOperations = ({
             setMessage({
               title: "File upload",
               type: "success",
+              timer:1500,
               message: (
                 <>
                   File had been successfully uploaded into
-                  <strong>{selectedFolder.name}</strong> folder{" "}
+                  <strong>{selectedFolder.name}</strong> folder
                 </>
               ),
             });

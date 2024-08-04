@@ -201,6 +201,7 @@ export interface Operations {
     showMessage?: boolean,
   ) => void;
   handleAddSelected: (item: Items) => void;
+  handleReloadFolderTree: () => void;
   handleContextClick: (args: {
     item: Items | null;
     event: React.MouseEvent;
