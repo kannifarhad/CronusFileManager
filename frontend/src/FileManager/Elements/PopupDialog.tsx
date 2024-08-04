@@ -1,6 +1,5 @@
 import React, { useState, ForwardRefRenderFunction, memo } from "react";
 import {
-  Button,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -23,8 +22,6 @@ const AlertDialog: React.FC<PopupData> = (props) => {
   const {
     title,
     description,
-    handleClose,
-    handleSubmit,
     nameInputSets,
     actionButtons,
   } = props;

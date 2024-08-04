@@ -3,6 +3,17 @@
 <h1 style="text-align:center">Cronus File Manager</h1>
 </div>
 
+### What would be in next releases
+ - React upgrade to 18 version
+ - Extract icons from font and use it like SVG. In this way developers can easly replace them with their own icons or add new ones.
+ - Implement Virtual scroll loading. UI had some performance issues if folder was containing a lot of files (>500) and this feature will fix that issue.
+ - Replace redux with react context (Nowadays a lot of people consider using other libraries rather than redux and because of that i had considered to switch to react features so nobody would face technical challenges with replacing it with their stack)
+ - 100% usage od Typescript
+ - Fixing perforamce issues and refacotring all structure
+ - Add support for S3 bucket - interface would be same and user would be able interact with S3 bucket as its ordinary file storage
+ - Refactor backend and add swagger documentation.
+
+
 Filemanager with React &amp; Nodejs 
 ### [Demo](http://filemanager.kanni.pro)
 

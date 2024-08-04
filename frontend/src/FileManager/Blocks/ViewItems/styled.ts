@@ -1,4 +1,4 @@
-import { fontSize, styled } from "@mui/system";
+import { styled } from "@mui/system";
 import { Box, Checkbox, Table, TableCell } from "@mui/material";
 
 export const StyledGridViewContainer = styled(Box)(({}) => ({}));

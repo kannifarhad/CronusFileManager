@@ -62,7 +62,6 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
   );
 
   const pathToFile = `http://localhost:3131${path}`;
-
   return (
     <>
       <ImageEditorContainer>

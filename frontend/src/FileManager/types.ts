@@ -272,8 +272,6 @@ interface NameInputSets {
 export interface PopupData {
   title: string;
   description?: string | JSX.Element;
-  handleClose?: () => void;
-  handleSubmit?: (fieldValus: any) => void;
   nameInputSets?: NameInputSets;
   actionButtons?: ButtonItemType[];
 }
