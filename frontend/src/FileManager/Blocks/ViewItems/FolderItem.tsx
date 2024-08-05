@@ -8,6 +8,7 @@ import {
   DroppableProvided,
   DroppableStateSnapshot,
 } from "react-beautiful-dnd";
+import { Box } from "@mui/system";
 import ItemSelectButton from "./ItemSelectButton";
 import { toAbsoluteUrl, convertDate, classNames } from "../../helpers";
 import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from "./styled";
@@ -30,15 +31,19 @@ const FolderItem: React.FC<{
   } = useFileManagerState();
 
   const handleContextMenuClick = useCallback(
-    (item: FolderType, event: React.MouseEvent) => {
-      handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
+    (clickedItem: FolderType, event: React.MouseEvent) => {
+      handleContextClick({
+        item: clickedItem,
+        event,
+        menuType: ContextMenuTypeEnum.ITEM,
+      });
     },
     [handleContextClick],
   );
 
   const doubleClick = useCallback(
-    (item: FolderType) => {
-      handleSelectFolder(item);
+    (clickedItem: FolderType) => {
+      handleSelectFolder(clickedItem);
     },
     [handleSelectFolder],
   );
@@ -50,12 +55,11 @@ const FolderItem: React.FC<{
     [item, bufferedItems],
   );
 
-  // const getStyle = (style: React.CSSProperties, snapshot: DroppableStateSnapshot): React.CSSProperties => {
+  // const getStyle = (snapshot: DroppableStateSnapshot): React.CSSProperties => {
   //   if (!snapshot.isDraggingOver) {
-  //     return style;
+  //     return {};
   //   }
   //   return {
-  //     ...style,
   //     background: "#f00 !important",
   //   };
   // };
@@ -81,18 +85,18 @@ const FolderItem: React.FC<{
           {...provided.dragHandleProps}
         >
           <Droppable
-            droppableId={item.id}
+            droppableId={`droppable-${item.id}`} // Ensure unique droppableId
             type="CONTAINERITEM"
             isCombineEnabled
           >
             {(
-              provided: DroppableProvided,
-              snapshot: DroppableStateSnapshot,
+              dropProvided: DroppableProvided,
+              dropSnapshot: DroppableStateSnapshot,
             ) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                // style={getStyle(provided.droppableProps?.style as React.CSSProperties, snapshot)}
+              <Box
+                ref={dropProvided.innerRef}
+                {...dropProvided.droppableProps}
+                // style={{...getStyle(dropSnapshot), border: '3px solid #ccc' }}
               >
                 <ItemSelectButton item={item} />
 
@@ -100,7 +104,7 @@ const FolderItem: React.FC<{
                   <img
                     alt={item.name}
                     src={
-                      snapshot.isDraggingOver
+                      dropSnapshot.isDraggingOver
                         ? toAbsoluteUrl(config.icons.folderopen)
                         : toAbsoluteUrl(config.icons.folder)
                     }
@@ -118,8 +122,8 @@ const FolderItem: React.FC<{
                     <span>{item.name}</span>
                   </StyledItemTitle>
                 </Tooltip>
-                {provided.placeholder}
-              </div>
+                {dropProvided.placeholder}
+              </Box>
             )}
           </Droppable>
         </StyledFileItem>

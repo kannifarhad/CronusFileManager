@@ -1,4 +1,9 @@
-import React, { useState, ForwardRefRenderFunction, memo } from "react";
+import React, {
+  useState,
+  ForwardRefRenderFunction,
+  memo,
+  useMemo,
+} from "react";
 import {
   DialogActions,
   DialogContent,
@@ -18,15 +23,20 @@ const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (
   ref,
 ) => <Zoom ref={ref} {...props} />;
 
-const AlertDialog: React.FC<PopupData> = ({ title, description, nameInputSets, actionButtons }) => {
+const AlertDialog: React.FC<PopupData> = ({
+  title,
+  description,
+  nameInputSets,
+  actionButtons,
+}) => {
   const [renameText, setRenameText] = useState<string>(
     nameInputSets?.value ?? "",
   );
 
-  const ActionButtonsList = () => {
+  const ActionButtonsList = useMemo(() => {
     if (!Array.isArray(actionButtons) || actionButtons.length === 0)
       return null;
-    if (nameInputSets) {
+    if (renameText) {
       return (
         <CustomButtonGroup
           buttons={actionButtons.map((button) => ({
@@ -37,7 +47,7 @@ const AlertDialog: React.FC<PopupData> = ({ title, description, nameInputSets, a
       );
     }
     return <CustomButtonGroup buttons={actionButtons} />;
-  };
+  }, [renameText, actionButtons]);
 
   return (
     <>
@@ -66,7 +76,7 @@ const AlertDialog: React.FC<PopupData> = ({ title, description, nameInputSets, a
       </DialogContent>
 
       <DialogActions className="dialogButtons">
-        <ActionButtonsList />
+        {ActionButtonsList}
       </DialogActions>
     </>
   );
@@ -81,7 +91,7 @@ const AlertDialogSlide: React.FC<{}> = () => {
       open={Boolean(popUpData)}
       TransitionComponent={React.forwardRef(Transition)}
       keepMounted
-      onClose={popUpData.handleClose}
+      // onClose={popUpData.handleClose}
       className="dialogBlock"
     >
       <AlertDialog {...popUpData} />

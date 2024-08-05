@@ -20,6 +20,7 @@ We are excited to announce the upcoming release of our library, which will bring
 - **100% TypeScript Usage**: The entire codebase will be fully written in TypeScript, enhancing type safety and developer experience.
 - **Bug Fixes and Performance Improvements**: We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
 - **S3 Bucket Support**: We will add support for Amazon S3 buckets. Users will be able to interact with S3 storage as if it were a regular file storage system, with the same user interface.
+- **Theming Support**: The library will support theming, allowing developers to customize the appearance to match their application’s look and feel easily.
 - **Backend Refactor and Swagger Documentation**: The backend will be refactored and will include Swagger documentation, providing clear and comprehensive API documentation.
 
 We believe these updates will significantly improve your development workflow and provide a more robust and flexible platform for your projects. Thank you for your continued support!

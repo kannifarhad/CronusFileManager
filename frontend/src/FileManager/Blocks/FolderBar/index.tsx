@@ -5,12 +5,13 @@ import {
   FileManagerFolderBarWrapper,
 } from "./styled";
 import MenuItem from "./MenuItem";
-import {
-  useFileManagerState,
-} from "../../ContextStore/FileManagerContext";
+import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 
 function FolderBar() {
-  const { foldersList, operations:{ handleReloadFolderTree } } = useFileManagerState();
+  const {
+    foldersList,
+    operations: { handleReloadFolderTree },
+  } = useFileManagerState();
 
   useEffect(() => {
     handleReloadFolderTree();

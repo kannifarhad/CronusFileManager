@@ -1,10 +1,6 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { Box } from "@mui/material";
-import {
-  Droppable,
-  DroppableProvided,
-  DroppableStateSnapshot,
-} from "react-beautiful-dnd";
+import { Droppable, DroppableProvided } from "react-beautiful-dnd";
 import FolderItem from "./FolderItem";
 import FileItem from "./FileItem";
 import { StyledGridViewContainer, StyledEmptyFolderContainer } from "./styled";
@@ -13,6 +9,15 @@ import { Items, ItemType } from "../../types";
 
 const GridView: React.FC = () => {
   const { filesList } = useFileManagerState();
+
+  const GetGridItem = useCallback((item: Items, index: number) => {
+    if (item.type === ItemType.FOLDER)
+      return <FolderItem key={item.id} index={index} item={item} />;
+    if (item.type === ItemType.FILE)
+      return <FileItem key={item.id} index={index} item={item} />;
+    return null;
+  }, []);
+
   if (filesList.length === 0) {
     return (
       <StyledEmptyFolderContainer>
@@ -28,16 +33,11 @@ const GridView: React.FC = () => {
         type="CONTAINERITEM"
         isCombineEnabled
       >
-        {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
+        {(provided: DroppableProvided) => (
           <Box ref={provided.innerRef} {...provided.droppableProps}>
             {filesList.map((item: Items, index: number) =>
-              item.type === ItemType.FOLDER ? (
-                <FolderItem key={item.id} index={index} item={item} />
-              ) : item.type === ItemType.FILE ? (
-                <FileItem key={item.id} index={index} item={item} />
-              ) : null,
+              GetGridItem(item, index),
             )}
-            {provided.placeholder}
           </Box>
         )}
       </Droppable>

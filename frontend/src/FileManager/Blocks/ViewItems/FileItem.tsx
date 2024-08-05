@@ -32,8 +32,12 @@ const FileItem: React.FC<{
   } = useFileManagerState();
 
   const handleContextMenuClick = useCallback(
-    (item: FileType, event: React.MouseEvent) => {
-      handleContextClick({ item, event, menuType: ContextMenuTypeEnum.ITEM });
+    (clickedItem: FileType, event: React.MouseEvent) => {
+      handleContextClick({
+        item: clickedItem,
+        event,
+        menuType: ContextMenuTypeEnum.ITEM,
+      });
     },
     [handleContextClick],
   );
