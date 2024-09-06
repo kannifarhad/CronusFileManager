@@ -85,7 +85,7 @@ export const useFileManagerOperations = ({
         folder: FolderType,
         history: boolean = false,
         clearBuffer: boolean = false,
-        showMessage: boolean = true,
+        showMessage: boolean = true
       ) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_FOLDER,
@@ -118,7 +118,7 @@ export const useFileManagerOperations = ({
           .catch((error) => handleApiError(error, "Error loading files"));
       },
 
-      handleReloadFolderTree: ()=>{
+      handleReloadFolderTree: () => {
         getFolderTree().then((result) => {
           dispatch({
             type: ActionTypes.SET_FOLDERS_LIST,
@@ -268,10 +268,10 @@ export const useFileManagerOperations = ({
 
       handlePaste: (
         bufferedItems: BufferedItemsType,
-        selectedFolder: FolderList,
+        selectedFolder: FolderList
       ) => {
         const files: string[] = Array.from(bufferedItems.files).map(
-          (item: Items) => item.path,
+          (item: Items) => item.path
         );
         const apiFunction =
           bufferedItems.type === ItemMoveActionTypeEnum.CUT
@@ -293,7 +293,7 @@ export const useFileManagerOperations = ({
 
       handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => {
         const items: string[] = Array.from(selectedFiles).map(
-          (item: Items) => item.path,
+          (item: Items) => item.path
         );
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -308,7 +308,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Delete files and folders request",
                 type: "success",
-                timer:1500,
+                timer: 1500,
                 message: "All files and folders successfully deleted",
               });
             })
@@ -356,7 +356,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Empty folder request",
                 type: "success",
-                timer:1500,
+                timer: 1500,
                 message: "All files and folders successfully removed",
               });
             })
@@ -402,12 +402,17 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Create new file",
                 type: "success",
-                timer:1500,
-                message: <>Successfully created new file with the name: <strong>${fileName}</strong></>,
+                timer: 1500,
+                message: (
+                  <>
+                    Successfully created new file with the name:{" "}
+                    <strong>${fileName}</strong>
+                  </>
+                ),
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while creating file"),
+              handleApiError(error, "Error happened while creating file")
             );
         };
         dispatch({
@@ -454,12 +459,17 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Create new folder",
                 type: "success",
-                timer:1500,
-                message: <>Successfully created new folder with the name: <strong>${folderName}</strong></>,
+                timer: 1500,
+                message: (
+                  <>
+                    Successfully created new folder with the name:{" "}
+                    <strong>${folderName}</strong>
+                  </>
+                ),
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while creating folder"),
+              handleApiError(error, "Error happened while creating folder")
             );
         };
 
@@ -506,7 +516,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Renaming selected item",
                 type: "success",
-                timer:1500,
+                timer: 1500,
                 message: (
                   <>
                     Successfully renamed selected item from
@@ -517,7 +527,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while renaming file"),
+              handleApiError(error, "Error happened while renaming file")
             );
         };
 
@@ -563,12 +573,17 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Duplicating selected item",
                 type: "success",
-                timer:1500,
-                message: <>Selected file <strong>{selectedFile.name}</strong> successfully duplicated</>,
+                timer: 1500,
+                message: (
+                  <>
+                    Selected file <strong>{selectedFile.name}</strong>{" "}
+                    successfully duplicated
+                  </>
+                ),
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while duplicating file"),
+              handleApiError(error, "Error happened while duplicating file")
             );
         };
 
@@ -598,10 +613,10 @@ export const useFileManagerOperations = ({
       },
       handleCreateZip: (
         selectedFiles: Set<Items>,
-        selectedFolder: FolderList,
+        selectedFolder: FolderList
       ) => {
         const files: string[] = Array.from(selectedFiles).map(
-          (item: Items) => item.path,
+          (item: Items) => item.path
         );
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -615,12 +630,18 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Archiving selected items",
                 type: "success",
-                timer:1500,
-                message: <>Selected <strong></strong>{selectedFiles.size} items are successfully archived into file <strong>{fileName}</strong></>,
+                timer: 1500,
+                message: (
+                  <>
+                    Selected <strong />
+                    {selectedFiles.size} items are successfully archived into
+                    file <strong>{fileName}</strong>
+                  </>
+                ),
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while creating archive"),
+              handleApiError(error, "Error happened while creating archive")
             );
         };
 
@@ -674,12 +695,12 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "Extracting selected archive",
                 type: "success",
-                timer:1500,
+                timer: 1500,
                 message: <>Successfully extracted selected archive</>,
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while extracting archive"),
+              handleApiError(error, "Error happened while extracting archive")
             );
         };
 
@@ -720,7 +741,7 @@ export const useFileManagerOperations = ({
               setMessage({
                 title: "File changes",
                 type: "success",
-                timer:1500,
+                timer: 1500,
                 message: (
                   <>
                     File changes for
@@ -730,7 +751,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while saving"),
+              handleApiError(error, "Error happened while saving")
             );
         };
         dispatch({
@@ -751,7 +772,7 @@ export const useFileManagerOperations = ({
           selectedFile.type === ItemType.FILE &&
           checkSelectedFileType(
             ItemExtensionCategoryFilter.IMAGE,
-            selectedFile,
+            selectedFile
           );
 
         dispatch({
@@ -867,7 +888,7 @@ export const useFileManagerOperations = ({
             setMessage({
               title: "File upload",
               type: "success",
-              timer:1500,
+              timer: 1500,
               message: (
                 <>
                   File had been successfully uploaded into
@@ -877,13 +898,27 @@ export const useFileManagerOperations = ({
             });
           })
           .catch((error) =>
-            handleApiError(error, "Error happened while uploading files."),
+            handleApiError(error, "Error happened while uploading files.")
           );
       },
 
       handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => {
         dispatch({ type: ActionTypes.SET_LOADING, payload: true });
         const files: string[] = draggedItems.map((item: Items) => item.path);
+        const isSelectedItemDroppedIntoSelf = draggedItems.find(
+          (item) => item.id === destination.id,
+        );
+
+        if (isSelectedItemDroppedIntoSelf) {
+          setMessage({
+            title: "You can't drag and drop selected folder into itself.",
+            type: "warning",
+            message: "",
+            timer: 1500,
+          });
+          dispatch({ type: ActionTypes.SET_LOADING, payload: false });
+          return;
+        }
 
         cutFilesToFolder({ items: files, destination: destination.path })
           .then(() => {
@@ -898,7 +933,7 @@ export const useFileManagerOperations = ({
           .catch((error) => handleApiError(error, "Error moving items"));
       },
     }),
-    [dispatch, setMessage, handleApiError],
+    [dispatch, setMessage, handleApiError]
   );
 
   return operations;

@@ -12,9 +12,9 @@ export interface ButtonItemType extends Omit<ButtonProps, "sx"> {
 export type ButtonGroupProps = { buttons: ButtonItemType[] };
 
 const CustomButtonGroup: React.FC<ButtonGroupProps> = ({ buttons }) => {
-  const buttonComponents = buttons.map((button, i) => (
+  const buttonComponents = buttons.map((button) => (
     <StyledActionButton
-      key={i}
+      key={button.label}
       {...button}
       startIcon={<Icon className={button.icon} />}
     >

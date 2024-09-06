@@ -17,7 +17,7 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
     return (
       <ThemeProvider theme={customTheme}>
         <FileManagerProvider selectItemCallback={selectItemCallback}>
-          <FileManager height={height} />
+          <FileManager height={height ?? 300} />
         </FileManagerProvider>
       </ThemeProvider>
     );
