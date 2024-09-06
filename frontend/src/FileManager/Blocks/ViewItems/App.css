@@ -1,0 +1,40 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.item {
+  background-color: lightgray;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.item.file {
+  background-color: lightcoral;
+}
+
+.item.folder {
+  background-color: lightseagreen;
+}
+
+.item.selected {
+  border: 2px solid blue;
+}
+
+.item.dragging {
+  opacity: 0.5;
+}
+
+.dropzone {
+  border: 2px dashed lightblue;
+  min-height: 100px;
+  padding: 10px;
+}
+
+.dropzone.over {
+  border-color: lightgreen;
+}

@@ -1,7 +1,13 @@
 import { styled } from "@mui/system";
 import { Box, Checkbox, Table, TableCell } from "@mui/material";
 
-export const StyledGridViewContainer = styled(Box)(({}) => ({}));
+export const StyledGridViewContainer = styled(Box)(({}) => ({
+  flex: 1,
+  display: "flex",
+  overflow: "auto",
+  minHeight: 0,
+  height: "100%",
+}));
 
 export const StyledEmptyFolderContainer = styled(Box)(({}) => ({
   height: "100%",
@@ -23,7 +29,7 @@ export const StyledFileItem = styled(Box)(({}) => ({
   borderRadius: "5px",
   verticalAlign: "top",
   display: "inline-block",
-  maxHeight: "100px",
+  height: "100px",
   "&.fileCuted": {
     opacity: "0.5",
   },

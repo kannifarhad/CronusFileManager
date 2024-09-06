@@ -10,14 +10,14 @@ We are excited to announce the upcoming release of our library, which will bring
 
 ## Key Updates:
 
-- **React Upgrade to Version 18**: We will upgrade to React 18, allowing you to take advantage of the latest React features and improvements.
+- **React Upgrade to Version 18**: We will upgrade to React 18, allowing you to take advantage of the latest React features and improvements. ✅
 - **Icon Management Overhaul**: Icons will be extracted from fonts and provided as SVGs. This will allow developers to easily replace existing icons or add new ones, providing greater flexibility and customization.
-- **Enhanced Drag and Drop**: Support for dragging and dropping multiple files will be added, streamlining the file upload process.
+- **Enhanced Drag and Drop**: Support for dragging and dropping multiple files will be added, streamlining the file upload process. ✅
 - **Folder Tree Upload**: You will be able to upload an entire folder tree, including all files and subfolders, making bulk uploads more efficient.
 - **Direct File List Upload**: Files will be uploadable by directly dropping them into the file list area, simplifying the upload process.
-- **Virtual Scroll Loading**: We will implement virtual scroll loading to address performance issues when dealing with large folders containing more than 500 files. This feature will ensure a smoother and more responsive UI.
-- **State Management Transition**: We will replace Redux with React Context. This change aligns with modern state management preferences and ensures compatibility with various stacks without technical challenges.
-- **100% TypeScript Usage**: The entire codebase will be fully written in TypeScript, enhancing type safety and developer experience.
+- **Virtual Scroll Loading**: We will implement virtual scroll loading to address performance issues when dealing with large folders containing more than 500 files. This feature will ensure a smoother and more responsive UI.✅
+- **State Management Transition**: We will replace Redux with React Context. This change aligns with modern state management preferences and ensures compatibility with various stacks without technical challenges.✅
+- **100% TypeScript Usage**: The entire codebase will be fully written in TypeScript, enhancing type safety and developer experience.✅
 - **Bug Fixes and Performance Improvements**: We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
 - **S3 Bucket Support**: We will add support for Amazon S3 buckets. Users will be able to interact with S3 storage as if it were a regular file storage system, with the same user interface.
 - **Theming Support**: The library will support theming, allowing developers to customize the appearance to match their application’s look and feel easily.

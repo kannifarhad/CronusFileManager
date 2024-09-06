@@ -1,15 +1,16 @@
 import React, { memo } from "react";
-import { StyledSelectCheckbox, StyledPrivateIcon } from "./styled";
-import { useFileManagerState } from "../../ContextStore/FileManagerContext";
+import { StyledSelectCheckbox, StyledPrivateIcon } from "../styled";
+import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
+import { Items } from "../../../types";
 
-function ItemSelectButton({ item }) {
+function ItemSelectButton({ item }: { item: Items }) {
   const {
     operations: { handleAddSelected },
     selectedFiles,
   } = useFileManagerState();
-
-  if (item.private) return <StyledPrivateIcon className="icon-lock" />;
   const isSelected = selectedFiles?.has(item);
+  if (item.private) return <StyledPrivateIcon className="icon-lock" />;
+
   return (
     <StyledSelectCheckbox
       checked={isSelected}

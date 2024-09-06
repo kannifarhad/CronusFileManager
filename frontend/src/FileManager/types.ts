@@ -272,7 +272,7 @@ interface NameInputSets {
 
 export interface PopupData {
   title: string;
-  description?: string | JSX.Element;
+  description?: string | React.JSX.Element;
   nameInputSets?: NameInputSets;
   actionButtons?: ButtonItemType[];
 }

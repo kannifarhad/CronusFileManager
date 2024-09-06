@@ -5,7 +5,7 @@ import PopupDialog from "./Elements/PopupDialog";
 import ImageEditPopup from "./Elements/ImageEditor";
 import { useFileManagerState } from "./ContextStore/FileManagerContext";
 
-const FileManager: React.FC<{ height?: number }> = ({ height = 300 }) => {
+const FileManager: React.FC<{ height: number }> = ({ height }) => {
   const { fullScreen } = useFileManagerState();
 
   return (
