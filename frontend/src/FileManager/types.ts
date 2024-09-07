@@ -238,7 +238,7 @@ export interface Operations {
   handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => void;
   handleToggleFullScreen: () => void;
-  handleToggleUploadPopUp: () => void;
+  handleToggleUploadPopUp: (forceShow?: boolean) => void;
   handleUploadFiles: (
     files: FileWithPreview[],
     selectedFolder: FolderList,

@@ -29,7 +29,7 @@ export default function UploadFiles() {
       const newFiles = acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        }),
+        })
       );
       setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     },
@@ -53,7 +53,7 @@ export default function UploadFiles() {
           </button>
         </li>
       )),
-    [files, removeFile],
+    [files, removeFile]
   );
 
   const buttons: ButtonItemType[] = useMemo(
@@ -71,10 +71,10 @@ export default function UploadFiles() {
         label: "Cancel",
         color: "error",
         variant: "outlined",
-        onClick: handleToggleUploadPopUp,
+        onClick: () => handleToggleUploadPopUp(),
       },
     ],
-    [handleUploadFiles, files, selectedFolder, handleToggleUploadPopUp],
+    [handleUploadFiles, files, selectedFolder, handleToggleUploadPopUp]
   );
 
   useEffect(
@@ -82,7 +82,7 @@ export default function UploadFiles() {
       // Make sure to revoke the data uris to avoid memory leaks
       files.forEach((file) => URL.revokeObjectURL(file.preview));
     },
-    [files],
+    [files]
   );
 
   return (
