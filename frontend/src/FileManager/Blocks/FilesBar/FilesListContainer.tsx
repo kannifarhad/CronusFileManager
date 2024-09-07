@@ -4,10 +4,12 @@ import { StyledFilesListContainer, StyledFilesListWrapper } from "./styled";
 import OverlayBlocks from "./OverlayBlocks";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { ContextMenuTypeEnum } from "../../types";
+import { StyledEmptyFolderContainer } from "../ViewItems/styled";
 
 const ContainerBar: React.FC = () => {
   const {
     operations: { handleContextClick },
+    selectedFolder,
   } = useFileManagerState();
 
   const handleContextMenuClick = useCallback(
@@ -18,8 +20,16 @@ const ContainerBar: React.FC = () => {
         menuType: ContextMenuTypeEnum.CONTENT,
       });
     },
-    [handleContextClick],
+    [handleContextClick]
   );
+
+  if (!selectedFolder) {
+    return (
+      <StyledEmptyFolderContainer>
+        <h6>Please select folder to view!</h6>
+      </StyledEmptyFolderContainer>
+    );
+  }
 
   return (
     <StyledFilesListWrapper>

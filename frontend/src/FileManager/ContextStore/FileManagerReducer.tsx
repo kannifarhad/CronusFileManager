@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { sortFilter } from "../helpers";
 import {
   ItemMoveActionTypeEnum,
@@ -9,7 +10,7 @@ import {
 
 export const fileManagerReducer = (
   state: FileManagerState,
-  action: FileManagerAction,
+  action: FileManagerAction
 ): FileManagerState => {
   switch (action.type) {
     case ActionTypes.SET_FOLDERS_LIST:
@@ -30,7 +31,7 @@ export const fileManagerReducer = (
         });
         newState.history.currentIndex = Math.max(
           0,
-          newState.history.steps.length - 1,
+          newState.history.steps.length - 1
         );
       }
       if (clearBuffer) {
@@ -63,7 +64,7 @@ export const fileManagerReducer = (
       return {
         ...state,
         messages: state.messages.filter(
-          (message) => message.id !== action.payload.id,
+          (message) => message.id !== action.payload.id
         ),
       };
 
@@ -114,7 +115,7 @@ export const fileManagerReducer = (
     case ActionTypes.INVERSE_SELECTED_FILES: {
       const { selectedFiles } = state;
       const inversedSelected = state.filesList.filter(
-        (file) => !selectedFiles.has(file),
+        (file) => !selectedFiles.has(file)
       );
       return {
         ...state,
@@ -173,6 +174,9 @@ export const fileManagerReducer = (
       return { ...state, fullScreen: !state.fullScreen };
 
     case ActionTypes.TOGGLE_UPLOAD_POPUP:
+      if (action.payload && state.uploadPopup) {
+        return state;
+      }
       return { ...state, uploadPopup: !state.uploadPopup };
 
     default:

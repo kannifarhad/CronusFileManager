@@ -1,4 +1,4 @@
-import { memo, FC, MouseEvent } from "react";
+import React, { memo, FC, MouseEvent } from "react";
 import { Box, Button, Collapse } from "@mui/material";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { ItemMoveActionTypeEnum } from "../../types";

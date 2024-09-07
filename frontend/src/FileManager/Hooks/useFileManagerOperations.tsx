@@ -57,7 +57,7 @@ export const useFileManagerOperations = ({
         },
       });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const handleApiError = useCallback(
@@ -76,7 +76,7 @@ export const useFileManagerOperations = ({
         },
       });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const operations: Operations = useMemo(
@@ -866,8 +866,8 @@ export const useFileManagerOperations = ({
       handleToggleFullScreen: () => {
         dispatch({ type: ActionTypes.TOGGLE_FULLSCREEN, payload: null });
       },
-      handleToggleUploadPopUp: () => {
-        dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: null });
+      handleToggleUploadPopUp: (forceShow?: boolean) => {
+        dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: forceShow });
       },
 
       handleUploadFiles: (files, selectedFolder) => {
@@ -906,7 +906,7 @@ export const useFileManagerOperations = ({
         dispatch({ type: ActionTypes.SET_LOADING, payload: true });
         const files: string[] = draggedItems.map((item: Items) => item.path);
         const isSelectedItemDroppedIntoSelf = draggedItems.find(
-          (item) => item.id === destination.id,
+          (item) => item.id === destination.id
         );
 
         if (isSelectedItemDroppedIntoSelf) {
