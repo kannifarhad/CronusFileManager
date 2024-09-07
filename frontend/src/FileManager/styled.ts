@@ -1,12 +1,12 @@
 import { styled } from "@mui/system";
 import { Box, BoxProps } from "@mui/material";
 
-interface FileManagerWrapperProps extends BoxProps {
+export interface FileManagerWrapperProps extends BoxProps {
   expanded: boolean;
 }
 export const FileManagerWrapper = styled(Box, {
   shouldForwardProp: (prop: string) => !["expanded"].includes(prop),
-})<FileManagerWrapperProps>(({ theme, expanded, height }) => {
+})<FileManagerWrapperProps>(({ expanded, height }) => {
   if (expanded) {
     return {
       position: "fixed",
@@ -20,8 +20,9 @@ export const FileManagerWrapper = styled(Box, {
     };
   }
   return {
-    height: "500px",
+    height: `${height}px`,
     display: "flex",
     alignItems: "stretch",
+    width: "100%",
   };
 });

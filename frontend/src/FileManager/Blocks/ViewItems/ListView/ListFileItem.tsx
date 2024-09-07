@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo } from "react";
-import { TableRow, Checkbox } from "@mui/material";
+import { Checkbox } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
-import { StyledListTableCell } from "../styled";
+import { StyledListTableCell, StyledListTableRow } from "../styled";
 import {
   convertDate,
   formatBytes,
@@ -17,7 +17,8 @@ import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 
 const ListFileItem: React.FC<{
   item: FileType;
-}> = ({ item }) => {
+  style: any;
+}> = ({ item, style }) => {
   const {
     operations: { handleContextClick, handleAddSelected },
     selectedFiles,
@@ -54,7 +55,7 @@ const ListFileItem: React.FC<{
   });
 
   return (
-    <TableRow
+    <StyledListTableRow
       onContextMenu={(event) => handleContextMenuClick(item, event)}
       className={classNames({
         tableListRow: true,
@@ -65,29 +66,32 @@ const ListFileItem: React.FC<{
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      style={style}
     >
-      <StyledListTableCell>
+      <StyledListTableCell style={{ width: "40px" }}>
         <Checkbox
           checked={isSelected}
           onChange={() => handleAddSelected(item)}
           value={item.id}
         />
       </StyledListTableCell>
-      <StyledListTableCell>
+      <StyledListTableCell style={{ width: "40px" }}>
         <img
           alt={item.name}
           style={{ width: "20px", maxHeight: "30px" }}
           src={getThumb(item, showImages)}
         />
       </StyledListTableCell>
-      <StyledListTableCell align="left">{item.name}</StyledListTableCell>
-      <StyledListTableCell align="left">
+      <StyledListTableCell align="left" style={{ flexGrow: 1 }}>
+        {item.name}
+      </StyledListTableCell>
+      <StyledListTableCell align="left" style={{ width: "100px" }}>
         {formatBytes(item.size)}
       </StyledListTableCell>
-      <StyledListTableCell align="left">
+      <StyledListTableCell align="left" style={{ width: "150px" }}>
         {convertDate(item.created)}
       </StyledListTableCell>
-    </TableRow>
+    </StyledListTableRow>
   );
 };
 

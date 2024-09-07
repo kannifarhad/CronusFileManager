@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useCallback } from "react";
-import { TableRow, Checkbox } from "@mui/material";
+import { Checkbox } from "@mui/material";
 import { useDroppable, useDraggable } from "@dnd-kit/core";
 import {
   toAbsoluteUrl,
@@ -14,11 +14,12 @@ import {
   ItemMoveActionTypeEnum,
   ContextMenuTypeEnum,
 } from "../../../types";
-import { StyledListTableCell } from "../styled";
+import { StyledListTableCell, StyledListTableRow } from "../styled";
 
 const ListFolderItem: React.FC<{
   item: FolderType;
-}> = ({ item }) => {
+  style: any;
+}> = ({ item, style }) => {
   const {
     operations: { handleContextClick, handleSelectFolder, handleAddSelected },
     selectedFiles,
@@ -49,30 +50,30 @@ const ListFolderItem: React.FC<{
         menuType: ContextMenuTypeEnum.ITEM,
       });
     },
-    [handleContextClick]
+    [handleContextClick],
   );
 
   const doubleClick = useCallback(
     (clickedItem: FolderType) => {
       handleSelectFolder(clickedItem, true);
     },
-    [handleSelectFolder]
+    [handleSelectFolder],
   );
 
   const isCuted = useMemo(
     () =>
       bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
       bufferedItems.files.has(item),
-    [item, bufferedItems]
+    [item, bufferedItems],
   );
 
   const isSelected = useMemo(
     () => selectedFiles.has(item),
-    [selectedFiles, item]
+    [selectedFiles, item],
   );
 
   return (
-    <TableRow
+    <StyledListTableRow
       ref={(node: HTMLTableRowElement | null) => {
         if (node) {
           setDraggableRef(node);
@@ -91,15 +92,16 @@ const ListFolderItem: React.FC<{
       }
       {...listeners}
       {...attributes}
+      style={style}
     >
-      <StyledListTableCell>
+      <StyledListTableCell style={{ width: "40px" }}>
         <Checkbox
           checked={isSelected}
           onChange={() => handleAddSelected(item)}
           value={item.id}
         />
       </StyledListTableCell>
-      <StyledListTableCell>
+      <StyledListTableCell style={{ width: "40px" }}>
         <img
           alt={item.name}
           style={{ width: "20px" }}
@@ -110,16 +112,16 @@ const ListFolderItem: React.FC<{
           }
         />
       </StyledListTableCell>
-      <StyledListTableCell align="left">
+      <StyledListTableCell align="left" style={{ flexGrow: 1 }}>
         <div>{item.name}</div>
       </StyledListTableCell>
-      <StyledListTableCell align="left">
+      <StyledListTableCell align="left" style={{ width: "100px" }}>
         {formatBytes(item.size)}
       </StyledListTableCell>
-      <StyledListTableCell align="left">
+      <StyledListTableCell align="left" style={{ width: "150px" }}>
         {convertDate(item.created)}
       </StyledListTableCell>
-    </TableRow>
+    </StyledListTableRow>
   );
 };
 

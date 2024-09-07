@@ -1,10 +1,12 @@
 import { styled } from "@mui/system";
-import { Box, Checkbox, Table, TableCell } from "@mui/material";
+import { Box, Checkbox, Table, TableCell, TableRow } from "@mui/material";
 
-export const StyledGridViewContainer = styled(Box)(({}) => ({
+const ITEM_HEIGHT = 50;
+
+export const StyledGridViewContainer = styled(Box)(() => ({
   flex: 1,
   display: "flex",
-  overflow: "auto",
+  overflowX: "hidden",
   minHeight: 0,
   height: "100%",
 }));
@@ -22,14 +24,14 @@ export const StyledEmptyFolderContainer = styled(Box)(({}) => ({
 }));
 
 export const StyledFileItem = styled(Box)(({}) => ({
-  margin: "5px",
-  padding: "10px",
-  width: "100px",
+  margin: "10px 0px 0px 10px",
+  padding: "5px",
+  width: "90px",
   position: "relative",
   borderRadius: "5px",
   verticalAlign: "top",
   display: "inline-block",
-  height: "100px",
+  height: "90px",
   "&.fileCuted": {
     opacity: "0.5",
   },
@@ -37,7 +39,7 @@ export const StyledFileItem = styled(Box)(({}) => ({
     transform: "translate(0px, 0px) !important",
   },
   "&:hover, &.selectmode": {
-    background: "#f1f1f1",
+    background: "#f7f7f7",
     "& .MuiCheckbox-root": {
       display: "block !important",
     },
@@ -61,7 +63,7 @@ export const StyledPrivateIcon = styled("span")(({}) => ({
   padding: "5px",
 }));
 
-export const StyledSelectCheckbox = styled(Checkbox)(({ theme, checked }) => ({
+export const StyledSelectCheckbox = styled(Checkbox)(({ checked }) => ({
   position: "absolute",
   top: "0px",
   left: "0px",
@@ -71,18 +73,6 @@ export const StyledSelectCheckbox = styled(Checkbox)(({ theme, checked }) => ({
 
 export const StyledListTable = styled(Table)(({}) => ({
   padding: "0px",
-
-  "& .tableCell": {
-    padding: "0px",
-  },
-  "& .tableListRow": {
-    "&:hover td, &.selectmodeTable td": {
-      background: "#f1f1f1",
-    },
-    "&.selected td": {
-      background: "#e0f0fb",
-    },
-  },
   "& .tableHead": {
     "& th": {
       background: "#0492f2",
@@ -103,12 +93,29 @@ export const StyledListTable = styled(Table)(({}) => ({
 
 export const StyledListTableCell = styled(TableCell)(({}) => ({
   padding: "0px",
+  height: `${ITEM_HEIGHT}px`,
+  display: "flex",
+  alignItems: "center",
+}));
+
+export const StyledListTableRow = styled(TableRow)(({}) => ({
+  display: "flex",
+  flexDirection: "row",
+  height: `${ITEM_HEIGHT}px`,
+  alignItems: "center",
+  width: "100%",
+  "&:hover td, &.selectmodeTable td": {
+    background: "#f1f1f1",
+  },
+  "&.selected td": {
+    background: "#e0f0fb",
+  },
 }));
 
 export const StyledItemExtension = styled("span")(({}) => ({
   position: "absolute",
   left: "0",
-  top: "45px",
+  top: "42px",
   borderRadius: "3px",
   fontSize: "9px",
   background: "#ccc",
@@ -126,8 +133,8 @@ export const StyledItemTitle = styled(Box)(({}) => ({
     whiteSpace: "pre-line",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    margin: "3px 1px 0",
-    padding: "1px",
+    margin: "3px 0px 0",
+    padding: "0px",
     wordBreak: "break-word",
     overflowWrap: "break-word",
     display: "-webkit-box",
