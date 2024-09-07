@@ -11,6 +11,7 @@ const FileManager: React.FC<{}> = () => (
       display: "flex",
       flexDirection: "column",
       overflow: "hidden",
+      width: "100%",
     }}
   >
     <TopBar />

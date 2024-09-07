@@ -63,7 +63,7 @@ export const StyledPrivateIcon = styled("span")(({}) => ({
   padding: "5px",
 }));
 
-export const StyledSelectCheckbox = styled(Checkbox)(({ theme, checked }) => ({
+export const StyledSelectCheckbox = styled(Checkbox)(({ checked }) => ({
   position: "absolute",
   top: "0px",
   left: "0px",

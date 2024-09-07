@@ -17,10 +17,9 @@ import {
 import { List as VirtualizedList, AutoSizer } from "react-virtualized";
 import DraggedElementsStack from "../GridView/DraggedElementsStack";
 import ListItemRender from "./ListItemRender";
-import ListFileItem from "./ListFileItem";
 import { StyledListTable, StyledEmptyFolderContainer } from "../styled";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
-import { FileType, Items } from "../../../types";
+import { Items } from "../../../types";
 
 export const ROW_HEIGHT = 50;
 
@@ -34,7 +33,7 @@ const ListView: React.FC<{}> = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5, delay: 200 },
-    })
+    }),
   );
 
   const handleDragStart = useCallback((event: any) => {
@@ -52,7 +51,7 @@ const ListView: React.FC<{}> = () => {
         handleDragEnd(droppedItems, folderItem);
       }
     },
-    [selectedFiles, activeItem, handleDragEnd]
+    [selectedFiles, activeItem, handleDragEnd],
   );
 
   // Virtualized row renderer
@@ -75,8 +74,15 @@ const ListView: React.FC<{}> = () => {
       onDragEnd={onDragEnd}
       sensors={sensors}
     >
-      <TableContainer component={Box}>
-        <StyledListTable size="small" aria-label="files list table">
+      <TableContainer
+        component={Box}
+        style={{ height: "100%", overflow: "hidden" }}
+      >
+        <StyledListTable
+          size="small"
+          aria-label="files list table"
+          style={{ height: "100%" }}
+        >
           <TableHead>
             <TableRow className="tableHead">
               <TableCell style={{ width: "45px" }} />
@@ -91,12 +97,12 @@ const ListView: React.FC<{}> = () => {
             </TableRow>
           </TableHead>
 
-          <TableBody>
-            <AutoSizer disableHeight>
-              {({ width }) => (
+          <TableBody style={{ height: "100%" }}>
+            <AutoSizer>
+              {({ height, width }) => (
                 <VirtualizedList
                   width={width}
-                  height={400} // Set this to fit your layout
+                  height={height}
                   rowHeight={ROW_HEIGHT}
                   rowCount={filesList.length}
                   rowRenderer={rowRenderer}
