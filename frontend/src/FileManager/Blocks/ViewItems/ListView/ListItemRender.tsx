@@ -5,11 +5,11 @@ import FolderItem from "./ListFolderItem";
 import FileItem from "./ListFileItem";
 import { Items, ItemType } from "../../../types";
 
-const ListItemRender = ({ item }: { item: Items }) =>
+const ListItemRender = ({ item, style }: { item: Items }) =>
   item.type === ItemType.FOLDER ? (
-    <FolderItem key={item.id} item={item} />
+    <FolderItem key={item.id} item={item} style={style} />
   ) : item.type === ItemType.FILE ? (
-    <FileItem key={item.id} item={item} />
+    <FileItem key={item.id} item={item} style={style} />
   ) : null;
 
 export default memo(ListItemRender);

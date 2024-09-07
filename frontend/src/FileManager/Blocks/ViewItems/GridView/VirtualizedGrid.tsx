@@ -42,6 +42,7 @@ const VirtualizedGrid = ({ items }: { items: ItemsList }) => {
             rowCount={rowCount}
             rowHeight={ITEM_SIZE}
             width={width}
+            style={{ paddingBottom: "30px" }}
           />
         );
       }}

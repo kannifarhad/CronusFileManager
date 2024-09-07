@@ -3,7 +3,7 @@ import { Grid, Box } from "@mui/material";
 
 export const StyledFilesBarWrapper = styled(Grid)(({}) => ({
   position: "relative",
-  overflow: "auto",
+  // overflow: "auto",
   flex: 1,
   height: "100%",
   "& .infoMessages": {
@@ -45,10 +45,12 @@ export const StyledToasterMessages = styled(Box)(({}) => ({
 }));
 
 export const StyledFilesListContainer = styled(Box)(({}) => ({
-  padding: "0px 10px",
-  minHeight: "300px",
+  // padding: "0px 10px",
+  // minHeight: "300px",
   position: "relative",
+  overflowY: "hidden",
   height: "100%",
+  width: "100%",
 }));
 
 export const StyledFilesListWrapper = styled(Box)(({}) => ({

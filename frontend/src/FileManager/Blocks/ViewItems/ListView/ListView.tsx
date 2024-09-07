@@ -14,11 +14,15 @@ import {
   useSensor,
   PointerSensor,
 } from "@dnd-kit/core";
+import { List as VirtualizedList, AutoSizer } from "react-virtualized";
+import DraggedElementsStack from "../GridView/DraggedElementsStack";
+import ListItemRender from "./ListItemRender";
 import ListFileItem from "./ListFileItem";
 import { StyledListTable, StyledEmptyFolderContainer } from "../styled";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 import { FileType, Items } from "../../../types";
-import VirtualizedList from "./VirtualizedList";
+
+export const ROW_HEIGHT = 50;
 
 const ListView: React.FC<{}> = () => {
   const {
@@ -51,6 +55,12 @@ const ListView: React.FC<{}> = () => {
     [selectedFiles, activeItem, handleDragEnd]
   );
 
+  // Virtualized row renderer
+  const rowRenderer = ({ index, key, style }: any) => {
+    const item = filesList[index];
+    return <ListItemRender item={item} key={key} style={style} />;
+  };
+
   if (filesList.length === 0) {
     return (
       <StyledEmptyFolderContainer>
@@ -66,26 +76,43 @@ const ListView: React.FC<{}> = () => {
       sensors={sensors}
     >
       <TableContainer component={Box}>
-        <StyledListTable size="small" aria-label="a dense table">
+        <StyledListTable size="small" aria-label="files list table">
           <TableHead>
             <TableRow className="tableHead">
-              <TableCell style={{ width: "20px" }} />
+              <TableCell style={{ width: "45px" }} />
               <TableCell style={{ width: "35px" }} align="left" />
               <TableCell align="left">Name</TableCell>
               <TableCell style={{ width: "100px" }} align="left">
                 Size
               </TableCell>
-              <TableCell style={{ width: "150px" }} align="left">
+              <TableCell style={{ width: "165px" }} align="left">
                 Created
               </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            <VirtualizedList items={filesList} />
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <VirtualizedList
+                  width={width}
+                  height={400} // Set this to fit your layout
+                  rowHeight={ROW_HEIGHT}
+                  rowCount={filesList.length}
+                  rowRenderer={rowRenderer}
+                  overscanRowCount={5}
+                />
+              )}
+            </AutoSizer>
             <DragOverlay>
               {activeItem ? (
-                <ListFileItem item={activeItem as FileType} />
+                <DraggedElementsStack
+                  filesList={
+                    selectedFiles.size > 0
+                      ? Array.from(selectedFiles)
+                      : [activeItem]
+                  }
+                />
               ) : null}
             </DragOverlay>
           </TableBody>
