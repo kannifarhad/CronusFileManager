@@ -1,5 +1,14 @@
 import { styled } from "@mui/system";
-import { Box, Button, Dialog, Alert, Menu, MenuItem } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  Alert,
+  Menu,
+  MenuItem,
+  List,
+  ListItem,
+} from "@mui/material";
 
 export const StyledButtonGroupWrapper = styled(Box, {
   shouldForwardProp: (prop: string) => !["expanded"].includes(prop),
@@ -12,7 +21,7 @@ export const StyledButtonGroupWrapper = styled(Box, {
   },
 }));
 
-export const StyledButton = styled(Button)(({}) => ({
+export const StyledButton = styled(Button)(({ style }) => ({
   fontSize: "14px",
   padding: "10px 5px",
   minWidth: "35px !important",
@@ -23,6 +32,7 @@ export const StyledButton = styled(Button)(({}) => ({
     lineHeight: "11px",
     padding: "0px 5px",
   },
+  ...style,
 }));
 export const StyledActionButton = styled(Button)(({}) => ({
   fontSize: "14px",
@@ -115,8 +125,10 @@ export const StyledDropZoneSection = styled("section")(({}) => ({
 
 export const StyledAcceptedFilesList = styled("section")(({}) => ({
   fontSize: "12px",
-  padding: "10px 0px",
-  margin: "0px",
+  margin: "10px 0px",
+  maxHeight: "200px",
+  overflowY: "auto",
+  overflowX: "hidden",
 }));
 
 export const StyledContextMenu = styled(Menu)(({}) => ({}));
@@ -130,4 +142,19 @@ export const StyledContextMenuItem = styled(MenuItem)(({}) => ({
     fontSize: "12px",
     padding: "0px 10px 0px 0px",
   },
+}));
+
+export const StyledDropZoneFileList = styled(List)(({}) => ({
+  borderBottom: "1px solid #ccc",
+  padding: "0px",
+  margin: "0px",
+  "& .MuiCollapse-root ul.MuiList-root": {
+    borderLeft: "1px solid #ccc",
+    borderBottomLeftRadius: "5px",
+  },
+}));
+export const StyledDropZoneFileListItem = styled(ListItem)(({}) => ({
+  padding: "0px 9px",
+  borderBottom: "1px solid #ccc",
+  margin: "0px",
 }));

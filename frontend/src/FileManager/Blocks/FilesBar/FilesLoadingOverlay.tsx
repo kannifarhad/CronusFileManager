@@ -1,4 +1,4 @@
-import { memo, FC } from "react";
+import React, { memo, FC } from "react";
 import { StyledFilesLoadingOverlay } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 

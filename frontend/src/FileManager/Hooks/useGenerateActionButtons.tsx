@@ -47,8 +47,8 @@ export const generateAllButtons = (
     selectedFolder,
     foldersList,
   } = state;
-  const isItemFocusedOrSelected = ((contextMenuProp, selectedFiles) =>
-    Boolean(contextMenuProp?.item) || selectedFiles.size === 1)(
+  const isItemFocusedOrSelected = ((contextMenuProp, selectedFilesList) =>
+    Boolean(contextMenuProp?.item) || selectedFilesList.size === 1)(
     contextMenu,
     selectedFiles,
   );

@@ -11,17 +11,21 @@ interface MenuItemProps {
 
 const isMenuItemIsActive = (
   item: FolderList,
-  currentFolder: string = ""
+  currentFolder: string = "",
 ): boolean => {
   // Helper function to recursively check for active state
-  const isMenuRootItemIsActive = (item: FolderList): boolean => {
+  const isMenuRootItemIsActive = (curremtItem: FolderList): boolean => {
     // Check if the current item's path is exactly the currentFolder
-    if (Boolean(currentFolder) && currentFolder.indexOf(item.path) === 0) {
+    if (
+      Boolean(currentFolder) &&
+      currentFolder.indexOf(curremtItem.path) === 0
+    ) {
       return true;
     }
     // Recursively check children
-    if (Array.isArray(item.children)) {
-      for (const subItem of item.children) {
+    if (Array.isArray(curremtItem.children)) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const subItem of curremtItem.children) {
         if (isMenuItemIsActive(subItem, currentFolder)) {
           return true;
         }

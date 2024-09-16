@@ -3,7 +3,6 @@ import { AlertColor } from "@mui/material/Alert";
 import React, { ReactNode } from "react";
 import config from "./Elements/config.json";
 import { SaveFileParams } from "./Api/types";
-import { FileWithPreview } from "./Elements/Dropzone";
 import { ButtonItemType } from "./Elements/ButtonGroup";
 
 // Define enums
@@ -239,10 +238,7 @@ export interface Operations {
   handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => void;
   handleToggleFullScreen: () => void;
   handleToggleUploadPopUp: (forceShow?: boolean) => void;
-  handleUploadFiles: (
-    files: FileWithPreview[],
-    selectedFolder: FolderList,
-  ) => void;
+  handleUploadFiles: (files: File[], selectedFolder: FolderList) => void;
   handlingHistory: (historyInfo: HistoryStep, index: number) => void;
 }
 

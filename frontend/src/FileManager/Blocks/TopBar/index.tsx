@@ -23,8 +23,6 @@ const TopBar: React.FC<{}> = () => {
     (...props: [React.MouseEvent<HTMLElement>, SettingsMenuEnum]) => {
       if (menuListRef.current?.handleOpenMenu) {
         menuListRef.current.handleOpenMenu(...props);
-      } else {
-        console.error("Topbar menu doesn't have handleOpenMenu function");
       }
     },
     [menuListRef],
@@ -51,6 +49,7 @@ const TopBar: React.FC<{}> = () => {
   return (
     <TopBarWrapper container>
       {topbar.map((groups, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <Grid item key={index}>
           <TopBarButtonGroups buttons={groups} />
         </Grid>

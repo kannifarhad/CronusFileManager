@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import config from "./Elements/config.json";
 import mainconfig from "../Data/Config";
 import {
@@ -13,13 +14,13 @@ import {
 
 export const sortFilter = (
   filesList: ItemsList,
-  order: OrderByType,
+  order: OrderByType
 ): ItemsList => {
   // Helper function to sort items based on the field and order
   const sortItems = (
     items: ItemsList,
     field: OrderByFieldEnum,
-    orderBy: SortByFieldEnum,
+    orderBy: SortByFieldEnum
   ): ItemsList =>
     items.sort((a, b) => {
       let comparison = 0;
@@ -55,7 +56,7 @@ export const sortFilter = (
       }
       return acc;
     },
-    [[], []],
+    [[], []]
   );
 
   const sortedFolders = sortItems(folders, order.field, order.orderBy);
@@ -67,7 +68,7 @@ export const sortFilter = (
 
 export const checkSelectedFileType = (
   type: ItemExtensionCategoryFilter,
-  selectedFile: FileType,
+  selectedFile: FileType
 ) => {
   try {
     switch (type) {
@@ -93,6 +94,11 @@ export const checkSelectedFileType = (
 export const toAbsoluteUrl = (pathname: string) =>
   process.env.PUBLIC_URL + pathname;
 
+export const getFileExtensionIcon = (extension: keyof typeof config.icons) => {
+  const extensionIconPath = config.icons[extension] || config.icons.broken;
+  return toAbsoluteUrl(extensionIconPath);
+};
+
 export const getThumb = (item: FileType, showImages: ImagesThumbTypeEnum) => {
   try {
     if (
@@ -101,9 +107,7 @@ export const getThumb = (item: FileType, showImages: ImagesThumbTypeEnum) => {
     ) {
       return `${mainconfig.serverPath}${item.path}`;
     }
-    const extensionIconPath =
-      config.icons[item.extension] || config.icons.broken;
-    return toAbsoluteUrl(extensionIconPath);
+    return getFileExtensionIcon(item.extension);
   } catch (error) {
     return toAbsoluteUrl(config.icons.broken);
   }
@@ -140,7 +144,7 @@ export const convertDate = (dateString: string): string => {
   const myDate = new Date(dateString);
 
   // Check if the date is invalid
-  if (isNaN(myDate.getTime())) {
+  if (Number.isNaN(myDate.getTime())) {
     return "Invalid Date";
   }
 
@@ -202,6 +206,7 @@ function parseValue(arg: ClassValue): string {
 
   let classes = "";
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const key in arg as ClassDictionary) {
     if (hasOwn.call(arg, key) && (arg as ClassDictionary)[key]) {
       classes = appendClass(classes, key);
@@ -217,4 +222,87 @@ function appendClass(value: string, newClass: string): string {
   }
 
   return value ? `${value} ${newClass}` : newClass;
+}
+
+// DROPZONE HELPERS
+export interface DroppedFile {
+  path: string;
+  preview: string;
+  index: number;
+  type?: ItemType.FILE;
+  size?: number;
+  name?: string;
+}
+
+export interface DroppedFolder {
+  name: string;
+  index: number;
+  type: ItemType.FOLDER;
+  size?: number;
+  children: (DroppedFolder | DroppedFile)[];
+}
+
+export type DroppedFilesTree = (DroppedFolder | DroppedFile)[];
+// Helper function to create folder trees
+function addFileToTree(tree: DroppedFilesTree, file: DroppedFile): void {
+  const parts = file.path.split("/").filter(Boolean); // Split the path and remove empty parts
+  let currentFolder = tree;
+
+  parts.forEach((part, index) => {
+    const isFile = index === parts.length - 1;
+
+    if (isFile) {
+      // If it's the file, add it to the folder with 'type' attribute
+      currentFolder.push({
+        ...file,
+        type: ItemType.FILE,
+      });
+    } else {
+      // Check if the folder already exists
+      let folder = currentFolder.find(
+        (item) =>
+          "name" in item && item.name === part && item.type === ItemType.FOLDER
+      ) as DroppedFolder | undefined;
+
+      // If folder doesn't exist, create it
+      if (!folder) {
+        folder = {
+          name: part,
+          index: file.index,
+          type: ItemType.FOLDER,
+          children: [],
+          size: 0,
+        };
+        currentFolder.unshift(folder);
+      }
+
+      // Move deeper into the folder structure
+      currentFolder = folder.children;
+    }
+  });
+}
+
+// Main function to organize files into folders and subfolders
+export function organizeFiles(
+  files: DroppedFile[],
+): (DroppedFolder | DroppedFile)[] {
+  const tree: (DroppedFolder | DroppedFile)[] = [];
+
+  files.forEach((file, index) => {
+    if (file.path.includes("/")) {
+      // If the file has a folder path, process it
+      addFileToTree(tree, { ...file, index, size: file.size, name: file.name });
+    } else {
+      // If no folder path, add it directly to root
+      tree.push({
+        ...file,
+        index,
+        type: ItemType.FILE,
+        size: file.size,
+        name: file.name,
+      });
+    }
+  });
+
+  return tree;
 }

@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, ReactNode } from "react";
+import React, { createContext, useReducer, ReactNode, useMemo } from "react";
 import useFileManagerOperations from "../Hooks/useFileManagerOperations";
 import {
   FileManagerAction,
@@ -48,9 +48,10 @@ export function FileManagerProvider({
 }) {
   const [state, dispatch] = useReducer(fileManagerReducer, initialState);
   const operations = useFileManagerOperations({ dispatch, selectItemCallback });
+  const value = useMemo(() => ({ ...state, operations }), [state, operations]);
 
   return (
-    <FileManagerStateContext.Provider value={{ ...state, operations }}>
+    <FileManagerStateContext.Provider value={value}>
       <FileManagerDispatchContext.Provider value={dispatch}>
         {children}
       </FileManagerDispatchContext.Provider>

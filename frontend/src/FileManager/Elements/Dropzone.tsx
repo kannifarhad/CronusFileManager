@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList, { ButtonItemType } from "./ButtonGroup";
-import { formatBytes } from "../helpers";
+import { DroppedFile, organizeFiles } from "../helpers";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
-
-export interface FileWithPreview extends File {
-  preview: string;
-}
+import DropzoneFileList from "./DropzoneFileList";
 
 export default function UploadFiles() {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const {
     operations: { handleUploadFiles, handleToggleUploadPopUp },
     selectedFolder,
@@ -26,12 +23,7 @@ export default function UploadFiles() {
         [],
     },
     onDrop: (acceptedFiles: File[]) => {
-      const newFiles = acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      );
-      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+      setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
     },
   });
 
@@ -43,18 +35,28 @@ export default function UploadFiles() {
     });
   }, []);
 
-  const acceptedFiles = useMemo(
-    () =>
-      files.map((file, index) => (
-        <li key={file.name}>
-          {file.name} -{formatBytes(file.size)}
-          <button onClick={() => removeFile(index)}>
-            <span>Remove</span>
-          </button>
-        </li>
-      )),
-    [files, removeFile]
-  );
+  const removeFolder = useCallback((path: string) => {
+    setFiles((prev) => {
+      const regex = new RegExp(`${path}(\\/|[^\\s]+)`);
+      return prev.filter((file: any) => {
+        if (file?.path) {
+          return !regex.test(file.path);
+        }
+        return true;
+      });
+    });
+  }, []);
+
+  const acceptedFiles = useMemo(() => {
+    const fileTree = organizeFiles(files as unknown as DroppedFile[]);
+    return (
+      <DropzoneFileList
+        tree={fileTree}
+        onRemove={removeFile}
+        onRemoveFolder={removeFolder}
+      />
+    );
+  }, [files, removeFile, removeFolder]);
 
   const buttons: ButtonItemType[] = useMemo(
     () => [
@@ -77,19 +79,13 @@ export default function UploadFiles() {
     [handleUploadFiles, files, selectedFolder, handleToggleUploadPopUp]
   );
 
-  useEffect(
-    () => () => {
-      // Make sure to revoke the data uris to avoid memory leaks
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
-    },
-    [files]
-  );
-
   return (
     <StyledDropZoneSection>
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p>
+          Drag `&apos;n`&apos; drop some files here, or click to select files
+        </p>
       </div>
       <StyledAcceptedFilesList>{acceptedFiles}</StyledAcceptedFilesList>
       <ButtonList buttons={buttons} />
