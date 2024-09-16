@@ -8,6 +8,7 @@ import {
   SortByFieldEnum,
 } from "../../types";
 
+// eslint-disable-next-line no-shadow
 export enum SettingsMenuEnum {
   SETTINGS = "SETTINGS",
   SEARCH = "SEARCH",

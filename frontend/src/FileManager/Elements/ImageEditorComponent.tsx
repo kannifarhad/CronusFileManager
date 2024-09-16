@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-class-component-methods */
+/* eslint-disable react/sort-comp */
 import React, { Component, createRef, RefObject } from "react";
 import TuiImageEditor from "tui-image-editor";
 
@@ -72,6 +74,7 @@ export default class ImageEditor extends Component<ImageEditorProps> {
       });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   isEventHandlerKey(key: string) {
     return /on[A-Z][a-zA-Z]+/.test(key);
   }

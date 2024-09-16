@@ -1,5 +1,5 @@
 import { styled } from "@mui/system";
-import { Box, Grid, ListItem, ListItemProps, BoxProps } from "@mui/material";
+import { Box, Grid, ListItem, ListItemProps } from "@mui/material";
 
 export const StyledFolderBar = styled(Grid)(({}) => ({
   padding: "10px 0px",
@@ -49,7 +49,7 @@ interface StyledFolderMenuItemProps extends ListItemProps {
 }
 export const StyledFolderMenuItem = styled(ListItem, {
   shouldForwardProp: (prop: string) => !["isOpen", "isActive"].includes(prop),
-})<StyledFolderMenuItemProps>(({ theme, isOpen, isActive }) => {
+})<StyledFolderMenuItemProps>(({ isOpen, isActive }) => {
   let styles = {};
   if (isActive) {
     styles = {
@@ -83,18 +83,19 @@ export const FileManagerFolderBarGrid = styled(Grid)(({}) => ({
   "& .FileManagerFolderBarWrapper": {},
 }));
 
-interface FileManagerFolderBarWrapperProps extends BoxProps {
-  height?: number;
-  expanded?: boolean;
-}
-export const FileManagerFolderBarWrapper = styled(Box, {
-  shouldForwardProp: (prop: string) => !["maxHeight"].includes(prop),
-})<FileManagerFolderBarWrapperProps>(({ height, expanded }) => {
-  const heightInPx =
-    height !== undefined && height > 300 ? `${height}px` : "300px";
-  const bigHeight = `${window.innerHeight - 100}px`;
-  const maxHeight = expanded ? bigHeight : heightInPx;
-  return {
-    // maxHeight,
-  };
-});
+// interface FileManagerFolderBarWrapperProps extends BoxProps {
+//   height?: number;
+//   expanded?: boolean;
+// }
+// export const FileManagerFolderBarWrapper = styled(Box, {
+//   shouldForwardProp: (prop: string) => !["maxHeight"].includes(prop),
+// })<FileManagerFolderBarWrapperProps>(({ height, expanded }) => {
+//   const heightInPx =
+//     height !== undefined && height > 300 ? `${height}px` : "300px";
+//   const bigHeight = `${window.innerHeight - 100}px`;
+//   const maxHeight = expanded ? bigHeight : heightInPx;
+//   return {
+//     maxHeight,
+//   };
+// });
+export const FileManagerFolderBarWrapper = styled(Box)(() => ({}));

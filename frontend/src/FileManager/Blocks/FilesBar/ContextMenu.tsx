@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { memo } from "react";
 import { Divider } from "@mui/material";
 import {
@@ -35,9 +36,9 @@ const ContextMenu: React.FC = () => {
       {contextMenu.menuType === ContextMenuTypeEnum.ITEM
         ? fileButtons.map((buttonGroup, index) => (
             <React.Fragment key={index}>
-              {buttonGroup.map((button, index) => (
+              {buttonGroup.map((button) => (
                 <StyledContextMenuItem
-                  key={index}
+                  key={button.title}
                   disabled={button.disabled}
                   onClick={(e) => {
                     handleContextClose();
@@ -53,9 +54,9 @@ const ContextMenu: React.FC = () => {
           ))
         : containerButtons.map((buttonGroup, index) => (
             <React.Fragment key={index}>
-              {buttonGroup.map((button, index) => (
+              {buttonGroup.map((button) => (
                 <StyledContextMenuItem
-                  key={index}
+                  key={button.title}
                   disabled={button.disabled}
                   onClick={(e) => {
                     button.onClick(e);
