@@ -16,7 +16,7 @@ interface MenuItemProps {
 
 const isMenuItemIsActive = (
   item: FolderList,
-  currentFolder: string = ""
+  currentFolder: string = "",
 ): boolean => {
   // Helper function to recursively check for active state
   const isMenuRootItemIsActive = (curremtItem: FolderList): boolean => {
