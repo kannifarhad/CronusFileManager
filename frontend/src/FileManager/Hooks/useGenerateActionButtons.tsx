@@ -62,25 +62,25 @@ export const generateAllButtons = (
   const allButtons: ButtonObject = {
     copy: {
       title: "Copy",
-      icon: "icon-copy",
+      icon: "Copy",
       onClick: operations.handleCopy,
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     cut: {
       title: "Cut",
-      icon: "icon-scissors",
+      icon: "Cut",
       onClick: operations.handleCut,
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
     },
     paste: {
       title: "Paste",
-      icon: "icon-paste",
+      icon: "Paste",
       onClick: () => operations.handlePaste(bufferedItems, selectedFolder),
       disabled: !(bufferedItems.files.size > 0),
     },
     delete: {
       title: "Delete",
-      icon: "icon-trash",
+      icon: "Trash",
       onClick: () => {
         const items =
           selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
@@ -90,13 +90,13 @@ export const generateAllButtons = (
     },
     emptyFolder: {
       title: "Empty Folder",
-      icon: "icon-delete-folder",
+      icon: "DeleteFolder",
       onClick: () => operations.handleEmptyFolder(selectedFolder),
       disabled: !selectedFolder,
     },
     rename: {
       title: "Rename",
-      icon: "icon-text",
+      icon: "Text",
       onClick: () => {
         const item =
           selectedFiles.size > 0
@@ -108,49 +108,49 @@ export const generateAllButtons = (
     },
     newFile: {
       title: "Few File",
-      icon: "icon-add",
+      icon: "AddFile",
       onClick: () => operations.handleNewFile(selectedFolder),
       disabled: !selectedFolder,
     },
     newFolder: {
       title: "New Folder",
-      icon: "icon-add-folder",
+      icon: "AddFolder",
       onClick: () => operations.handleNewFolder(selectedFolder),
       disabled: !selectedFolder,
     },
     goForwad: {
       title: "Forwad",
-      icon: "icon-forward",
+      icon: "Forward",
       onClick: () => operations.handleGoForWard(history),
       disabled: !(history.currentIndex + 1 < history.steps.length),
     },
     goParent: {
       title: "Go to parent folder",
-      icon: "icon-backward",
+      icon: "Backward",
       onClick: () => operations.handleGotoParent(foldersList),
       disabled: selectedFolder?.path === foldersList?.path,
     },
     goBack: {
       title: "Back",
-      icon: "icon-backward",
+      icon: "Backward",
       onClick: () => operations.handleGoBackWard(history),
       disabled: !(history.currentIndex > 0),
     },
     selectAll: {
       title: "Select all",
-      icon: "icon-add-3",
+      icon: "SelectAll",
       onClick: operations.handleSelectAll,
       disabled: !(selectedFiles.size !== filesList.length),
     },
     selectNone: {
       title: "Select none",
-      icon: "icon-cursor",
+      icon: "Cursor",
       onClick: operations.handleUnsetSelected,
       disabled: selectedFiles.size === 0,
     },
     inverseSelected: {
       title: "Invert selection",
-      icon: "icon-refresh",
+      icon: "Refresh",
       onClick: operations.handleInverseSelected,
       disabled: !(
         selectedFiles.size !== filesList.length && selectedFiles.size > 0
@@ -158,12 +158,12 @@ export const generateAllButtons = (
     },
     reload: {
       title: "Reload",
-      icon: "icon-refresh",
+      icon: "Refresh",
       onClick: () => operations.handleSelectFolder(selectedFolder, true, true),
     },
     dubplicate: {
       title: "Duplicate",
-      icon: "icon-layers",
+      icon: "Layers",
       onClick: () => {
         const item =
           selectedFiles.size > 0
@@ -179,7 +179,7 @@ export const generateAllButtons = (
     },
     editImage: {
       title: "Resize & Rotate",
-      icon: "icon-paint-palette",
+      icon: "PaintPalette",
       onClick: () => {
         const item =
           selectedFiles.size > 0
@@ -191,7 +191,7 @@ export const generateAllButtons = (
     },
     createZip: {
       title: "Create archive",
-      icon: "icon-zip",
+      icon: "UnZip",
       onClick: () => {
         const items =
           selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
@@ -201,7 +201,7 @@ export const generateAllButtons = (
     },
     extractZip: {
       title: "Extract files from archive",
-      icon: "icon-zip-1",
+      icon: "Zip",
       onClick: () => {
         const item =
           selectedFiles.size > 0
@@ -217,19 +217,19 @@ export const generateAllButtons = (
     },
     gridView: {
       title: "Grid view",
-      icon: "icon-layout-1",
+      icon: "GridView",
       onClick: () => operations.handleSetViewItemType(ViewTypeEnum.GRID),
       disabled: itemsViewType === ViewTypeEnum.GRID,
     },
     listView: {
       title: "List View",
-      icon: "icon-layout-2",
+      icon: "ListView",
       onClick: () => operations.handleSetViewItemType(ViewTypeEnum.LIST),
       disabled: itemsViewType === ViewTypeEnum.LIST,
     },
     getInfo: {
       title: "Get Info",
-      icon: "icon-information",
+      icon: "Information",
       onClick: () => {
         const item =
           selectedFiles.size > 0
@@ -241,7 +241,7 @@ export const generateAllButtons = (
     },
     preview: {
       title: "View",
-      icon: "icon-view",
+      icon: "View",
       onClick: () => {
         const item =
           selectedFiles.size > 0
@@ -253,7 +253,7 @@ export const generateAllButtons = (
     },
     download: {
       title: "Download File",
-      icon: "icon-download-1",
+      icon: "Download",
       onClick: () => {
         const item =
           selectedFiles.size > 0
@@ -265,14 +265,14 @@ export const generateAllButtons = (
     },
     fullScreen: {
       title: "Full Screen",
-      //   icon: expand ? "icon-minimize" : "icon-resize",
-      icon: "icon-resize",
+      //   icon: expand ? "icon-minimize" : "Resize",
+      icon: "Resize",
       onClick: operations.handleToggleFullScreen,
       disabled: false,
     },
     uploadFile: {
       title: "Upload Files",
-      icon: "icon-cloud-computing",
+      icon: "Upload",
       onClick: operations.handleToggleUploadPopUp,
       disabled: !selectedFolder,
     },
@@ -300,7 +300,7 @@ export const generateAllButtons = (
     },
     selectFile: {
       title: "Select file",
-      icon: "icon-outbox",
+      icon: "Outbox",
       onClick: operations.handleReturnCallBack,
       //   disabled: typeof selectCallback === "undefined",
     },

@@ -161,6 +161,8 @@ export interface FileManagerState {
   fileEdit: FileEditPopupProps | null;
   fullScreen: boolean;
   uploadPopup: any;
+  volumesList: VolumeListType;
+  selectedVolume: ServerInstance | S3BucketInstance | S3BucketInstanceV2 | null;
 }
 
 export interface FileManagerAction {
@@ -175,6 +177,7 @@ export interface CreateContextType extends FileManagerState {
 export interface FileManagerProps {
   height?: number;
   selectItemCallback?: (filePath: string) => void;
+  volumesList: VolumeListType;
 }
 
 export interface Button {
@@ -289,3 +292,40 @@ export interface EditImage {
   path: string;
   extension: string;
 }
+
+export enum VolumeTypes {
+  S3BUCKET_FRONT,
+  S3BUCKET_BACK,
+  SERVER,
+}
+export interface ServerInstance {
+  id: string;
+  name: string;
+  server: string;
+  type: VolumeTypes.SERVER;
+}
+export interface S3BucketInstance {
+  id: string;
+  name: string;
+  type: VolumeTypes.S3BUCKET_FRONT;
+  region: string;
+  endpoint: string;
+  bucket: string;
+  credentials: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+}
+export interface S3BucketInstanceV2 {
+  type: VolumeTypes.S3BUCKET_BACK;
+  server: string;
+  bucket: string;
+  id: string;
+  name: string;
+}
+
+export type VolumeListType = (
+  | ServerInstance
+  | S3BucketInstance
+  | S3BucketInstanceV2
+)[];

@@ -1,9 +1,14 @@
+/* eslint-disable react/button-has-type */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useRef, FC, memo, useMemo } from "react";
 import { ListItem } from "@mui/material";
 import MenuSubmenu from "./MenuSubmenu";
 import { StyledFolderMenuItem } from "./styled";
 import { FolderList } from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
+import Icon from "../../Elements/Icon";
+import { classNames } from "../../helpers";
 
 interface MenuItemProps {
   item: FolderList | null;
@@ -49,7 +54,7 @@ const MenuItem: FC<MenuItemProps> = ({ item }) => {
 
   const isActive = useMemo(
     () => item && isMenuItemIsActive(item, selectedFolder?.path),
-    [item, selectedFolder?.path],
+    [item, selectedFolder?.path]
   );
 
   if (!item) return null;
@@ -59,19 +64,23 @@ const MenuItem: FC<MenuItemProps> = ({ item }) => {
   return (
     <StyledFolderMenuItem
       ref={asideLeftLIRef}
-      className="folderItem"
-      isOpen={(isActive && hasChildren) || expand}
-      isActive={item.path === selectedFolder?.path}
+      className={classNames({
+        folderItem: true,
+        isOpen: (isActive && hasChildren) || expand,
+        isActive: item.path === selectedFolder?.path,
+        hasChildren,
+      })}
     >
       <ListItem button className="folderTitle">
-        {hasChildren && (
-          <i
-            className="icon-next iconArrow"
-            onClick={() => setExpand(!expand)}
-          />
-        )}
+        <Icon
+          name="Next"
+          size={10}
+          color="#ccc"
+          className="iconArrow"
+          onClick={() => setExpand(!expand)}
+        />
         <span className="titleWrap" onClick={() => handleSelectFolder(item)}>
-          <i className={`${isActive ? "icon-folder" : "icon-folder-1"}`} />
+          <Icon name={`${isActive ? "FolderOpen" : "Folder"}`} />
           <span className="title">{item.name}</span>
         </span>
       </ListItem>

@@ -1,28 +1,29 @@
 import { styled } from "@mui/system";
-import { Box, Grid, ListItem, ListItemProps } from "@mui/material";
+import { Box, Grid, ListItem } from "@mui/material";
 
 export const StyledFolderBar = styled(Grid)(({}) => ({
   padding: "10px 0px",
   overflow: "hidden",
   "& .folderItem": {
-    display: "block !important",
+    display: "flex",
+    flexDirection: "column",
     width: "100%",
     margin: "0px !important",
-    padding: "0px",
+    padding: "0px 5px",
     fontSize: "13px",
 
     "& .folderTitle": {
-      position: "relative",
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
       "& .iconArrow": {
-        position: "absolute",
-        left: "0px",
-        top: "0px",
-        fontSize: "8px",
-        lineHeight: "12px",
-        padding: "6px",
+        padding: "5px",
+        opacity: 0,
       },
       "& .titleWrap": {
-        display: "block",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
         width: "100%",
         padding: "5px 0px",
       },
@@ -31,7 +32,7 @@ export const StyledFolderBar = styled(Grid)(({}) => ({
       },
     },
     "& .MuiButtonBase-root": {
-      padding: "0px 0px 0px 20px",
+      padding: "0px",
       borderRadius: "3px",
     },
     "& .folderSubmenu": {
@@ -43,36 +44,30 @@ export const StyledFolderBar = styled(Grid)(({}) => ({
   },
 }));
 
-interface StyledFolderMenuItemProps extends ListItemProps {
-  isOpen: boolean;
-  isActive: boolean;
-}
-export const StyledFolderMenuItem = styled(ListItem, {
-  shouldForwardProp: (prop: string) => !["isOpen", "isActive"].includes(prop),
-})<StyledFolderMenuItemProps>(({ isOpen, isActive }) => {
-  let styles = {};
-  if (isActive) {
-    styles = {
-      ...styles,
-      "&  > .MuiButtonBase-root": {
-        background: "#0492f2 !important",
-        color: "#fff !important",
+export const StyledFolderMenuItem = styled(ListItem)(({}) => ({
+  "&.hasChildren": {
+    "& >.folderTitle .iconArrow": {
+      opacity: "1 !important",
+    },
+  },
+  "&.isOpen": {
+    "& > .folderSubmenu": {
+      display: "block",
+    },
+    "& > .MuiButtonBase-root .iconArrow": {
+      transform: "rotate(90deg)",
+    },
+  },
+  "&.isActive": {
+    "& > .MuiButtonBase-root": {
+      background: "#0492f2",
+      color: "#fff",
+      "&:hover": {
+        background: "#0277bd",
       },
-    };
-  }
-  if (isOpen) {
-    styles = {
-      ...styles,
-      "& > .folderSubmenu": {
-        display: "block !important",
-      },
-      "&  >  .MuiButtonBase-root .iconArrow": {
-        transform: "rotate(90deg)",
-      },
-    };
-  }
-  return styles;
-});
+    },
+  },
+}));
 
 export const FileManagerFolderBarGrid = styled(Grid)(({}) => ({
   flex: 1,

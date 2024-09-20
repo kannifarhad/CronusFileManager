@@ -42,7 +42,7 @@ const FileNode: React.FC<{
             width: "20px",
           }}
           src={getFileExtensionIcon(
-            `.${file?.name?.match(/\.([^.]+)$/)?.[1]}` as keyof typeof config.icons
+            `.${file?.name?.match(/\.([^.]+)$/)?.[1]}` as keyof typeof config.icons,
           )}
         />
       </ListItemIcon>
@@ -72,7 +72,7 @@ const FileNode: React.FC<{
           onClick={() => onRemove(file.index)}
           aria-haspopup="true"
         >
-          <span className="icon-trash" />
+          <span className="Trash" />
         </StyledButton>
       </ListItemSecondaryAction>
     </StyledDropZoneFileListItem>
@@ -91,7 +91,7 @@ const FolderNode: React.FC<{
 
   return (
     <>
-      <StyledDropZoneFileListItem button onClick={handleToggle}>
+      <StyledDropZoneFileListItem onClick={handleToggle}>
         <ListItemIcon style={{ minWidth: "30px" }}>
           <img
             alt={folder.name}
@@ -112,7 +112,7 @@ const FolderNode: React.FC<{
             onClick={() => onRemove(folder.name)}
             aria-haspopup="true"
           >
-            <span className="icon-trash" />
+            <span className="Trash" />
           </StyledButton>
         </ListItemSecondaryAction>
       </StyledDropZoneFileListItem>
