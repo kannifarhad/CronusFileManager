@@ -76,7 +76,7 @@ export default function UploadFiles() {
         onClick: () => handleToggleUploadPopUp(),
       },
     ],
-    [handleUploadFiles, files, selectedFolder, handleToggleUploadPopUp],
+    [handleUploadFiles, files, selectedFolder, handleToggleUploadPopUp]
   );
 
   return (

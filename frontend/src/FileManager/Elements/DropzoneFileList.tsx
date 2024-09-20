@@ -42,7 +42,7 @@ const FileNode: React.FC<{
             width: "20px",
           }}
           src={getFileExtensionIcon(
-            `.${file?.name?.match(/\.([^.]+)$/)?.[1]}` as keyof typeof config.icons,
+            `.${file?.name?.match(/\.([^.]+)$/)?.[1]}` as keyof typeof config.icons
           )}
         />
       </ListItemIcon>

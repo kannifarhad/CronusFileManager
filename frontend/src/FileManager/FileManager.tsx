@@ -7,7 +7,7 @@ import { useFileManagerState } from "./ContextStore/FileManagerContext";
 
 const FileManager: React.FC<{ height: number }> = ({ height }) => {
   const { fullScreen } = useFileManagerState();
-
+  console.log("FileManager rerenderer");
   return (
     <>
       <ImageEditPopup />

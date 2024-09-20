@@ -7,6 +7,7 @@ import {
   OrderByFieldEnum,
   SortByFieldEnum,
   ViewTypeEnum,
+  VolumeListType,
 } from "../types";
 import fileManagerReducer from "./FileManagerReducer";
 
@@ -30,10 +31,12 @@ const initialState = {
   fileEdit: null,
   fullScreen: false,
   uploadPopup: null,
+  volumesList: [],
+  selectedVolume: null,
 };
 
 const FileManagerStateContext = createContext<CreateContextType | undefined>(
-  undefined,
+  undefined
 );
 const FileManagerDispatchContext = createContext<
   React.Dispatch<FileManagerAction>
@@ -42,12 +45,21 @@ const FileManagerDispatchContext = createContext<
 export function FileManagerProvider({
   children,
   selectItemCallback,
+  volumesList,
 }: {
   children: ReactNode;
   selectItemCallback: ((filePath: string) => void) | undefined;
+  volumesList: VolumeListType;
 }) {
-  const [state, dispatch] = useReducer(fileManagerReducer, initialState);
-  const operations = useFileManagerOperations({ dispatch, selectItemCallback });
+  const [state, dispatch] = useReducer(fileManagerReducer, {
+    ...initialState,
+    volumesList,
+  });
+  const operations = useFileManagerOperations({
+    dispatch,
+    selectItemCallback,
+    selectedVolume: state.selectedVolume,
+  });
   const value = useMemo(() => ({ ...state, operations }), [state, operations]);
 
   return (
@@ -63,7 +75,7 @@ export const useFileManagerState = () => {
   const context = React.useContext(FileManagerStateContext);
   if (context === undefined) {
     throw new Error(
-      "useFileManagerState must be used within a FileManagerProvider",
+      "useFileManagerState must be used within a FileManagerProvider"
     );
   }
   return context;
@@ -73,7 +85,7 @@ export const useFileManagerDispatch = () => {
   const context = React.useContext(FileManagerDispatchContext);
   if (context === undefined) {
     throw new Error(
-      "useFileManagerDispatch must be used within a FileManagerProvider",
+      "useFileManagerDispatch must be used within a FileManagerProvider"
     );
   }
   return context;

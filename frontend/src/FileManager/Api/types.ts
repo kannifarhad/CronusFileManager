@@ -69,3 +69,32 @@ export interface Children {
   size?: number;
   extension?: string;
 }
+export abstract class IServerConnection {
+  abstract getFolderTree(): Promise<GetFoldersListResponse>;
+
+  abstract getFilesList(params: PathParam): Promise<GetFilesListResponse>;
+
+  abstract copyFilesToFolder(params: PasteFilesParams): Promise<any>;
+
+  abstract cutFilesToFolder(params: PasteFilesParams): Promise<any>;
+
+  abstract deleteItems(params: DeleteItemsParams): Promise<any>;
+
+  abstract emptyDir(params: PathParam): Promise<any>;
+
+  abstract createNewFile(params: CreateNewFileParams): Promise<any>;
+
+  abstract createNewFolder(params: CreateNewFolderParams): Promise<any>;
+
+  abstract renameFiles(params: RenameFilesParams): Promise<any>;
+
+  abstract duplicateItem(params: PathParam): Promise<any>;
+
+  abstract unzip(params: UnzipParams): Promise<any>;
+
+  abstract archive(params: ArchiveParams): Promise<any>;
+
+  abstract saveFile(params: SaveFileParams): Promise<any>;
+
+  abstract uploadFile(body: any): Promise<any>;
+}
