@@ -19,34 +19,25 @@ import {
   ItemType,
   Operations,
   ActionTypes,
+  VolumeListItem,
+  FileManagerState,
 } from "../types";
-import {
-  getFilesList,
-  copyFilesToFolder,
-  cutFilesToFolder,
-  deleteItems,
-  emptydir,
-  createNewFile,
-  createNewFolder,
-  renameFiles,
-  duplicateItem,
-  saveFile,
-  uploadFile,
-  unzip,
-  archive,
-  getFolderTree,
-} from "../Api/fileManagerServices";
 import { SaveFileParams } from "../Api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
 import mainconfig from "../../Data/Config";
+import useApiController from "./useApiController";
 
 export const useFileManagerOperations = ({
   dispatch,
   selectItemCallback,
+  selectedVolume,
 }: {
   dispatch: any;
   selectItemCallback: ((filePath: string) => void) | undefined;
+  selectedVolume: FileManagerState["selectedVolume"];
 }): Operations => {
+  const apiClient = useApiController(selectedVolume);
+
   const setMessage = useCallback(
     (message: Omit<Message, "id">) => {
       dispatch({
@@ -57,7 +48,7 @@ export const useFileManagerOperations = ({
         },
       });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const handleApiError = useCallback(
@@ -76,16 +67,29 @@ export const useFileManagerOperations = ({
         },
       });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const operations: Operations = useMemo(
     () => ({
+      handleSelectCallback: (path: string) => {
+        if (selectItemCallback) {
+          selectItemCallback(path);
+        }
+      },
+
+      handleSelectVolume: (selectedVolumeItem: VolumeListItem) => {
+        dispatch({
+          type: ActionTypes.SET_SELECTED_VOLUME,
+          payload: selectedVolumeItem,
+        });
+      },
+
       handleSelectFolder: (
         folder: FolderType,
         history: boolean = false,
         clearBuffer: boolean = false,
-        showMessage: boolean = true,
+        showMessage: boolean = true
       ) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_FOLDER,
@@ -96,7 +100,8 @@ export const useFileManagerOperations = ({
             clearBuffer,
           },
         });
-        getFilesList({ path: folder.path })
+        apiClient!
+          .getFilesList({ path: folder.path })
           .then((data) => {
             dispatch({
               type: ActionTypes.SET_FILES_LIST,
@@ -119,7 +124,7 @@ export const useFileManagerOperations = ({
       },
 
       handleReloadFolderTree: () => {
-        getFolderTree().then((result) => {
+        apiClient!.getFolderTree().then((result) => {
           dispatch({
             type: ActionTypes.SET_FOLDERS_LIST,
             payload: result,
@@ -268,15 +273,15 @@ export const useFileManagerOperations = ({
 
       handlePaste: (
         bufferedItems: BufferedItemsType,
-        selectedFolder: FolderList,
+        selectedFolder: FolderList
       ) => {
         const files: string[] = Array.from(bufferedItems.files).map(
-          (item: Items) => item.path,
+          (item: Items) => item.path
         );
         const apiFunction =
           bufferedItems.type === ItemMoveActionTypeEnum.CUT
-            ? cutFilesToFolder
-            : copyFilesToFolder;
+            ? apiClient!.cutFilesToFolder
+            : apiClient!.copyFilesToFolder;
 
         apiFunction({ items: files, destination: selectedFolder.path })
           .then(() => {
@@ -293,7 +298,7 @@ export const useFileManagerOperations = ({
 
       handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => {
         const items: string[] = Array.from(selectedFiles).map(
-          (item: Items) => item.path,
+          (item: Items) => item.path
         );
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -302,7 +307,8 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          deleteItems({ items })
+          apiClient!
+            .deleteItems({ items })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
@@ -330,7 +336,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-trash",
+                icon: "Trash",
                 label: "Yes, Delete",
                 onClick: handleDeleteSubmit,
                 variant: "outlined",
@@ -350,7 +356,8 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          emptydir({ path })
+          apiClient!
+            .emptyDir({ path })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
@@ -378,7 +385,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-trash",
+                icon: "Trash",
                 label: "Yes, Delete",
                 onClick: handleEmptySubmit,
                 variant: "outlined",
@@ -396,7 +403,8 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          createNewFile({ path: selectedFolder.path, file: fileName })
+          apiClient!
+            .createNewFile({ path: selectedFolder.path, file: fileName })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
@@ -412,7 +420,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while creating file"),
+              handleApiError(error, "Error happened while creating file")
             );
         };
         dispatch({
@@ -430,7 +438,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-add",
+                icon: "AddFile",
                 label: "Create file",
                 onClick: handleNewFileSubmit,
                 variant: "outlined",
@@ -452,7 +460,8 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          createNewFolder({ path: selectedFolder.path, folder: folderName })
+          apiClient!
+            .createNewFolder({ path: selectedFolder.path, folder: folderName })
             .then(() => {
               operations.handleReloadFolderTree();
               operations.handleSelectFolder(selectedFolder, true, true, false);
@@ -469,7 +478,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while creating folder"),
+              handleApiError(error, "Error happened while creating folder")
             );
         };
 
@@ -488,7 +497,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-add",
+                icon: "AddFile",
                 label: "Create folder",
                 onClick: handleNewFolderSubmit,
                 variant: "outlined",
@@ -510,7 +519,8 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          renameFiles({ path: selectedFile.path, newname: folderName })
+          apiClient!
+            .renameFiles({ path: selectedFile.path, newname: folderName })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
@@ -527,7 +537,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while renaming file"),
+              handleApiError(error, "Error happened while renaming file")
             );
         };
 
@@ -546,7 +556,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-add",
+                icon: "AddFile",
                 label: "Yes, rename",
                 onClick: handleRenameSubmit,
                 variant: "outlined",
@@ -567,7 +577,8 @@ export const useFileManagerOperations = ({
         const handleDuplicateSubmit = () => {
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-          duplicateItem({ path: selectedFile.path })
+          apiClient!
+            .duplicateItem({ path: selectedFile.path })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
@@ -583,7 +594,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while duplicating file"),
+              handleApiError(error, "Error happened while duplicating file")
             );
         };
 
@@ -603,7 +614,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-add",
+                icon: "AddFile",
                 label: "Yes, duplicate",
                 onClick: handleDuplicateSubmit,
                 variant: "outlined",
@@ -615,10 +626,10 @@ export const useFileManagerOperations = ({
       },
       handleCreateZip: (
         selectedFiles: Set<Items>,
-        selectedFolder: FolderList,
+        selectedFolder: FolderList
       ) => {
         const files: string[] = Array.from(selectedFiles).map(
-          (item: Items) => item.path,
+          (item: Items) => item.path
         );
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -626,7 +637,12 @@ export const useFileManagerOperations = ({
         const handleArchiveSubmit = (fileName: string) => {
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-          archive({ files, destination: selectedFolder.path, name: fileName })
+          apiClient!
+            .archive({
+              files,
+              destination: selectedFolder.path,
+              name: fileName,
+            })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
@@ -643,7 +659,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while creating archive"),
+              handleApiError(error, "Error happened while creating archive")
             );
         };
 
@@ -666,7 +682,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-add",
+                icon: "AddFile",
                 label: "Create archive",
                 onClick: handleArchiveSubmit,
                 variant: "outlined",
@@ -691,7 +707,11 @@ export const useFileManagerOperations = ({
             payload: true,
           });
 
-          unzip({ file: selectedFile.path, destination: selectedFolder.path })
+          apiClient!
+            .unzip({
+              file: selectedFile.path,
+              destination: selectedFolder.path,
+            })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
               setMessage({
@@ -702,7 +722,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while extracting archive"),
+              handleApiError(error, "Error happened while extracting archive")
             );
         };
 
@@ -722,7 +742,7 @@ export const useFileManagerOperations = ({
                 variant: "outlined",
               },
               {
-                icon: "icon-add",
+                icon: "AddFile",
                 label: "Extract archive",
                 onClick: handleExtractSubmit,
                 variant: "outlined",
@@ -736,7 +756,8 @@ export const useFileManagerOperations = ({
         const handleCloseEdit = () =>
           dispatch({ type: ActionTypes.SET_FILEEDIT_DATA, payload: null });
         const handleSubmitEdit = (data: SaveFileParams) => {
-          saveFile(data)
+          apiClient!
+            .saveFile(data)
             .then(() => {
               handleCloseEdit();
               operations.handleSelectFolder(selectedFolder, true, true, false);
@@ -753,7 +774,7 @@ export const useFileManagerOperations = ({
               });
             })
             .catch((error) =>
-              handleApiError(error, "Error happened while saving"),
+              handleApiError(error, "Error happened while saving")
             );
         };
         dispatch({
@@ -774,7 +795,7 @@ export const useFileManagerOperations = ({
           selectedFile.type === ItemType.FILE &&
           checkSelectedFileType(
             ItemExtensionCategoryFilter.IMAGE,
-            selectedFile,
+            selectedFile
           );
 
         dispatch({
@@ -882,7 +903,8 @@ export const useFileManagerOperations = ({
           formData.append("files", file, file.name);
         });
 
-        uploadFile(formData)
+        apiClient!
+          .uploadFile(formData)
           .then(() => {
             handleCloseEdit();
             // setTimeout(()=> operations.handleSelectFolder(selectedFolder, true, true, false), 1000);
@@ -900,7 +922,7 @@ export const useFileManagerOperations = ({
             });
           })
           .catch((error) =>
-            handleApiError(error, "Error happened while uploading files."),
+            handleApiError(error, "Error happened while uploading files.")
           );
       },
 
@@ -908,7 +930,7 @@ export const useFileManagerOperations = ({
         dispatch({ type: ActionTypes.SET_LOADING, payload: true });
         const files: string[] = draggedItems.map((item: Items) => item.path);
         const isSelectedItemDroppedIntoSelf = draggedItems.find(
-          (item) => item.id === destination.id,
+          (item) => item.id === destination.id
         );
 
         if (isSelectedItemDroppedIntoSelf) {
@@ -922,7 +944,8 @@ export const useFileManagerOperations = ({
           return;
         }
 
-        cutFilesToFolder({ items: files, destination: destination.path })
+        apiClient!
+          .cutFilesToFolder({ items: files, destination: destination.path })
           .then(() => {
             operations.handleSelectFolder(destination, true, true, false);
             setMessage({
@@ -935,7 +958,7 @@ export const useFileManagerOperations = ({
           .catch((error) => handleApiError(error, "Error moving items"));
       },
     }),
-    [dispatch, setMessage, handleApiError],
+    [dispatch, setMessage, handleApiError, apiClient, selectItemCallback]
   );
 
   return operations;

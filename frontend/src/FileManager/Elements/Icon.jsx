@@ -37,6 +37,7 @@ import { ReactComponent as Save } from "../Assets/Icons/save.svg";
 import { ReactComponent as Exit } from "../Assets/Icons/exit.svg";
 import { ReactComponent as Pencil } from "../Assets/Icons/pencil.svg";
 import { ReactComponent as Search } from "../Assets/Icons/loupe.svg";
+import { ReactComponent as Volume } from "../Assets/Icons/volume.svg";
 
 const iconMap = {
   Information,
@@ -76,6 +77,7 @@ const iconMap = {
   UnZip,
   View,
   Outbox,
+  Volume,
 };
 
 const Icon = ({ name, color = "#ccc", size = 15, ...rest }) => {

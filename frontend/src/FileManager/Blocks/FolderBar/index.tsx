@@ -1,27 +1,17 @@
-import React, { useEffect, memo } from "react";
+import React, { memo } from "react";
 import {
   StyledFolderBar,
   FileManagerFolderBarGrid,
   FileManagerFolderBarWrapper,
 } from "./styled";
-import MenuItem from "./MenuItem";
-import { useFileManagerState } from "../../ContextStore/FileManagerContext";
+import VolumesList from "./VolumesList";
 
 function FolderBar() {
-  const {
-    foldersList,
-    operations: { handleReloadFolderTree },
-  } = useFileManagerState();
-
-  useEffect(() => {
-    handleReloadFolderTree();
-  }, [handleReloadFolderTree]);
-
   return (
     <FileManagerFolderBarGrid item xs={3} sm={2}>
       <FileManagerFolderBarWrapper>
         <StyledFolderBar key="folderRoot">
-          <MenuItem item={foldersList} />
+          <VolumesList />
         </StyledFolderBar>
       </FileManagerFolderBarWrapper>
     </FileManagerFolderBarGrid>

@@ -77,6 +77,7 @@ export enum ActionTypes {
   SET_FILEEDIT_DATA = "SET_FILEEDIT_DATA",
   TOGGLE_FULLSCREEN = "TOGGLE_FULLSCREEN",
   TOGGLE_UPLOAD_POPUP = "TOGGLE_UPLOAD_POPUP",
+  SET_SELECTED_VOLUME = "SET_SELECTED_VOLUME",
 }
 
 // Define interfaces and types
@@ -162,7 +163,7 @@ export interface FileManagerState {
   fullScreen: boolean;
   uploadPopup: any;
   volumesList: VolumeListType;
-  selectedVolume: ServerInstance | S3BucketInstance | S3BucketInstanceV2 | null;
+  selectedVolume: VolumeListItem | null;
 }
 
 export interface FileManagerAction {
@@ -200,7 +201,7 @@ export interface Operations {
     value: FolderType,
     history?: boolean,
     clearBuffer?: boolean,
-    showMessage?: boolean,
+    showMessage?: boolean
   ) => void;
   handleAddSelected: (item: Items) => void;
   handleReloadFolderTree: () => void;
@@ -225,7 +226,7 @@ export interface Operations {
   handleCut: () => void;
   handlePaste: (
     bufferedItems: BufferedItemsType,
-    selectedFolder: FolderList,
+    selectedFolder: FolderList
   ) => void;
   handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
   handleEmptyFolder: (selectedFolder: FolderList) => void;
@@ -235,7 +236,7 @@ export interface Operations {
   handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleCreateZip: (
     selectedFiles: Set<Items>,
-    selectedFolder: FolderList,
+    selectedFolder: FolderList
   ) => void;
   handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => void;
@@ -243,6 +244,8 @@ export interface Operations {
   handleToggleUploadPopUp: (forceShow?: boolean) => void;
   handleUploadFiles: (files: File[], selectedFolder: FolderList) => void;
   handlingHistory: (historyInfo: HistoryStep, index: number) => void;
+  handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
+  handleSelectCallback: (path: string) => void;
 }
 
 export interface Message {
@@ -323,9 +326,8 @@ export interface S3BucketInstanceV2 {
   id: string;
   name: string;
 }
-
-export type VolumeListType = (
+export type VolumeListItem =
   | ServerInstance
   | S3BucketInstance
-  | S3BucketInstanceV2
-)[];
+  | S3BucketInstanceV2;
+export type VolumeListType = VolumeListItem[];
