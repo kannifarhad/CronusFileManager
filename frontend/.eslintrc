@@ -2,9 +2,18 @@
   "extends": ["react-app", "airbnb", "plugin:prettier/recommended"],
   "plugins": ["react", "jsx-a11y", "import", "prettier"],
   "rules": {
-    "prettier/prettier": "error",
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "trailingComma": "es5"
+      },
+    ],
+    "react/jsx-filename-extension": [
+      1,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] },
+    ],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "import/extensions": "off",
     "no-plusplus": "off",
     "no-empty-pattern": "off",
@@ -18,15 +27,15 @@
         "vars": "all",
         "args": "after-used",
         "ignoreRestSiblings": true,
-        "varsIgnorePattern": "^_"
-      }
-    ]
+        "varsIgnorePattern": "^_",
+      },
+    ],
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      }
-    }
-  }
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+      },
+    },
+  },
 }

@@ -32,13 +32,13 @@ const TopBar: React.FC<{}> = () => {
     () => [
       {
         title: "Sorting",
-        icon: "icon-settings",
+        icon: "settings",
         onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SORTING),
         disabled: false,
       },
       {
         title: "Settings",
-        icon: "icon-settings-1",
+        icon: "settingsLines",
         onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SETTINGS),
         disabled: false,
       },
