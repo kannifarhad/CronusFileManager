@@ -20,7 +20,7 @@ import CustomButtonGroup from "./ButtonGroup";
 
 const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (
   props,
-  ref,
+  ref
 ) => <Zoom ref={ref} {...props} />;
 
 const AlertDialog: React.FC<PopupData> = ({
@@ -30,7 +30,7 @@ const AlertDialog: React.FC<PopupData> = ({
   actionButtons,
 }) => {
   const [renameText, setRenameText] = useState<string>(
-    nameInputSets?.value ?? "",
+    nameInputSets?.value ?? ""
   );
 
   const ActionButtonsList = useMemo(() => {

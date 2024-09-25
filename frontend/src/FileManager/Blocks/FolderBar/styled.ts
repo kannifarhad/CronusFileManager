@@ -91,6 +91,7 @@ export const StyledVolumeMenuItem = styled(ListItem)(({}) => ({
   },
   "& .volumeFolderTreeWrapper": {
     width: "100%",
+    marginBottom: "5px",
   },
   padding: "0px",
   flexDirection: "column",

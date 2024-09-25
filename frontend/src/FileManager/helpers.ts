@@ -284,7 +284,7 @@ function addFileToTree(tree: DroppedFilesTree, file: DroppedFile): void {
 
 // Main function to organize files into folders and subfolders
 export function organizeFiles(
-  files: DroppedFile[],
+  files: DroppedFile[]
 ): (DroppedFolder | DroppedFile)[] {
   const tree: (DroppedFolder | DroppedFile)[] = [];
 

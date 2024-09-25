@@ -30,7 +30,7 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
         submitCallback({ file: imageData, path, isnew });
       }
     },
-    [extension, submitCallback, path],
+    [extension, submitCallback, path]
   );
 
   const buttons = useMemo(
@@ -51,14 +51,14 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
           onClick: () => handleClickButton(true),
         },
         {
-          icon: "icon-ban",
+          icon: "Ban",
           label: "Cancel",
           variant: "outlined",
           color: "error",
           onClick: () => closeCallBack(),
         },
       ] as ButtonGroupProps["buttons"],
-    [handleClickButton, closeCallBack],
+    [handleClickButton, closeCallBack]
   );
 
   const pathToFile = `http://localhost:3131${path}`;
@@ -98,7 +98,7 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
 const Transition = forwardRef(
   (transitionProps: any, ref: React.Ref<unknown>) => (
     <Zoom in={transitionProps.open} ref={ref} {...transitionProps} />
-  ),
+  )
 );
 
 const ImageEditPopup: React.FC<{}> = () => {

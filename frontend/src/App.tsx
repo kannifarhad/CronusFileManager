@@ -13,25 +13,26 @@ const volumesList: VolumeListType = [
     id: "2",
     type: VolumeTypes.S3BUCKET_BACK,
     server: "http://localhost:3131",
-    bucket: "Documents",
+    bucket: "cronusfilemanager",
     name: "S3 Server",
   },
   {
     id: "3",
     type: VolumeTypes.S3BUCKET_FRONT,
-    bucket: "Documents",
+    bucket: "cronusfilemanager",
     name: "S3 Front",
-    region: "",
-    endpoint: "",
+    region: "us-east-1",
+    endpoint: "http://192.168.1.6:9001",
     credentials: {
-      secretAccessKey: "",
-      accessKeyId: "",
+      accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY!,
+      secretAccessKey: process.env.REACT_APP_S3_SECRET_KEY!,
     },
   },
 ];
 
 const App: React.FC = () => {
   const handleCallBack = (filePath: string) => {
+    // eslint-disable-next-line no-console
     console.log("Image Path Returned", filePath);
   };
 

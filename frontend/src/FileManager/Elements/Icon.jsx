@@ -86,6 +86,7 @@ const Icon = ({ name, color = "#ccc", size = 15, ...rest }) => {
 
   // Ensure SelectedIcon exists
   if (!SelectedIcon) {
+    // eslint-disable-next-line no-console
     console.warn("couldnt found an icon with name", name);
     return null;
   }

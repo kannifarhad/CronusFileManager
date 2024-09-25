@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import React, { memo, forwardRef, useImperativeHandle } from "react";
 import { ThemeProvider } from "@mui/system";
@@ -13,6 +14,7 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
         console.log("refresh requested");
       },
     }));
+    console.log("FileManagerWithProvider rerender");
 
     return (
       <ThemeProvider theme={customTheme}>

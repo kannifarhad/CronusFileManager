@@ -138,7 +138,7 @@ export default function UploadFiles() {
     },
     {
       name: "submit",
-      icon: "icon-ban",
+      icon: "Ban",
       label: "Cancel",
       type: "link",
       onClick: handleCancelUpload,

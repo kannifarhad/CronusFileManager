@@ -20,7 +20,7 @@ const ContainerBar: React.FC = () => {
         menuType: ContextMenuTypeEnum.CONTENT,
       });
     },
-    [handleContextClick],
+    [handleContextClick]
   );
 
   if (!selectedFolder) {

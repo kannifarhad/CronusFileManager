@@ -69,7 +69,7 @@ export default function UploadFiles() {
         variant: "outlined",
       },
       {
-        icon: "icon-ban",
+        icon: "Ban",
         label: "Cancel",
         color: "error",
         variant: "outlined",

@@ -24,7 +24,7 @@ const GridView = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5, delay: 200 },
-    }),
+    })
   );
 
   const handleDragStart = useCallback((event: any) => {
@@ -42,7 +42,7 @@ const GridView = () => {
         handleDragEnd(droppedItems, folderItem);
       }
     },
-    [selectedFiles, activeItem, handleDragEnd],
+    [selectedFiles, activeItem, handleDragEnd]
   );
 
   if (filesList.length === 0) {

@@ -11,7 +11,7 @@ import {
 } from "../types";
 import fileManagerReducer from "./FileManagerReducer";
 
-const initialState = {
+export const initialState = {
   selectedFiles: new Set([]),
   bufferedItems: { files: new Set([]), type: null },
   contextMenu: null,

@@ -22,8 +22,10 @@ const ButtonGroupSimple: React.FC<ButtonGroupSimpleProps> = ({ buttons }) => (
             disabled={button.disabled}
             aria-haspopup="true"
           >
-            {/* {button.icon && <span className={button.icon} />} */}
-            <Icon name={button.icon} color={button.disabled ? "#ccc" :"#556cd6" }/>
+            <Icon
+              name={button.icon}
+              color={button.disabled ? "#ccc" : "#556cd6"}
+            />
           </StyledButton>
         </Tooltip>
       ))}

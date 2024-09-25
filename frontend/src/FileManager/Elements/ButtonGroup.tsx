@@ -1,8 +1,8 @@
 import React from "react";
-import Icon from "@mui/material/Icon";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { ButtonProps } from "@mui/material/Button";
 import { StyledActionButton } from "./styled";
+import Icon from "./Icon";
 
 export interface ButtonItemType extends Omit<ButtonProps, "sx"> {
   icon: string;
@@ -16,7 +16,7 @@ const CustomButtonGroup: React.FC<ButtonGroupProps> = ({ buttons }) => {
     <StyledActionButton
       key={button.label}
       {...button}
-      startIcon={<Icon className={button.icon} />}
+      startIcon={<Icon name={button.icon} />}
     >
       <span className="actionButtonLabel">{button.label}</span>
     </StyledActionButton>

@@ -8,6 +8,7 @@ import {
 import { Message, ActionTypes } from "../types";
 import { StyledInfoBox } from "./styled";
 import { useFileManagerDispatch } from "../ContextStore/FileManagerContext";
+import Icon from "./Icon";
 
 interface InfoBoxesProps {
   alert: Message;
@@ -58,7 +59,7 @@ const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
                   }
                 }}
               >
-                <span className="icon-cancel" />
+                <Icon name="Cancel" />
               </IconButton>
             )
           }
