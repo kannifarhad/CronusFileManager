@@ -173,6 +173,47 @@ class S3Connection extends IServerConnection {
     return this.s3Client.send(command);
   }
 
+  // Method to create a new file in S3
+  async createNewFileV2(params: any): Promise<any> {
+    const command = new PutObjectCommand({
+      ...params,
+      Bucket: this.bucketName,
+    });
+    return this.s3Client.send(command);
+  }
+
+  // Method to upload files to S3
+  async uploadFile(formData: any): Promise<any> {
+    const path = formData.get("path");
+
+    // Extract files from the form data
+    const files = formData.getAll("files");
+    // Array to store promises for each upload
+    const uploadPromises: any[] = [];
+
+    // const { file, path } = body; // Extract file and path from body
+    files.forEach((file: any) => {
+      const params = {
+        Key: `${path}${file.name}`, // Combine path and filename
+        Body: file,
+        ContentType: file.type,
+      };
+
+      // Upload each file and store the promise
+      uploadPromises.push(this.createNewFileV2(params));
+    });
+
+    try {
+      // Wait for all uploads to complete
+      const uploadResults = await Promise.all(uploadPromises);
+      console.log("All files uploaded successfully:", uploadResults);
+      return uploadResults;
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      throw error; // Rethrow the error to handle it in the calling function
+    }
+  }
+
   // Method to rename a file (S3 doesn't support renaming, so it's a copy + delete operation)
   async renameFiles({ path, newname }: RenameFilesParams): Promise<any> {
     await this.copyFilesToFolder({ items: [path], destination: newname });
@@ -181,12 +222,6 @@ class S3Connection extends IServerConnection {
 
   // Method to save a file in S3
   async saveFile({ file, path, isnew }: SaveFileParams): Promise<any> {
-    return this.createNewFile({ path, file });
-  }
-
-  // Method to upload files to S3
-  async uploadFile(body: any): Promise<any> {
-    const { file, path } = body; // Extract file and path from body
     return this.createNewFile({ path, file });
   }
 
