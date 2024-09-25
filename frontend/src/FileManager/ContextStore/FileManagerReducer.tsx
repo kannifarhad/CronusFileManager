@@ -7,6 +7,7 @@ import {
   FileManagerState,
   ActionTypes,
 } from "../types";
+import { initialState } from "./FileManagerContext";
 
 export const fileManagerReducer = (
   state: FileManagerState,
@@ -48,7 +49,7 @@ export const fileManagerReducer = (
 
     case ActionTypes.SET_FILES_LIST: {
       const { data, message, loading } = action.payload;
-      let filesList = Array.isArray(data.children) ? data.children : [];
+      let filesList = Array.isArray(data) ? data : [];
       filesList = sortFilter(filesList, state.orderFiles);
       return {
         ...state,
@@ -179,7 +180,17 @@ export const fileManagerReducer = (
       }
       return { ...state, uploadPopup: !state.uploadPopup };
     case ActionTypes.SET_SELECTED_VOLUME: {
-      return { ...state, selectedVolume: action.payload };
+      const selectedVolume = action.payload;
+      // If selected volume had been changed then we need to reset rest of the data as well beside volumesList
+      if (selectedVolume.id !== state.selectedVolume?.id) {
+        const newState = {
+          ...initialState,
+          selectedVolume: action.payload,
+          volumesList: state.volumesList,
+        };
+        return newState;
+      }
+      return state;
     }
     default:
       return state;

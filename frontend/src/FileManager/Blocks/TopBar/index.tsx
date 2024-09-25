@@ -10,7 +10,7 @@ import useGenerateActionButtons from "../../Hooks/useGenerateActionButtons";
 interface MenuRef {
   handleOpenMenu: (
     event: React.MouseEvent<HTMLElement>,
-    name: SettingsMenuEnum,
+    name: SettingsMenuEnum
   ) => void;
 }
 
@@ -25,7 +25,7 @@ const TopBar: React.FC<{}> = () => {
         menuListRef.current.handleOpenMenu(...props);
       }
     },
-    [menuListRef],
+    [menuListRef]
   );
 
   const additionalButtons: Button[] = useMemo(
@@ -43,7 +43,7 @@ const TopBar: React.FC<{}> = () => {
         disabled: false,
       },
     ],
-    [handleOpenMenu],
+    [handleOpenMenu]
   );
 
   return (

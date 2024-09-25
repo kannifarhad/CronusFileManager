@@ -33,7 +33,7 @@ const ListView: React.FC<{}> = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5, delay: 200 },
-    }),
+    })
   );
 
   const handleDragStart = useCallback((event: any) => {
@@ -51,7 +51,7 @@ const ListView: React.FC<{}> = () => {
         handleDragEnd(droppedItems, folderItem);
       }
     },
-    [selectedFiles, activeItem, handleDragEnd],
+    [selectedFiles, activeItem, handleDragEnd]
   );
 
   // Virtualized row renderer

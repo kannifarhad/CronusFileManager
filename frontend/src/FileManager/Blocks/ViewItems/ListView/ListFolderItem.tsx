@@ -50,26 +50,26 @@ const ListFolderItem: React.FC<{
         menuType: ContextMenuTypeEnum.ITEM,
       });
     },
-    [handleContextClick],
+    [handleContextClick]
   );
 
   const doubleClick = useCallback(
     (clickedItem: FolderType) => {
       handleSelectFolder(clickedItem, true);
     },
-    [handleSelectFolder],
+    [handleSelectFolder]
   );
 
   const isCuted = useMemo(
     () =>
       bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
       bufferedItems.files.has(item),
-    [item, bufferedItems],
+    [item, bufferedItems]
   );
 
   const isSelected = useMemo(
     () => selectedFiles.has(item),
-    [selectedFiles, item],
+    [selectedFiles, item]
   );
 
   return (

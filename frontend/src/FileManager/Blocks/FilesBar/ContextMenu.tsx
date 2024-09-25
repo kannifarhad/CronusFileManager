@@ -8,6 +8,7 @@ import {
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { ContextMenuTypeEnum } from "../../types";
 import useGenerateActionButtons from "../../Hooks/useGenerateActionButtons";
+import Icon from "../../Elements/Icon";
 
 const ContextMenu: React.FC = () => {
   const state = useFileManagerState();
@@ -45,7 +46,12 @@ const ContextMenu: React.FC = () => {
                     button.onClick(e);
                   }}
                 >
-                  <span className={`${button.icon}`} />
+                  <Icon
+                    name={button.icon}
+                    color={button.disabled ? "#ccc" : "#556cd6"}
+                    style={{ marginRight: "5px" }}
+                    size={12}
+                  />
                   {button.title}
                 </StyledContextMenuItem>
               ))}
@@ -58,12 +64,17 @@ const ContextMenu: React.FC = () => {
                 <StyledContextMenuItem
                   key={button.title}
                   disabled={button.disabled}
-                  onClick={(e) => {
+                  onClick={(e: any) => {
                     button.onClick(e);
                     handleContextClose();
                   }}
                 >
-                  <span className={`${button.icon}`} />
+                  <Icon
+                    name={button.icon}
+                    color={button.disabled ? "#ccc" : "#556cd6"}
+                    size={12}
+                    style={{ marginRight: "5px" }}
+                  />
                   {button.title}
                 </StyledContextMenuItem>
               ))}

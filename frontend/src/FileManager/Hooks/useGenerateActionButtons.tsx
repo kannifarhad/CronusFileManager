@@ -24,7 +24,7 @@ type GenerateButtonsStateProps = Pick<
 const isSelectedFileType = (
   type: ItemExtensionCategoryFilter,
   contextMenu: CreateContextType["contextMenu"],
-  selectedFiles: CreateContextType["selectedFiles"],
+  selectedFiles: CreateContextType["selectedFiles"]
 ) => {
   if (selectedFiles.size !== 1 && !contextMenu?.item) return false;
   const selectedItem = contextMenu?.item ?? Array.from(selectedFiles)[0];
@@ -35,7 +35,7 @@ const isSelectedFileType = (
 // export const generateAllButtons = (operations: Operations, state: FileManagerState): ButtonObject => {
 export const generateAllButtons = (
   operations: any,
-  state: GenerateButtonsStateProps,
+  state: GenerateButtonsStateProps
 ): ButtonObject => {
   const {
     selectedFiles,
@@ -50,13 +50,13 @@ export const generateAllButtons = (
   const isItemFocusedOrSelected = ((contextMenuProp, selectedFilesList) =>
     Boolean(contextMenuProp?.item) || selectedFilesList.size === 1)(
     contextMenu,
-    selectedFiles,
+    selectedFiles
   );
 
   const isSelectedItemImage = isSelectedFileType(
     ItemExtensionCategoryFilter.IMAGE,
     contextMenu,
-    selectedFiles,
+    selectedFiles
   );
 
   const allButtons: ButtonObject = {
@@ -128,7 +128,7 @@ export const generateAllButtons = (
       title: "Go to parent folder",
       icon: "Backward",
       onClick: () => operations.handleGotoParent(foldersList),
-      disabled: selectedFolder?.path === foldersList?.path,
+      disabled: selectedFolder?.path === "/",
     },
     goBack: {
       title: "Back",
@@ -174,7 +174,7 @@ export const generateAllButtons = (
       disabled: !isSelectedFileType(
         ItemExtensionCategoryFilter.FILE,
         contextMenu,
-        selectedFiles,
+        selectedFiles
       ),
     },
     editImage: {
@@ -212,7 +212,7 @@ export const generateAllButtons = (
       disabled: !isSelectedFileType(
         ItemExtensionCategoryFilter.ARCHIVE,
         contextMenu,
-        selectedFiles,
+        selectedFiles
       ),
     },
     gridView: {
@@ -295,7 +295,7 @@ export const generateAllButtons = (
       disabled: !isSelectedFileType(
         ItemExtensionCategoryFilter.TEXT,
         contextMenu,
-        selectedFiles,
+        selectedFiles
       ),
     },
     selectFile: {
@@ -346,7 +346,7 @@ export const useGenerateActionButtons = ({
       history,
       selectedFolder,
       foldersList,
-    ],
+    ]
   );
 
   const aviableButtons = useMemo(
@@ -417,7 +417,7 @@ export const useGenerateActionButtons = ({
         [allButtons.gridView, allButtons.listView, allButtons.fullScreen],
       ],
     }),
-    [allButtons],
+    [allButtons]
   );
 
   return aviableButtons;

@@ -94,7 +94,7 @@ export interface FolderType {
   id: string;
   modified: string;
   type: ItemType.FOLDER;
-  premissions: Permissions;
+  premissions?: Permissions;
   children?: ItemsList | null;
   size: number;
   private?: boolean;
@@ -107,7 +107,7 @@ export interface FileType {
   modified: string;
   type: ItemType.FILE;
   id: string;
-  premissions: Permissions;
+  premissions?: Permissions;
   size: number;
   extension: keyof typeof config.icons;
   private?: boolean;
@@ -246,6 +246,7 @@ export interface Operations {
   handlingHistory: (historyInfo: HistoryStep, index: number) => void;
   handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
   handleSelectCallback: (path: string) => void;
+  handleInitFileManagerData: () => void;
 }
 
 export interface Message {

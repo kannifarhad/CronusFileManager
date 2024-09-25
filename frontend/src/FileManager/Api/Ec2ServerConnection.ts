@@ -52,7 +52,7 @@ class Ec2ServerConnection extends IServerConnection {
   async getFilesList({ path }: PathParam): Promise<GetFilesListResponse> {
     return this.axiosInstance
       .post("folder", { path })
-      .then((response) => response.data);
+      .then((response) => response.data?.children);
   }
 
   async copyFilesToFolder({

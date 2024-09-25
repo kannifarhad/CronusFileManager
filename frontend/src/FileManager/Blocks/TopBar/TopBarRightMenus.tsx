@@ -18,7 +18,7 @@ export enum SettingsMenuEnum {
 interface MenuRef {
   handleOpenMenu: (
     event: React.MouseEvent<HTMLElement>,
-    name: SettingsMenuEnum,
+    name: SettingsMenuEnum
   ) => void;
 }
 

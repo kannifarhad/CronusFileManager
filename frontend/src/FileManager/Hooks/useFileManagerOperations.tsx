@@ -123,6 +123,17 @@ export const useFileManagerOperations = ({
           .catch((error) => handleApiError(error, "Error loading files"));
       },
 
+      handleInitFileManagerData: () => {
+        apiClient!.getFolderTree().then((result) => {
+          dispatch({
+            type: ActionTypes.SET_FOLDERS_LIST,
+            payload: result,
+          });
+          const rootFolder = { ...result, children: [] };
+          operations.handleSelectFolder(rootFolder, false, true, true);
+        });
+      },
+
       handleReloadFolderTree: () => {
         apiClient!.getFolderTree().then((result) => {
           dispatch({
@@ -329,7 +340,7 @@ export const useFileManagerOperations = ({
               "All selected files and folder will remove without recover",
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -378,7 +389,7 @@ export const useFileManagerOperations = ({
               "Are you sure, you want to empty this folder? All content will be lost without recover!",
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -431,7 +442,7 @@ export const useFileManagerOperations = ({
               "Only allowed file extensions can be created. Otherwise will be ignored by server.",
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -490,7 +501,7 @@ export const useFileManagerOperations = ({
               "Dont use spaces, localised symbols or emojies. This can affect problems",
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -549,7 +560,7 @@ export const useFileManagerOperations = ({
               "Dont use spaces, localised symbols or emojies. This can affect problems",
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -607,7 +618,7 @@ export const useFileManagerOperations = ({
             ),
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -675,7 +686,7 @@ export const useFileManagerOperations = ({
             ),
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -735,7 +746,7 @@ export const useFileManagerOperations = ({
             ),
             actionButtons: [
               {
-                icon: "icon-ban",
+                icon: "Ban",
                 label: "Cancel",
                 color: "warning",
                 onClick: handleClose,
@@ -829,9 +840,9 @@ export const useFileManagerOperations = ({
                   </li>
                   <li>
                     <b>Permissions</b> : Others -
-                    {selectedFile.premissions.others}, Group -
-                    {selectedFile.premissions.group}, Owner -
-                    {selectedFile.premissions.owner}
+                    {selectedFile.premissions?.others}, Group -
+                    {selectedFile.premissions?.group}, Owner -
+                    {selectedFile.premissions?.owner}
                   </li>
                 </ul>
                 {isImage && (
@@ -845,7 +856,7 @@ export const useFileManagerOperations = ({
             ),
             actionButtons: [
               {
-                icon: "icon-cancel-1",
+                icon: "Cancel2",
                 label: "Close",
                 color: "warning",
                 onClick: handleClose,
@@ -871,7 +882,7 @@ export const useFileManagerOperations = ({
             ),
             actionButtons: [
               {
-                icon: "icon-cancel-1",
+                icon: "Cancel2",
                 label: "Close",
                 color: "warning",
                 onClick: handleClose,

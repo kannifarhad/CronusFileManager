@@ -1,19 +1,19 @@
 import React, { FC, useEffect, memo } from "react";
-import { Box, List, ListItem } from "@mui/material";
+import { Box, List } from "@mui/material";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import MenuItem from "./MenuItem";
 import Icon from "../../Elements/Icon";
 import { StyledVolumeMenuItem } from "./styled";
+import MenuItem from "./MenuItem";
 
 const FolderTree = () => {
   const {
     foldersList,
-    operations: { handleReloadFolderTree },
+    operations: { handleInitFileManagerData },
   } = useFileManagerState();
 
   useEffect(() => {
-    handleReloadFolderTree();
-  }, [handleReloadFolderTree]);
+    handleInitFileManagerData();
+  }, [handleInitFileManagerData]);
 
   return <MenuItem item={foldersList} />;
 };

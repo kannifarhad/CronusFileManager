@@ -34,19 +34,19 @@ const ListFileItem: React.FC<{
         menuType: ContextMenuTypeEnum.ITEM,
       });
     },
-    [handleContextClick],
+    [handleContextClick]
   );
 
   const isCuted = useMemo(
     () =>
       bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
       bufferedItems.files.has(item),
-    [item, bufferedItems],
+    [item, bufferedItems]
   );
 
   const isSelected = useMemo(
     () => selectedFiles.has(item),
-    [selectedFiles, item],
+    [selectedFiles, item]
   );
 
   const { setNodeRef, attributes, listeners, isDragging } = useDraggable({

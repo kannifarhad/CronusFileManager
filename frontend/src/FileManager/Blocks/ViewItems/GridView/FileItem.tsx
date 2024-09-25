@@ -39,14 +39,14 @@ const FileItem: React.FC<{
         menuType: ContextMenuTypeEnum.ITEM,
       });
     },
-    [handleContextClick],
+    [handleContextClick]
   );
 
   const isCuted = useMemo(
     () =>
       bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
       bufferedItems.files.has(item),
-    [item, bufferedItems],
+    [item, bufferedItems]
   );
 
   return (
