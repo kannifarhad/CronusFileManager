@@ -10,6 +10,8 @@ import {
   SortByFieldEnum,
   ItemType,
   ItemExtensionCategoryFilter,
+  FolderType,
+  FolderList,
 } from "./types";
 
 export const sortFilter = (
@@ -65,6 +67,86 @@ export const sortFilter = (
   // Combine sorted folders and files
   return [...sortedFolders, ...sortedFiles];
 };
+
+// Function to add folders to the folder tree based on the path
+export function addFoldersToTree(
+  folderTreeState: FolderList | null,
+  foldersArray: FolderType[]
+): FolderList | null {
+  if (!folderTreeState) return null;
+  const folderTree = { ...folderTreeState };
+  // Helper function to find or create the parent folder where the new folder should be added
+  function findParentFolder(tree: FolderList, path: string) {
+    // If the path is the root path, return the tree itself
+    if (path === "/") return tree;
+
+    // Split the path into parts
+    const parts = path.split("/").filter(Boolean);
+    let currentNode = tree;
+
+    // Traverse through the tree to find or create the parent node
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+
+      // Check if currentNode has children
+      if (!currentNode.children) currentNode.children = [];
+
+      // Find the next node in the path by matching 'name'
+      const foundNode = currentNode.children.find(
+        (child) => child.name === part
+      );
+
+      if (foundNode) {
+        currentNode = foundNode;
+      } else {
+        // If part of the path is not found, create a new folder node
+        const newNode = {
+          path: `${currentNode.path}${part}/`,
+          name: part,
+          created: "",
+          modified: "",
+          id: `${currentNode.path}${part}/${Date.now()}`, // create unique id
+          type: ItemType.FOLDER,
+          children: [],
+          size: 0,
+          private: false,
+        } as FolderList;
+        currentNode.children.push(newNode);
+        currentNode = newNode;
+      }
+    }
+
+    return currentNode;
+  }
+
+  // Iterate through each folder in the array
+  foldersArray.forEach((folder: FolderType) => {
+    // Get the parent path by removing the last segment
+    const trimmedPath = folder.path.endsWith("/")
+      ? folder.path.slice(0, -1)
+      : folder.path;
+
+    // Get the parent path by removing the last segment
+    const parentPath = `${trimmedPath.split("/").slice(0, -1).join("/")}/`;
+
+    // Find the parent folder node in the tree
+    const parentFolder = findParentFolder(folderTree, parentPath);
+
+    // Check if folder already exists in the parent's children using 'path' or 'name'
+    let existingFolder = parentFolder?.children?.find(
+      (child: any) => child.path === folder.path
+    );
+
+    // If no existing folder, add it as a new child
+    if (!existingFolder) {
+      parentFolder!.children!.push(folder as FolderList);
+    } else {
+      // If folder exists, update its properties if needed (e.g., 'name', 'created', etc.)
+      existingFolder = { ...existingFolder, ...folder } as FolderList;
+    }
+  });
+  return folderTree;
+}
 
 export const checkSelectedFileType = (
   type: ItemExtensionCategoryFilter,

@@ -1,11 +1,14 @@
 /* eslint-disable no-nested-ternary */
-import { sortFilter } from "../helpers";
+import { sortFilter, addFoldersToTree } from "../helpers";
 import {
   ItemMoveActionTypeEnum,
   HistoryStepTypeEnum,
   FileManagerAction,
   FileManagerState,
   ActionTypes,
+  VolumeTypes,
+  ItemType,
+  FolderType,
 } from "../types";
 import { initialState } from "./FileManagerContext";
 
@@ -51,9 +54,23 @@ export const fileManagerReducer = (
       const { data, message, loading } = action.payload;
       let filesList = Array.isArray(data) ? data : [];
       filesList = sortFilter(filesList, state.orderFiles);
+      let newfoldersList = state.foldersList;
+
+      if (
+        state.selectedVolume?.type === VolumeTypes.S3BUCKET_FRONT &&
+        state.selectedFolder?.path !== "/"
+      ) {
+        const newFolders: FolderType[] = filesList.filter(
+          (item) => item.type === ItemType.FOLDER
+        );
+        if (newFolders.length > 0) {
+          newfoldersList = addFoldersToTree(state.foldersList, newFolders);
+        }
+      }
       return {
         ...state,
         filesList,
+        foldersList: newfoldersList,
         messages: message ? [...state.messages, message] : state.messages,
         loading: loading !== undefined ? loading : state.loading,
       };

@@ -14,13 +14,13 @@ const volumesList: VolumeListType = [
     type: VolumeTypes.S3BUCKET_BACK,
     server: "http://localhost:3131",
     bucket: "cronusfilemanager",
-    name: "S3 Server",
+    name: "S3 Server Connection",
   },
   {
     id: "3",
     type: VolumeTypes.S3BUCKET_FRONT,
     bucket: "cronusfilemanager",
-    name: "S3 Front",
+    name: "S3 Front Connection",
     region: "us-east-1",
     endpoint: "http://192.168.1.6:9001",
     credentials: {
