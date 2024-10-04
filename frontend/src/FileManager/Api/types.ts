@@ -44,7 +44,7 @@ export interface ArchiveParams {
 }
 
 export interface SaveFileParams {
-  file: string;
+  file: File;
   path: string;
   isnew: boolean;
 }
