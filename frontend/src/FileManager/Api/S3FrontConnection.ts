@@ -6,6 +6,7 @@ import {
   ListObjectsCommand,
   ListObjectsV2Command,
   DeleteObjectCommand,
+  DeleteObjectsCommand,
   CommonPrefix,
   _Object as ContentsType,
 } from "@aws-sdk/client-s3";
@@ -28,42 +29,64 @@ import { FolderList, ItemType, S3BucketInstance, FileType } from "../types";
 const convertCommonPrefixes = (
   commonPrefixes?: CommonPrefix[]
 ): FolderList[] => {
-  return (
-    commonPrefixes?.map((dir) => ({
-      path: dir.Prefix!,
-      name: (dir.Prefix!.match(/([^/]+)\/$/) || [])[1],
-      created: "",
-      modified: "",
-      id: dir.Prefix! + Date.now(),
-      type: ItemType.FOLDER,
-      children: [],
-      size: 0,
-      private: false,
-    })) || []
-  );
+  if (!Array.isArray(commonPrefixes)) {
+    return [];
+  }
+  return commonPrefixes?.map((dir) => ({
+    path: dir.Prefix!,
+    name: (dir.Prefix!.match(/([^/]+)\/$/) || [])[1],
+    created: "",
+    modified: "",
+    id: dir.Prefix! + Date.now(),
+    type: ItemType.FOLDER,
+    children: [],
+    size: 0,
+    private: false,
+  }));
 };
 
 const convertContents = (contents?: ContentsType[]): FileType[] => {
-  return (
-    contents?.map((file) => {
-      const path = file.Key!;
-      const match = path.match(/([^/]+)\.([^./]+)$/);
-      const fileNameWithExt = match?.[0];
-      const extension = `.${match![2]}` as FileType["extension"];
-      return {
-        path,
-        name: fileNameWithExt!,
-        created: String(file.LastModified || ""),
-        modified: String(file.LastModified || ""),
-        id: file.ETag || path + Date.now(),
-        type: ItemType.FILE,
-        size: file.Size || 0,
-        private: false,
-        extension,
-      };
-    }) || []
-  );
+  if (!Array.isArray(contents)) {
+    return [];
+  }
+  return contents?.reduce((result: FileType[], file) => {
+    const path = file.Key!;
+    const match = path.match(/([^/]+)\.([^./]+)$/);
+
+    // If match is null or undefined, skip this file
+    if (!match || !match[2]) {
+      return result;
+    }
+
+    const fileNameWithExt = match[0];
+    const extension = `.${match[2]}` as FileType["extension"];
+
+    result.push({
+      path,
+      name: fileNameWithExt!,
+      created: String(file.LastModified || ""),
+      modified: String(file.LastModified || ""),
+      id: file.ETag || path + Date.now(),
+      type: ItemType.FILE,
+      size: file.Size || 0,
+      private: false,
+      extension,
+    });
+
+    return result;
+  }, []);
 };
+
+// Helper function to remove the last segment of a path and get the new path
+function removeLastSegment(path: string): string {
+  const trimmedPath = path.replace(/\/+$/, ""); // Remove trailing slashes
+  const segments = trimmedPath.split("/");
+  segments.pop(); // Remove the last segment (file or folder name)
+
+  // Return the base path; add a trailing slash if not empty
+  // eslint-disable-next-line prefer-template
+  return segments.length > 0 ? segments.join("/") + "/" : "";
+}
 
 // Extend the class to handle S3 operations
 class S3Connection extends IServerConnection {
@@ -79,6 +102,8 @@ class S3Connection extends IServerConnection {
 
     this.bucketName = config.bucket;
     this.s3Client = new S3Client(config);
+    this.copyFilesToFolder = this.copyFilesToFolder.bind(this);
+    this.cutFilesToFolder = this.cutFilesToFolder.bind(this);
   }
 
   async getFolderTree(prefix = ""): Promise<GetFoldersListResponse> {
@@ -118,63 +143,8 @@ class S3Connection extends IServerConnection {
     return result;
   }
 
-  // Method to copy files within S3
-  async copyFilesToFolder({
-    items,
-    destination,
-  }: PasteFilesParams): Promise<any> {
-    const copyPromises = items.map((item) =>
-      this.s3Client.send(
-        new CopyObjectCommand({
-          Bucket: this.bucketName,
-          Key: `${destination}/${item}`,
-          CopySource: `${this.bucketName}/${item}`,
-        })
-      )
-    );
-    return Promise.all(copyPromises);
-  }
-
-  // Method to move (cut) files within S3 (copy + delete)
-  async cutFilesToFolder({
-    items,
-    destination,
-  }: PasteFilesParams): Promise<any> {
-    await this.copyFilesToFolder({ items, destination });
-    return this.deleteItems({ items });
-  }
-
-  // Method to delete objects from S3
-  async deleteItems({ items }: DeleteItemsParams): Promise<any> {
-    const deletePromises = items.map((item) =>
-      this.s3Client.send(
-        new DeleteObjectCommand({ Bucket: this.bucketName, Key: item })
-      )
-    );
-    return Promise.all(deletePromises);
-  }
-
-  // Method to create a new folder (S3 doesn't have real folders, so create an empty object with a trailing slash)
-  async createNewFolder({ path, folder }: CreateNewFolderParams): Promise<any> {
-    const command = new PutObjectCommand({
-      Bucket: this.bucketName,
-      Key: `${path}/${folder}/`, // Create "folder" with a trailing slash
-    });
-    return this.s3Client.send(command);
-  }
-
   // Method to create a new file in S3
-  async createNewFile({ path, file }: CreateNewFileParams): Promise<any> {
-    const command = new PutObjectCommand({
-      Bucket: this.bucketName,
-      Key: path,
-      Body: file,
-    });
-    return this.s3Client.send(command);
-  }
-
-  // Method to create a new file in S3
-  async createNewFileV2(params: any): Promise<any> {
+  async createNewFile(params: any): Promise<any> {
     const command = new PutObjectCommand({
       ...params,
       Bucket: this.bucketName,
@@ -200,7 +170,7 @@ class S3Connection extends IServerConnection {
       };
 
       // Upload each file and store the promise
-      uploadPromises.push(this.createNewFileV2(params));
+      uploadPromises.push(this.createNewFile(params));
     });
 
     try {
@@ -214,16 +184,152 @@ class S3Connection extends IServerConnection {
     }
   }
 
-  // Method to rename a file (S3 doesn't support renaming, so it's a copy + delete operation)
-  async renameFiles({ path, newname }: RenameFilesParams): Promise<any> {
-    await this.copyFilesToFolder({ items: [path], destination: newname });
-    return this.deleteItems({ items: [path] });
-  }
-
   // Method to save a file in S3
   async saveFile({ file, path, isnew }: SaveFileParams): Promise<any> {
-    return this.createNewFile({ path, file });
+    const params = {
+      Key: `${path}${isnew ? String(Date.now()) : ""}`, // Combine path and filename
+      Body: file,
+      ContentType: file.type,
+    };
+
+    return this.createNewFile(params);
   }
+
+  // Method to create a new folder (S3 doesn't have real folders, so create an empty object with a trailing slash)
+  async createNewFolder({ path, folder }: CreateNewFolderParams): Promise<any> {
+    const Key = `${path}${folder}/`;
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key, // Create "folder" with a trailing slash
+      Body: "",
+    });
+    return this.s3Client.send(command);
+  }
+
+  // Method to delete objects from S3
+  async deleteItems({ items }: DeleteItemsParams): Promise<any> {
+    const deletePromises = items.map((item) =>
+      this.s3Client.send(
+        new DeleteObjectCommand({ Bucket: this.bucketName, Key: item })
+      )
+    );
+    return Promise.all(deletePromises);
+  }
+
+  // Method to copy files within S3
+  async copyFilesToFolder({
+    items,
+    destination,
+  }: PasteFilesParams): Promise<any> {
+    const copyPromises = items.map((item) => {
+      const fileName = item.match(/[^/]+\/?$/)?.[0] || item;
+      return this.s3Client.send(
+        new CopyObjectCommand({
+          Bucket: this.bucketName,
+          Key: `${destination}${fileName}`,
+          CopySource: `${this.bucketName}/${item}`,
+        })
+      );
+    });
+    return Promise.all(copyPromises);
+  }
+
+  // Method to move (cut) files within S3 (copy + delete)
+  async cutFilesToFolder({
+    items,
+    destination,
+  }: PasteFilesParams): Promise<any> {
+    await this.copyFilesToFolder({ items, destination });
+    return this.deleteItems({ items });
+  }
+
+  async renameFiles({
+    path,
+    newname,
+  }: {
+    path: string;
+    newname: string;
+  }): Promise<void> {
+    // Step 1: Get the root/base path without the last segment
+    const rootPath = removeLastSegment(path); // Base path, minus the last segment
+
+    // Extract the last segment (the current file or folder name), removing any trailing slashes
+    const trimmedPath = path.replace(/\/+$/, ""); // Ensure no trailing slashes before splitting
+    const oldName = trimmedPath.split("/").pop() || ""; // Extract the last segment
+
+    // Check if oldName is valid
+    if (!oldName) {
+      console.warn("No valid name found in the path to rename. Aborting.");
+      return;
+    }
+
+    // Step 2: List all objects that start with the provided path (this could be a file or folder)
+    const listCommand = new ListObjectsV2Command({
+      Bucket: this.bucketName,
+      Prefix: path, // List all objects under the given path
+    });
+
+    const listResponse = await this.s3Client.send(listCommand);
+
+    if (!listResponse.Contents || listResponse.Contents.length === 0) {
+      console.warn("No files found at the given path. Aborting rename.");
+      return;
+    }
+
+    // Determine if it's a file or a folder based on path format
+    const isFolder = path.endsWith("/");
+
+    // Step 3: Rename each object
+    const copyPromises = listResponse.Contents.map(async (object) => {
+      const oldKey = object.Key!;
+      const remainingPath = oldKey.slice(path.length); // Get the part of the path after the original path
+
+      // If renaming a file, there should be no trailing slash in the new name
+      const newKey = isFolder
+        ? `${rootPath}${newname}/${remainingPath}`
+        : `${rootPath}${newname}${remainingPath}`;
+
+      // Copy each object to the new location (with new name in the path)
+      await this.s3Client.send(
+        new CopyObjectCommand({
+          Bucket: this.bucketName,
+          Key: newKey,
+          CopySource: `${this.bucketName}/${oldKey}`,
+        })
+      );
+    });
+
+    // Wait for all copy operations to complete
+    await Promise.all(copyPromises);
+
+    // Step 4: Only create a new "empty" folder if it's a folder and it's empty
+    if (
+      isFolder &&
+      listResponse.Contents.length === 1 &&
+      listResponse.Contents[0].Key === path
+    ) {
+      // If it's an empty folder, create a new "empty" folder at the new location
+      await this.s3Client.send(
+        new PutObjectCommand({
+          Bucket: this.bucketName,
+          Key: `${rootPath}${newname}/`, // New empty folder with trailing slash
+          Body: "", // Empty object to represent the folder
+        })
+      );
+    }
+
+    // Step 5: Delete the original objects
+    const deleteCommand = new DeleteObjectsCommand({
+      Bucket: this.bucketName,
+      Delete: {
+        Objects: listResponse.Contents.map((object) => ({ Key: object.Key! })),
+      },
+    });
+
+    await this.s3Client.send(deleteCommand);
+  }
+
+  // NOT_READY
 
   // Method to unzip a file (you'd likely need a third-party library to handle actual unzipping)
   async unzip({ file, destination }: UnzipParams): Promise<any> {

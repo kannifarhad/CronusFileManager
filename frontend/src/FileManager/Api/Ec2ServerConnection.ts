@@ -41,6 +41,9 @@ class Ec2ServerConnection extends IServerConnection {
       (response) => response,
       (error) => Promise.reject(error)
     );
+
+    this.copyFilesToFolder = this.copyFilesToFolder.bind(this);
+    this.cutFilesToFolder = this.cutFilesToFolder.bind(this);
   }
 
   async getFolderTree(): Promise<GetFoldersListResponse> {
