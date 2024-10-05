@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import {
   S3Client,
   PutObjectCommand,
@@ -88,6 +90,19 @@ function removeLastSegment(path: string): string {
   return segments.length > 0 ? segments.join("/") + "/" : "";
 }
 
+function generateCopyName(originalName: string): string {
+  const timestamp = new Date().toISOString().replace(/[-:.]/g, ""); // Timestamp without special characters
+  const nameParts = originalName.split("."); // Separate name and extension
+
+  if (nameParts.length > 1) {
+    // File with extension
+    const extension = nameParts.pop(); // Remove the extension
+    return `${nameParts.join(".")}_copy_${timestamp}.${extension}`; // Add _copy and timestamp before the extension
+  }
+  // Folder or file without extension
+  return `${originalName}_copy_${timestamp}`; // Add _copy and timestamp
+}
+
 // Extend the class to handle S3 operations
 class S3Connection extends IServerConnection {
   private s3Client: S3Client;
@@ -106,24 +121,122 @@ class S3Connection extends IServerConnection {
     this.cutFilesToFolder = this.cutFilesToFolder.bind(this);
   }
 
+  private async deleteObjectsRecursively({
+    path,
+    continuationToken,
+    retries = 0,
+    keepRoot = false, // New parameter
+  }: {
+    path: string;
+    continuationToken?: string;
+    retries?: number;
+    keepRoot?: boolean;
+  }): Promise<void> {
+    const MAX_RETRIES = 10;
+
+    if (retries > MAX_RETRIES) {
+      console.error(`Max retries reached for path: ${path}`);
+      return;
+    }
+
+    try {
+      // Step 1: List objects in the folder
+      const listCommand = new ListObjectsV2Command({
+        Bucket: this.bucketName,
+        Prefix: path,
+        ContinuationToken: continuationToken, // For paginated results
+      });
+
+      const listResponse = await this.s3Client.send(listCommand);
+
+      if (!listResponse.Contents || listResponse.Contents.length === 0) {
+        console.log(
+          `Directory '${path}' is already empty or there are no more items to delete.`
+        );
+        return;
+      }
+
+      // Step 2: Prepare the list of objects to delete
+      let deleteObjects = listResponse.Contents.map((object) => ({
+        Key: object.Key!,
+      }));
+
+      // Step 3: Remove the root folder key from deletion if `keepRoot` is true
+      if (keepRoot) {
+        deleteObjects = deleteObjects.filter((obj) => obj.Key !== path);
+      }
+
+      if (deleteObjects.length > 0) {
+        // Step 4: Delete the objects
+        const deleteCommand = new DeleteObjectsCommand({
+          Bucket: this.bucketName,
+          Delete: { Objects: deleteObjects },
+        });
+
+        await this.s3Client.send(deleteCommand);
+
+        console.log(`Deleted ${deleteObjects.length} objects from '${path}'`);
+      }
+
+      // Step 5: Recursively call the function for the next set of objects if IsTruncated is true
+      if (listResponse.IsTruncated) {
+        // Recursively delete the next batch of objects
+        await this.deleteObjectsRecursively({
+          path,
+          continuationToken: listResponse.NextContinuationToken,
+          retries: 0, // Reset retries on successful deletion
+          keepRoot,
+        });
+      }
+    } catch (error) {
+      console.error(
+        `Error deleting objects from path '${path}', retrying...`,
+        error
+      );
+      // Retry the operation if there's an error, up to MAX_RETRIES
+      await this.deleteObjectsRecursively({
+        path,
+        continuationToken,
+        retries: retries + 1,
+        keepRoot,
+      });
+    }
+  }
+
   async getFolderTree(prefix = ""): Promise<GetFoldersListResponse> {
     const params = {
       Bucket: this.bucketName,
       Prefix: prefix,
-      Delimiter: "/",
+      Delimiter: "/", // Ensure it fetches only folders
     };
 
     const command = new ListObjectsV2Command(params);
     const response = await this.s3Client.send(command);
+
+    // Convert common prefixes to folder list
+    const folderList = convertCommonPrefixes(response?.CommonPrefixes);
+
+    // Recursively fetch subfolders for each folder in the folderList
+    // eslint-disable-next-line no-await-in-loop, no-restricted-syntax
+    for (const folder of folderList) {
+      // Fetch subfolders for the current folder
+      // eslint-disable-next-line no-await-in-loop
+      const subFolderTree = await this.getFolderTree(folder.path);
+
+      // Populate the `children` field with the fetched subfolder structure
+      folder.children = subFolderTree.children;
+    }
+
+    // Return the folder structure
     return {
-      path: "/",
-      name: "root",
+      path: prefix || "/",
+      name: prefix ? (prefix.match(/([^/]+)\/$/) || [])[1] : "root",
       created: "null",
       id: String(Date.now()),
       modified: "null",
       type: ItemType.FOLDER,
       size: 0,
-      children: convertCommonPrefixes(response?.CommonPrefixes),
+      children: folderList,
     };
   }
 
@@ -329,7 +442,68 @@ class S3Connection extends IServerConnection {
     await this.s3Client.send(deleteCommand);
   }
 
-  // NOT_READY
+  async emptyDir({ path }: { path: string }): Promise<void> {
+    // Step 1: Ensure the path is a folder (folders end with a '/')
+    if (!path.endsWith("/")) {
+      console.error(
+        "The provided path is not a folder. Path must end with a trailing slash."
+      );
+      return;
+    }
+
+    // Step 2: Start the recursive deletion process
+    await this.deleteObjectsRecursively({ path, keepRoot: true });
+  }
+
+  async duplicateItem({ path }: { path: string }): Promise<void> {
+    // Step 1: Check if the path is a file or folder by listing its contents
+    const listCommand = new ListObjectsV2Command({
+      Bucket: this.bucketName,
+      Prefix: path, // List all objects under the given path
+    });
+
+    const listResponse = await this.s3Client.send(listCommand);
+
+    if (!listResponse.Contents || listResponse.Contents.length === 0) {
+      console.log("No items found at the given path. Aborting duplication.");
+      return;
+    }
+
+    const isFolder = path.endsWith("/");
+
+    // Step 2: Generate the new name for the first item (folder or file)
+    const trimmedPath = path.replace(/\/+$/, ""); // Remove trailing slashes to handle folders
+    const lastSegment = trimmedPath.split("/").pop()!; // Get the last segment (file/folder name)
+    const newName = generateCopyName(lastSegment); // Generate new name with _copy and timestamp
+
+    const rootPath = path.replace(lastSegment, ""); // Get the root path (parent directory)
+    const newRootPath = isFolder
+      ? `${rootPath}${newName}/`
+      : `${rootPath}${newName}`; // New folder or file path
+
+    // Step 3: Copy all items under the original path to the new location
+    const copyPromises = listResponse.Contents.map(async (object) => {
+      const oldKey = object.Key!;
+      const relativePath = oldKey.slice(path.length); // Get the part of the path after the original path
+
+      // For the root item, we add _copy; for child items, retain the original relative path
+      const newKey = isFolder
+        ? `${newRootPath}${relativePath}` // Keep child structure intact for folders
+        : newRootPath; // Direct copy for files
+
+      // Copy each object to the new location
+      await this.s3Client.send(
+        new CopyObjectCommand({
+          Bucket: this.bucketName,
+          Key: newKey,
+          CopySource: `${this.bucketName}/${oldKey}`,
+        })
+      );
+    });
+
+    // Wait for all copy operations to complete
+    await Promise.all(copyPromises);
+  }
 
   // Method to unzip a file (you'd likely need a third-party library to handle actual unzipping)
   async unzip({ file, destination }: UnzipParams): Promise<any> {
@@ -342,18 +516,6 @@ class S3Connection extends IServerConnection {
   // Method to archive files (you'd likely need to handle zipping and uploading)
   async archive({ files, destination, name }: ArchiveParams): Promise<any> {
     // Logic to zip files and upload the archive
-    throw new Error(
-      `Archiving files is not supported directly by S3. ${this.bucketName}`
-    );
-  }
-
-  async emptyDir({ path }: PathParam): Promise<any> {
-    throw new Error(
-      `Archiving files is not supported directly by S3. ${this.bucketName}`
-    );
-  }
-
-  async duplicateItem({ path }: PathParam): Promise<any> {
     throw new Error(
       `Archiving files is not supported directly by S3. ${this.bucketName}`
     );
