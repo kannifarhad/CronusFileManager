@@ -51,7 +51,7 @@ const VirtualizedTable = ({ items }: { items: ItemsList }) => {
   return (
     <>
       {items.map((item: Items) => (
-        <ListItemRender item={item} key={item.id} />
+        <ListItemRender item={item} key={item.id} style={null} />
       ))}
     </>
   );

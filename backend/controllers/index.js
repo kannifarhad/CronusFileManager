@@ -7,7 +7,9 @@
 **/
 
 const fileManagerController = require('./fileManagerController');
+const bucketManagerController = require('./bucketManagerController');
 
 module.exports = {
-    fileManagerController
+    fileManagerController,
+    bucketManagerController
 }
