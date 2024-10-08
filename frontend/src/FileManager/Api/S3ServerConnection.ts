@@ -14,20 +14,21 @@ import {
   IServerConnection,
 } from "./types";
 
-class Ec2ServerConnection extends IServerConnection {
+class S3ServerConnection extends IServerConnection {
   private axiosInstance: AxiosInstance;
 
-  constructor(baseURL: string) {
+  constructor(baseURL: string, bucketName: string) {
     super();
     if (!baseURL) {
       throw new Error("Base URL is not defined.");
     }
 
     this.axiosInstance = axios.create({
-      baseURL: `${baseURL}/fm`,
+      baseURL: `${baseURL}/s3`,
       timeout: 2000,
       headers: {
         "Content-Type": "application/json",
+        "Bucket-Name": bucketName,
       },
     });
 
@@ -141,4 +142,4 @@ class Ec2ServerConnection extends IServerConnection {
   }
 }
 
-export default Ec2ServerConnection;
+export default S3ServerConnection;

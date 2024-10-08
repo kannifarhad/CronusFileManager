@@ -31,6 +31,8 @@ We are excited to announce the upcoming release of our library, which will bring
     You will be able to upload an entire folder tree, including all files and subfolders, making bulk uploads more efficient.
 - **S3 Bucket Support**: 🕑
     We will add support for Amazon S3 buckets. Users will be able to interact with S3 storage as if it were a regular file storage system, with the same user interface. There would be two connection types. One within front-end without using nodejs and second within nodejs (more safe)
+- **Search**: 🔜
+    Implementation of searching folders and files inside selected disk volume
 - **Theming Support**: 🔜
     The library will support theming, allowing developers to customize the appearance to match their application’s look and feel easily.
 - **Backend Refactor and Swagger Documentation**: 🔜

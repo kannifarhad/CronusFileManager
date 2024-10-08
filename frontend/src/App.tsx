@@ -6,7 +6,7 @@ const volumesList: VolumeListType = [
   {
     id: "1",
     type: VolumeTypes.SERVER,
-    server: "http://localhost:3131/fm",
+    server: "http://localhost:3131",
     name: "My EC2 server",
   },
   {

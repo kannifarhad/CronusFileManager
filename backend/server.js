@@ -18,6 +18,7 @@ const globalErrorHandler = require('./controllers/errorController');
 
 //Gathering Routes that used
 var fileManager = require('./routes/fileManager');
+var bucketManager = require('./routes/bucketManager');
 
 app.use(cors());
 app.use(bodyParser.json({limit: '10mb'}));
@@ -38,6 +39,7 @@ const limiter = rateLimit({
 app.use('*', limiter);
 
 app.use('/fm', fileManager);
+app.use('/s3', bucketManager);
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
 app.all('*', (req, res, next) => {
