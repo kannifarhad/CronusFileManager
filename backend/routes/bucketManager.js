@@ -23,31 +23,26 @@ const config = {
   },
 };
 const s3Client = new S3Client(config);
-const s3Controller = new bucketManagerController(s3Client);
+const s3Controller = new bucketManagerController(s3Client, config.bucket);
 
-// configure multer
-// const upload = multer({
-//   dest: `${TMP_PATH}/`,
-//   limits: {
-//     files: 15, // allow up to 5 files per request,
-//     fieldSize: 5 * 1024 * 1024, // 2 MB (max file size)
-//   },
-// });
+const upload = multer({
+  storage: multer.memoryStorage(), // Store files in memory
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+});
 
 router.get("/foldertree", s3Controller.folderTree.bind(s3Controller));
 router.post("/folder", s3Controller.folderInfo.bind(s3Controller));
-// router.post("/all", bucketManagerController.all);
-// router.post("/rename", bucketManagerController.rename);
-// router.post("/createfile", bucketManagerController.createfile);
-// router.post("/createfolder", bucketManagerController.createfolder);
-// router.post("/delete", bucketManagerController.delete);
-// router.post("/copy", bucketManagerController.copy);
-// router.post("/move", bucketManagerController.move);
-// router.post("/emptydir", bucketManagerController.emptydir);
-// router.post("/unzip", bucketManagerController.unzip);
-// router.post("/archive", bucketManagerController.archive);
-// router.post("/duplicate", bucketManagerController.duplicate);
+router.post("/rename", s3Controller.rename.bind(s3Controller));
+router.post("/createfile", s3Controller.createFile.bind(s3Controller));
+router.post("/createfolder", s3Controller.createFolder.bind(s3Controller));
+router.post("/delete", s3Controller.delete.bind(s3Controller));
+router.post("/copy", s3Controller.copy.bind(s3Controller));
+router.post("/move", s3Controller.move.bind(s3Controller));
+router.post("/duplicate", s3Controller.duplicateFile.bind(s3Controller));
+router.post("/emptydir", s3Controller.emptydir.bind(s3Controller));
+router.post("/upload", upload.any(), s3Controller.uploadFiles.bind(s3Controller));
+router.post("/unzip", s3Controller.unzipFile.bind(s3Controller));
+router.post("/archive", s3Controller.archive.bind(s3Controller));
 // router.post("/saveimage", bucketManagerController.saveImage);
-// router.post("/upload", upload.any(), bucketManagerController.uploadFiles);
 
 module.exports = router;
