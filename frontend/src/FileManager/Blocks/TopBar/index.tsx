@@ -31,14 +31,8 @@ const TopBar: React.FC<{}> = () => {
   const additionalButtons: Button[] = useMemo(
     () => [
       {
-        title: "Sorting",
-        icon: "settings",
-        onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SORTING),
-        disabled: false,
-      },
-      {
         title: "Settings",
-        icon: "settingsLines",
+        icon: "settings",
         onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SETTINGS),
         disabled: false,
       },

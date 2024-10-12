@@ -1,4 +1,4 @@
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import { Box, Checkbox, Table, TableCell, TableRow } from "@mui/material";
 
 const ITEM_HEIGHT = 50;
@@ -23,7 +23,7 @@ export const StyledEmptyFolderContainer = styled(Box)(({}) => ({
   },
 }));
 
-export const StyledFileItem = styled(Box)(({}) => ({
+export const StyledFileItem = styled(Box)(({ theme }) => ({
   margin: "10px 0px 0px 10px",
   padding: "5px",
   width: "90px",
@@ -38,14 +38,20 @@ export const StyledFileItem = styled(Box)(({}) => ({
   "&.notDragging": {
     transform: "translate(0px, 0px) !important",
   },
-  "&:hover, &.selectmode": {
-    background: "#f7f7f7",
+  "&:hover": {
+    background: `${theme.cronus.fileItems.background.hover} !important`,
+    "& .MuiCheckbox-root": {
+      display: "block !important",
+    },
+  },
+  "&.selectmode": {
+    background: theme.cronus.fileItems.background.selectMode,
     "& .MuiCheckbox-root": {
       display: "block !important",
     },
   },
   "&.selected": {
-    background: "#e0f0fb",
+    background: `${theme.cronus.fileItems.background.selected} !important`,
     "& .MuiCheckbox-root": {
       display: "block !important",
     },
@@ -112,14 +118,14 @@ export const StyledListTableRow = styled(TableRow)(({}) => ({
   },
 }));
 
-export const StyledItemExtension = styled("span")(({}) => ({
+export const StyledItemExtension = styled("span")(({ theme }) => ({
   position: "absolute",
   left: "0",
   top: "42px",
   borderRadius: "3px",
   fontSize: "9px",
-  background: "#ccc",
-  color: "#fff",
+  background: theme.cronus.fileItems.extension.background,
+  color: theme.cronus.fileItems.extension.color,
   padding: "1px 5px",
 }));
 

@@ -64,7 +64,7 @@ const convertContents = (contents) => {
       name: fileNameWithExt,
       created: String(file.LastModified || ""),
       modified: String(file.LastModified || ""),
-      id: file.ETag || path + Date.now(),
+      id: fileNameWithExt,
       type: "file",
       size: file.Size || 0,
       private: false,

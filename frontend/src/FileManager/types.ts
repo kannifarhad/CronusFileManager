@@ -1,9 +1,25 @@
 /* eslint-disable no-shadow, no-use-before-define */
 import { AlertColor } from "@mui/material/Alert";
 import React, { ReactNode } from "react";
+import { Theme } from "@mui/system";
 import config from "./Elements/config.json";
 import { SaveFileParams } from "./Api/types";
 import { ButtonItemType } from "./Elements/ButtonGroup";
+
+declare module "@mui/material/styles" {
+  interface Theme {
+    status: {
+      danger: React.CSSProperties["color"];
+    };
+    cronus?: any;
+  }
+  interface ThemeOptions {
+    status?: {
+      danger?: React.CSSProperties["color"];
+    };
+    cronus?: any;
+  }
+}
 
 // Define enums
 export enum ItemType {
@@ -78,6 +94,7 @@ export enum ActionTypes {
   TOGGLE_FULLSCREEN = "TOGGLE_FULLSCREEN",
   TOGGLE_UPLOAD_POPUP = "TOGGLE_UPLOAD_POPUP",
   SET_SELECTED_VOLUME = "SET_SELECTED_VOLUME",
+  SET_SELECTED_THEME = "SET_SELECTED_THEME",
 }
 
 // Define interfaces and types
@@ -164,6 +181,7 @@ export interface FileManagerState {
   uploadPopup: any;
   volumesList: VolumeListType;
   selectedVolume: VolumeListItem | null;
+  selectedTheme: string | null;
 }
 
 export interface FileManagerAction {
@@ -247,6 +265,7 @@ export interface Operations {
   handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
   handleSelectCallback: (path: string) => void;
   handleInitFileManagerData: () => void;
+  handleSelectTheme: (theme: string) => void;
 }
 
 export interface Message {
@@ -332,3 +351,10 @@ export type VolumeListItem =
   | S3BucketInstance
   | S3BucketInstanceV2;
 export type VolumeListType = VolumeListItem[];
+
+export interface ThemeItemConfig {
+  name: string;
+  theme: Theme;
+  id: string;
+}
+export type ThemeItemList = ThemeItemConfig[];

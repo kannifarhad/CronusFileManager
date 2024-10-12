@@ -1,4 +1,4 @@
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
@@ -8,6 +8,7 @@ import {
   MenuItem,
   List,
   ListItem,
+  ButtonProps,
 } from "@mui/material";
 
 export const StyledButtonGroupWrapper = styled(Box, {
@@ -21,19 +22,27 @@ export const StyledButtonGroupWrapper = styled(Box, {
   },
 }));
 
-export const StyledButton = styled(Button)(({ style }) => ({
-  fontSize: "14px",
-  padding: "10px 5px",
-  minWidth: "35px !important",
-  background: "#fff",
-  "& .buttonTitle": {
-    fontSize: "12px",
-    textTransform: "none",
-    lineHeight: "11px",
-    padding: "0px 5px",
-  },
-  ...style,
-}));
+// Define a new interface extending MUI ButtonProps with 'isActive'
+interface StyledButtonProps extends ButtonProps {}
+
+export const StyledButton = styled(Button)<StyledButtonProps>(
+  ({ style, theme, disabled }) => ({
+    fontSize: "14px",
+    padding: "10px 5px",
+    minWidth: "35px !important",
+    background: disabled
+      ? theme.cronus.iconButton.background
+      : theme.cronus.iconButton.backgroundEnabled,
+    borderColor: theme.cronus.iconButton.borderColor,
+    "& .buttonTitle": {
+      fontSize: "12px",
+      textTransform: "none",
+      lineHeight: "11px",
+      padding: "0px 5px",
+    },
+    ...style,
+  })
+);
 export const StyledActionButton = styled(Button)(({}) => ({
   fontSize: "14px",
   padding: "10px 15px",
@@ -85,17 +94,17 @@ export const StyledInfoBox = styled(Alert)(({}) => ({
   },
 }));
 
-export const StyledDropZoneSection = styled("section")(({}) => ({
+export const StyledDropZoneSection = styled("section")(({ theme }) => ({
   position: "absolute",
   zIndex: "55",
   top: "-1px",
   left: "20px",
-  background: "#f9fafc",
+  background: theme.cronus.dropzone.background,
   borderTop: "none",
   borderRadius: "0px 0px 5px 5px",
   padding: "20px 40px",
   width: "calc(100% - 40px)",
-  boxShadow: "0px 2px 4px #bababa",
+  boxShadow: theme.cronus.dropzone.boxShadow,
   boxSizing: "border-box",
   opacity: "0.96",
   "& .dropzone": {
@@ -104,12 +113,13 @@ export const StyledDropZoneSection = styled("section")(({}) => ({
     flexDirection: "column",
     alignItems: "center",
     padding: "50px 20px",
-    borderWidth: "2px",
-    borderRadius: "2px",
+    borderWidth: "1px",
+    borderRadius: "10px",
     borderStyle: "dashed",
-    backgroundColor: "#fff",
+    borderColor: theme.cronus.dropzone.droppablearea.borderColor,
+    backgroundColor: theme.cronus.dropzone.droppablearea.background,
     margin: "10px 0px",
-    color: "#bdbdbd",
+    color: theme.cronus.dropzone.droppablearea.color,
     cursor: "pointer",
     outline: "none",
     transition: "border .24s ease-in-out",
@@ -144,17 +154,17 @@ export const StyledContextMenuItem = styled(MenuItem)(({}) => ({
   },
 }));
 
-export const StyledDropZoneFileList = styled(List)(({}) => ({
-  borderBottom: "1px solid #ccc",
+export const StyledDropZoneFileList = styled(List)(({ theme }) => ({
+  borderBottom: `1px solid ${theme.cronus.dropzone.borderColor}`,
   padding: "0px",
   margin: "0px",
   "& .MuiCollapse-root ul.MuiList-root": {
-    borderLeft: "1px solid #ccc",
+    borderLeft: `1px solid ${theme.cronus.dropzone.borderColor}`,
     borderBottomLeftRadius: "5px",
   },
 }));
-export const StyledDropZoneFileListItem = styled(ListItem)(({}) => ({
+export const StyledDropZoneFileListItem = styled(ListItem)(({ theme }) => ({
   padding: "0px 9px",
-  borderBottom: "1px solid #ccc",
+  borderBottom: `1px solid ${theme.cronus.dropzone.borderColor}`,
   margin: "0px",
 }));

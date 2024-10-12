@@ -37,7 +37,7 @@ import { ReactComponent as Save } from "../Assets/Icons/save.svg";
 import { ReactComponent as Exit } from "../Assets/Icons/exit.svg";
 import { ReactComponent as Pencil } from "../Assets/Icons/pencil.svg";
 import { ReactComponent as Search } from "../Assets/Icons/loupe.svg";
-import { ReactComponent as Volume } from "../Assets/Icons/volume.svg";
+import { ReactComponent as Volume } from "../Assets/Icons/vol3.svg";
 
 const iconMap = {
   Information,

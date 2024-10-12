@@ -24,6 +24,7 @@ const FileManager: React.FC<{}> = () => (
         overflow: "hidden",
         minHeight: 0,
       }}
+      columns={20}
     >
       <FolderBar />
       <FilesBar />

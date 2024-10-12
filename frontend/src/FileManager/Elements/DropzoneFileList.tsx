@@ -5,6 +5,7 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   Chip,
+  useTheme,
 } from "@mui/material";
 import {
   DroppedFile,
@@ -21,6 +22,7 @@ import {
   StyledDropZoneFileList,
   StyledDropZoneFileListItem,
 } from "./styled";
+import Icon from "./Icon";
 
 interface FileTreeProps {
   tree: DroppedFilesTree;
@@ -68,11 +70,17 @@ const FileNode: React.FC<{
       />
       <ListItemSecondaryAction>
         <StyledButton
-          style={{ padding: "5px", width: "30px", minWidth: "auto" }}
+          style={{
+            padding: "5px",
+            width: "30px",
+            minWidth: "auto",
+            background: "#f00",
+            cursor: "pointer",
+          }}
           onClick={() => onRemove(file.index)}
           aria-haspopup="true"
         >
-          <span className="Trash" />
+          <Icon name="Trash" color="#fff" size={12} />
         </StyledButton>
       </ListItemSecondaryAction>
     </StyledDropZoneFileListItem>
@@ -91,7 +99,10 @@ const FolderNode: React.FC<{
 
   return (
     <>
-      <StyledDropZoneFileListItem onClick={handleToggle}>
+      <StyledDropZoneFileListItem
+        onClick={handleToggle}
+        style={{ cursor: "pointer" }}
+      >
         <ListItemIcon style={{ minWidth: "30px" }}>
           <img
             alt={folder.name}
@@ -108,11 +119,17 @@ const FolderNode: React.FC<{
         <ListItemText primary={folder.name} />
         <ListItemSecondaryAction>
           <StyledButton
-            style={{ padding: "5px", width: "30px", minWidth: "auto" }}
+            style={{
+              padding: "5px",
+              width: "30px",
+              minWidth: "auto",
+              background: "#f00",
+              cursor: "pointer",
+            }}
             onClick={() => onRemove(folder.name)}
             aria-haspopup="true"
           >
-            <span className="Trash" />
+            <Icon name="Trash" color="#fff" size={12} />
           </StyledButton>
         </ListItemSecondaryAction>
       </StyledDropZoneFileListItem>
@@ -144,6 +161,7 @@ const FileTree: React.FC<FileTreeProps> = ({
   onRemove,
   onRemoveFolder,
 }) => {
+  const theme = useTheme();
   const renderTree = (nodes: DroppedFilesTree) => {
     return nodes.map((node) => {
       if (node.type === ItemType.FOLDER) {
@@ -162,7 +180,10 @@ const FileTree: React.FC<FileTreeProps> = ({
 
   return (
     <StyledDropZoneFileList
-      style={{ borderRadius: "5px", border: "1px solid #ccc" }}
+      style={{
+        borderRadius: "5px",
+        border: `1px solid ${theme.cronus.dropzone.borderColor}`,
+      }}
     >
       {renderTree(tree)}
     </StyledDropZoneFileList>
