@@ -1,10 +1,8 @@
 /* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import React, { memo, forwardRef, useImperativeHandle } from "react";
-import { ThemeProvider } from "@mui/system";
 import { FileManagerProps } from "./types";
 import { FileManagerProvider } from "./ContextStore/FileManagerContext";
-import customTheme from "./Themes/dark";
 import FileManager from "./FileManager";
 
 const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
@@ -21,9 +19,7 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
         selectItemCallback={selectItemCallback}
         volumesList={volumesList}
       >
-        <ThemeProvider theme={customTheme}>
-          <FileManager height={height ?? 300} />
-        </ThemeProvider>
+        <FileManager height={height ?? 300} />
       </FileManagerProvider>
     );
   }

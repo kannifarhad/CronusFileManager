@@ -20,20 +20,22 @@ const ButtonGroupSimple: React.FC<ButtonGroupSimpleProps> = ({ buttons }) => {
             title={button.title}
             aria-label={button.title}
           >
-            <StyledButton
-              onClick={button.onClick}
-              disabled={button.disabled}
-              aria-haspopup="true"
-            >
-              <Icon
-                name={button.icon}
-                color={
-                  button.disabled
-                    ? theme.cronus.iconButton.disabledColor
-                    : theme.cronus.iconButton.activeColor
-                }
-              />
-            </StyledButton>
+            <span>
+              <StyledButton
+                onClick={button.onClick}
+                disabled={button.disabled}
+                aria-haspopup="true"
+              >
+                <Icon
+                  name={button.icon}
+                  color={
+                    button.disabled
+                      ? theme.cronus.iconButton.disabledColor
+                      : theme.cronus.iconButton.activeColor
+                  }
+                />
+              </StyledButton>
+            </span>
           </Tooltip>
         ))}
       </ButtonGroup>

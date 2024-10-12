@@ -191,6 +191,9 @@ export const fileManagerReducer = (
     case ActionTypes.TOGGLE_FULLSCREEN:
       return { ...state, fullScreen: !state.fullScreen };
 
+    case ActionTypes.SET_SELECTED_THEME:
+      return { ...state, selectedTheme: action.payload };
+
     case ActionTypes.TOGGLE_UPLOAD_POPUP:
       if (action.payload && state.uploadPopup) {
         return state;
@@ -204,6 +207,7 @@ export const fileManagerReducer = (
           ...initialState,
           selectedVolume: action.payload,
           volumesList: state.volumesList,
+          selectedTheme: state.selectedTheme,
         };
         return newState;
       }

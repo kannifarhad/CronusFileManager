@@ -33,6 +33,7 @@ export const initialState = {
   uploadPopup: null,
   volumesList: [],
   selectedVolume: null,
+  selectedTheme: null,
 };
 
 const FileManagerStateContext = createContext<CreateContextType | undefined>(

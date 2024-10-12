@@ -77,7 +77,12 @@ export const useFileManagerOperations = ({
           selectItemCallback(path);
         }
       },
-
+      handleSelectTheme: (theme: string) => {
+        dispatch({
+          type: ActionTypes.SET_SELECTED_THEME,
+          payload: theme,
+        });
+      },
       handleSelectVolume: (selectedVolumeItem: VolumeListItem) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_VOLUME,

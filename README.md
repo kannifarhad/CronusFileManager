@@ -29,7 +29,7 @@ We are excited to announce the upcoming release of our library, which will bring
 - **S3 Bucket Support**: ✅
     We will add support for Amazon S3 buckets. Users will be able to interact with S3 storage as if it were a regular file storage system, with the same user interface. There would be two connection types. One within front-end without using nodejs and second within nodejs (more safe)
 
-- **Theming Support**: 🕑
+- **Theming Support**: ✅
     The library will support theming, allowing developers to customize the appearance to match their application’s look and feel easily.
 
 - **Folder Tree Upload**: 🕑

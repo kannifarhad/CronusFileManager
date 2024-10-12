@@ -20,7 +20,7 @@ import {
   OrderByFieldEnum,
   SortByFieldEnum,
 } from "../../types";
-
+import { themeList } from "../../Hooks/useCurrentTheme";
 // eslint-disable-next-line no-shadow
 export enum SettingsMenuEnum {
   SETTINGS = "SETTINGS",
@@ -44,14 +44,6 @@ const orderOptions: {
   { name: "By Create Date", value: OrderByFieldEnum.DATE },
 ];
 
-const themeOptions: {
-  name: string;
-  value: string;
-}[] = [
-  { name: "Dark", value: "DARK" },
-  { name: "Light", value: "LIGHT" },
-];
-
 const sortOptions: {
   name: string;
   value: SortByFieldEnum;
@@ -72,7 +64,8 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
   const {
     showImages,
     orderFiles,
-    operations: { handleSetOrder, handleSetThumbView },
+    selectedTheme,
+    operations: { handleSetOrder, handleSetThumbView, handleSelectTheme },
   } = useFileManagerState();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState<SettingsMenuEnum | null>(null);
@@ -173,20 +166,17 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
           <Grid container sx={{ marginTop: "5px" }} spacing={1}>
             <SettingsSelect
               fullWidth
-              value="DARK"
+              value={selectedTheme ?? themeList[1].id}
               size="small"
               labelId="files-orderby-label"
               onClick={(event: any) => {
                 if (event.target.dataset.value) {
-                  handleSetOrder({
-                    ...orderFiles,
-                    field: event.target.dataset.value as OrderByFieldEnum,
-                  });
+                  handleSelectTheme(event.target.dataset.value);
                 }
               }}
             >
-              {themeOptions.map((option) => (
-                <SettingsSelectOption value={option.value}>
+              {themeList.map((option) => (
+                <SettingsSelectOption value={option.id}>
                   {option.name}
                 </SettingsSelectOption>
               ))}

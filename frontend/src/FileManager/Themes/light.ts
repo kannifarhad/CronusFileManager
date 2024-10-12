@@ -7,10 +7,11 @@ const theme = createTheme({
   cronus: {
     iconButton: {
       background: "#fff",
+      backgroundEnabled: "#fff",
       disabledColor: "#ccc",
       activeColor: "#556cd6",
-      borderColor: "#0492f2",
-      borderActiveColor: "#a3a3a3",
+      borderColor: "#bcc7fd",
+      borderActiveColor: "#ccc",
     },
     topBar: {
       background: "#f6f7fd",
@@ -38,6 +39,16 @@ const theme = createTheme({
         color: "#fff",
       },
       cuted: "",
+    },
+    dropzone: {
+      background: "#f9fafc",
+      droppablearea: {
+        background: "#fff",
+        color: "#bdbdbd",
+        borderColor: "#ccc",
+      },
+      boxShadow: "0px 2px 4px #bababa",
+      borderColor: "#ccc",
     },
   },
   palette: {

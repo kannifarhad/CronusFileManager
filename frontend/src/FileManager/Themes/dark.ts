@@ -1,15 +1,16 @@
 import { createTheme } from "@mui/material/styles";
-// theme.cronus.topBar.background
+
 const theme = createTheme({
   status: {
     danger: "#ff0000",
   },
   cronus: {
     iconButton: {
-      background: "#929292",
+      background: "#767676",
+      backgroundEnabled: "#929292",
       disabledColor: "#ccc",
-      activeColor: "#fff",
-      borderColor: "#fff",
+      activeColor: "#00ffef",
+      borderColor: "#9c9c9c",
       borderActiveColor: "#a3a3a3",
     },
     topBar: {
@@ -38,6 +39,20 @@ const theme = createTheme({
         color: "#fff",
       },
       cuted: "",
+    },
+    dropzone: {
+      background: "#414141",
+      droppablearea: {
+        background: "#2b2b2b",
+        color: "#00ffef",
+        borderColor: "#00ffef",
+      },
+      boxShadow: "0px 2px 4px #191919",
+      borderColor: "#7e7e7e",
+      text: {
+        mainColor: "",
+        secondaryColor: "",
+      },
     },
   },
   palette: {
