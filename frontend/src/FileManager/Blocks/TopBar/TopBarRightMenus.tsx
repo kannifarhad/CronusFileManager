@@ -1,6 +1,19 @@
 import React, { memo, useState, forwardRef, useImperativeHandle } from "react";
-import { Menu, Radio, Divider, FormControlLabel } from "@mui/material";
-import { StyledTopBarMenuItem } from "./styled";
+import {
+  Radio,
+  FormControlLabel,
+  Grid2 as Grid,
+  FormLabel,
+  FormControl,
+  InputLabel,
+  Box,
+} from "@mui/material";
+import {
+  StyledTopBarMenuItem,
+  SettingsPopover,
+  SettingsSelect,
+  SettingsSelectOption,
+} from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import {
   ImagesThumbTypeEnum,
@@ -31,6 +44,14 @@ const orderOptions: {
   { name: "By Create Date", value: OrderByFieldEnum.DATE },
 ];
 
+const themeOptions: {
+  name: string;
+  value: string;
+}[] = [
+  { name: "Dark", value: "DARK" },
+  { name: "Light", value: "LIGHT" },
+];
+
 const sortOptions: {
   name: string;
   value: SortByFieldEnum;
@@ -43,8 +64,8 @@ const imageViewOptions: {
   name: string;
   value: ImagesThumbTypeEnum;
 }[] = [
-  { name: "Show Thumbs", value: ImagesThumbTypeEnum.THUMB },
   { name: "Show Icons", value: ImagesThumbTypeEnum.ICONS },
+  { name: "Show Thumbs", value: ImagesThumbTypeEnum.THUMB },
 ];
 
 const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
@@ -71,87 +92,139 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
   if (!open) return null;
 
   return (
-    <>
-      <Menu
-        id="sorting-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={open === SettingsMenuEnum.SORTING}
-        onClose={handleClose}
-      >
-        {orderOptions.map((option) => (
-          <StyledTopBarMenuItem
-            key={option.value}
-            selected={option.value === orderFiles?.field}
-            onClick={() =>
-              handleSetOrder({ ...orderFiles, field: option.value })
-            }
-          >
-            <FormControlLabel
-              value={option.value}
-              control={
-                <Radio
-                  name="orderField"
-                  checked={option.value === orderFiles?.field}
-                  value={option.value}
-                />
-              }
-              label={option.name}
-            />
-          </StyledTopBarMenuItem>
-        ))}
-        <Divider />
-        {sortOptions.map((option) => (
-          <StyledTopBarMenuItem
-            key={option.value}
-            selected={option.value === orderFiles.orderBy}
-            onClick={() =>
-              handleSetOrder({ ...orderFiles, orderBy: option.value })
-            }
-          >
-            <FormControlLabel
-              value={option.value}
-              control={
-                <Radio
-                  name="orderField"
-                  checked={option.value === orderFiles.orderBy}
-                  value={option.value}
-                />
-              }
-              label={option.name}
-            />
-          </StyledTopBarMenuItem>
-        ))}
-      </Menu>
+    <SettingsPopover
+      id="sorting-menu"
+      anchorEl={anchorEl}
+      keepMounted
+      open={Boolean(open)}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+    >
+      <Box sx={{ padding: "10px 10px", width: "300px" }}>
+        <Box>
+          <FormLabel sx={{ fontSize: "14px", fontWeight: "bold" }}>
+            Sorting
+          </FormLabel>
+          <Grid container sx={{ marginTop: "5px" }} spacing={1}>
+            <Grid size={6}>
+              <FormControl fullWidth variant="filled" size="small">
+                <InputLabel id="files-orderby-label">Field</InputLabel>
+                <SettingsSelect
+                  value={orderFiles?.field}
+                  label="Field"
+                  size="small"
+                  labelId="files-orderby-label"
+                  onClick={(event: any) => {
+                    if (event.target.dataset.value) {
+                      handleSetOrder({
+                        ...orderFiles,
+                        field: event.target.dataset.value as OrderByFieldEnum,
+                      });
+                    }
+                  }}
+                >
+                  {orderOptions.map((option) => (
+                    <SettingsSelectOption value={option.value}>
+                      {option.name}
+                    </SettingsSelectOption>
+                  ))}
+                </SettingsSelect>
+              </FormControl>
+            </Grid>
 
-      <Menu
-        id="settings-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={open === SettingsMenuEnum.SETTINGS}
-        onClose={handleClose}
-      >
-        {imageViewOptions.map((option) => (
-          <StyledTopBarMenuItem
-            key={option.name}
-            selected={option.value === showImages}
-            onClick={() => handleSetThumbView(option.value)}
+            <Grid size={6}>
+              <FormControl fullWidth variant="filled" size="small">
+                <InputLabel id="files-orderby-label">Order</InputLabel>
+                <SettingsSelect
+                  value={orderFiles?.orderBy}
+                  label="Order"
+                  size="small"
+                  labelId="files-orderby-label"
+                  onClick={(event: any) => {
+                    if (event.target.dataset.value) {
+                      handleSetOrder({
+                        ...orderFiles,
+                        orderBy: event.target.dataset.value as SortByFieldEnum,
+                      });
+                    }
+                  }}
+                >
+                  {sortOptions.map((option) => (
+                    <SettingsSelectOption value={option.value}>
+                      {option.name}
+                    </SettingsSelectOption>
+                  ))}
+                </SettingsSelect>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Box>
+        <Box sx={{ marginTop: "10px" }}>
+          <FormLabel sx={{ fontSize: "14px", fontWeight: "bold" }}>
+            Theme
+          </FormLabel>
+          <Grid container sx={{ marginTop: "5px" }} spacing={1}>
+            <SettingsSelect
+              fullWidth
+              value="DARK"
+              size="small"
+              labelId="files-orderby-label"
+              onClick={(event: any) => {
+                if (event.target.dataset.value) {
+                  handleSetOrder({
+                    ...orderFiles,
+                    field: event.target.dataset.value as OrderByFieldEnum,
+                  });
+                }
+              }}
+            >
+              {themeOptions.map((option) => (
+                <SettingsSelectOption value={option.value}>
+                  {option.name}
+                </SettingsSelectOption>
+              ))}
+            </SettingsSelect>
+          </Grid>
+        </Box>
+        <Box sx={{ marginTop: "10px" }}>
+          <FormLabel
+            sx={{ fontSize: "14px", fontWeight: "bold", marginTop: "10px" }}
           >
-            <FormControlLabel
-              value={option.value}
-              control={
-                <Radio
-                  name="orderField"
-                  checked={option.value === showImages}
-                  value={option.value}
-                />
-              }
-              label={option.name}
-            />
-          </StyledTopBarMenuItem>
-        ))}
-      </Menu>
-    </>
+            Images on files list
+          </FormLabel>
+          <Grid container sx={{ marginTop: "5px" }} spacing={1}>
+            {imageViewOptions.map((option) => (
+              <Grid size={6}>
+                <StyledTopBarMenuItem
+                  key={option.name}
+                  selected={option.value === showImages}
+                  onClick={() => handleSetThumbView(option.value)}
+                >
+                  <FormControlLabel
+                    value={option.value}
+                    control={
+                      <Radio
+                        name="orderField"
+                        checked={option.value === showImages}
+                        value={option.value}
+                      />
+                    }
+                    label={option.name}
+                  />
+                </StyledTopBarMenuItem>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
+    </SettingsPopover>
   );
 });
 

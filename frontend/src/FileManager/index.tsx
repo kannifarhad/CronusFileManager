@@ -4,7 +4,7 @@ import React, { memo, forwardRef, useImperativeHandle } from "react";
 import { ThemeProvider } from "@mui/system";
 import { FileManagerProps } from "./types";
 import { FileManagerProvider } from "./ContextStore/FileManagerContext";
-import customTheme from "./theme";
+import customTheme from "./Themes/dark";
 import FileManager from "./FileManager";
 
 const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
@@ -17,14 +17,14 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
     console.log("FileManagerWithProvider rerender");
 
     return (
-      <ThemeProvider theme={customTheme}>
-        <FileManagerProvider
-          selectItemCallback={selectItemCallback}
-          volumesList={volumesList}
-        >
+      <FileManagerProvider
+        selectItemCallback={selectItemCallback}
+        volumesList={volumesList}
+      >
+        <ThemeProvider theme={customTheme}>
           <FileManager height={height ?? 300} />
-        </FileManagerProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </FileManagerProvider>
     );
   }
 );

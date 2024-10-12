@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import {
@@ -68,7 +69,7 @@ const convertContents = (contents?: ContentsType[]): FileType[] => {
       name: fileNameWithExt!,
       created: String(file.LastModified || ""),
       modified: String(file.LastModified || ""),
-      id: file.ETag || path + Date.now(),
+      id: fileNameWithExt,
       type: ItemType.FILE,
       size: file.Size || 0,
       private: false,
@@ -150,7 +151,7 @@ class S3Connection extends IServerConnection {
       const listResponse = await this.s3Client.send(listCommand);
 
       if (!listResponse.Contents || listResponse.Contents.length === 0) {
-        console.log(
+        console.warn(
           `Directory '${path}' is already empty or there are no more items to delete.`
         );
         return;

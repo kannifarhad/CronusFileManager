@@ -26,19 +26,21 @@ We are excited to announce the upcoming release of our library, which will bring
     The entire codebase will be fully written in TypeScript, enhancing type safety and developer experience.
 - **Multiple Disk Volumes**: ✅
     Now you would be able to connect into multiple disk from UI by sending list of the conenction details. The disk spaces can be servers with files, S3 bucket connection that goes through backend and S3 bucket connection that works only by front-end 
+- **S3 Bucket Support**: ✅
+    We will add support for Amazon S3 buckets. Users will be able to interact with S3 storage as if it were a regular file storage system, with the same user interface. There would be two connection types. One within front-end without using nodejs and second within nodejs (more safe)
+
+- **Theming Support**: 🕑
+    The library will support theming, allowing developers to customize the appearance to match their application’s look and feel easily.
 
 - **Folder Tree Upload**: 🕑
     You will be able to upload an entire folder tree, including all files and subfolders, making bulk uploads more efficient.
-- **S3 Bucket Support**: 🕑
-    We will add support for Amazon S3 buckets. Users will be able to interact with S3 storage as if it were a regular file storage system, with the same user interface. There would be two connection types. One within front-end without using nodejs and second within nodejs (more safe)
+
 - **Search**: 🔜
     Implementation of searching folders and files inside selected disk volume
-- **Theming Support**: 🔜
-    The library will support theming, allowing developers to customize the appearance to match their application’s look and feel easily.
-- **Backend Refactor and Swagger Documentation**: 🔜
-    The backend will be refactored and will include Swagger documentation, providing clear and comprehensive API documentation.
+
 - **Bug Fixes and Performance Improvements**: 🔜
     We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
+
 - **Trash Box**: 🔜
     Implement trash box feature that will hold removed items for 30 days with possibility of recovery 
 

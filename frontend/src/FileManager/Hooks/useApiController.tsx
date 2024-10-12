@@ -28,7 +28,6 @@ export const useApiController = (
         return null;
     }
   }, [selectedVolume]);
-  console.log("connection", connection);
   return connection;
 };
 

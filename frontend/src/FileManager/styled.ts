@@ -1,4 +1,4 @@
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import { Box, BoxProps } from "@mui/material";
 
 export interface FileManagerWrapperProps extends BoxProps {

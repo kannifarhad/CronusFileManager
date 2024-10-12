@@ -1,8 +1,7 @@
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import { Box, Grid, ListItem } from "@mui/material";
 
-export const StyledFolderBar = styled(Grid)(({}) => ({
-  padding: "10px 0px",
+export const StyledFolderBar = styled(Grid)(({ theme }) => ({
   overflow: "hidden",
   "& .folderItem": {
     display: "flex",
@@ -11,11 +10,16 @@ export const StyledFolderBar = styled(Grid)(({}) => ({
     margin: "0px !important",
     padding: "0px 5px",
     fontSize: "13px",
-
+    alignItems: "flex-start",
+    "&.isActive > .folderTitle": {
+      background: theme.cronus.folderBar.activeFolderBackground,
+    },
     "& .folderTitle": {
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
+      width: "100%",
+      borderRadius: "5px",
       "& .iconArrow": {
         padding: "5px",
         opacity: 0,
@@ -56,7 +60,7 @@ export const StyledFolderMenuItem = styled(ListItem)(({}) => ({
     "& > .folderSubmenu": {
       display: "block",
     },
-    "& > .MuiButtonBase-root .iconArrow": {
+    "& > .folderTitle .iconArrow": {
       transform: "rotate(90deg)",
     },
   },
@@ -71,7 +75,10 @@ export const StyledFolderMenuItem = styled(ListItem)(({}) => ({
   },
 }));
 
-export const StyledVolumeMenuItem = styled(ListItem)(({}) => ({
+export const StyledVolumeMenuItem = styled(ListItem)(({ theme }) => ({
+  "&.isActive": {
+    background: theme.cronus.folderBar.volumeActiveBackColor,
+  },
   "& .volumeTitleWrapper": {
     display: "flex",
     cursor: "pointer",
@@ -85,26 +92,31 @@ export const StyledVolumeMenuItem = styled(ListItem)(({}) => ({
       marginRight: "5px",
       height: "20px",
       g: {
-        fill: "#556cd6",
+        fill: theme.cronus.folderBar.volumeIconBack,
       },
     },
   },
   "& .volumeFolderTreeWrapper": {
+    padding: "0px",
     width: "100%",
     marginBottom: "5px",
   },
+  width: "100%",
   padding: "0px",
   flexDirection: "column",
   alignItems: "flex-start",
-  borderBottom: "1px solid #eaeaea",
+  borderBottom: `1px solid ${theme.cronus.folderBar.volumeActiveBackColor}`,
+  background: theme.cronus.folderBar.background,
+  borderBottomLeftRadius: "5px",
+  borderBottomRightRadius: "5px",
 }));
 
-export const FileManagerFolderBarGrid = styled(Grid)(({}) => ({
+export const FileManagerFolderBarGrid = styled(Grid)(({ theme }) => ({
   flex: 1,
   overflow: "auto",
   height: "100%",
-  background: "#f9fafc",
-  borderRight: "1px solid #E9eef9",
+  background: theme.cronus.folderBar.background,
+  borderRight: `1px solid ${theme.cronus.folderBar.borderColor}`,
   "& .FileManagerFolderBarWrapper": {},
 }));
 

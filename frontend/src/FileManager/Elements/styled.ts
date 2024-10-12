@@ -1,4 +1,4 @@
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import {
   Box,
   Button,
@@ -21,11 +21,12 @@ export const StyledButtonGroupWrapper = styled(Box, {
   },
 }));
 
-export const StyledButton = styled(Button)(({ style }) => ({
+export const StyledButton = styled(Button)(({ style, theme }) => ({
   fontSize: "14px",
   padding: "10px 5px",
   minWidth: "35px !important",
-  background: "#fff",
+  background: theme.cronus.iconButton.background,
+  borderColor: theme.cronus.iconButton.borderColor,
   "& .buttonTitle": {
     fontSize: "12px",
     textTransform: "none",

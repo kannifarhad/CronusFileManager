@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useRef, FC, memo, useMemo } from "react";
-import { ListItem } from "@mui/material";
+import { Box } from "@mui/material";
 import MenuSubmenu from "./MenuSubmenu";
 import { StyledFolderMenuItem } from "./styled";
 import { FolderList } from "../../types";
@@ -71,7 +71,7 @@ const MenuItem: FC<MenuItemProps> = ({ item }) => {
         hasChildren,
       })}
     >
-      <ListItem button className="folderTitle">
+      <Box className="folderTitle">
         <Icon
           name="Next"
           size={10}
@@ -83,7 +83,7 @@ const MenuItem: FC<MenuItemProps> = ({ item }) => {
           <Icon name={`${isActive ? "FolderOpen" : "Folder"}`} />
           <span className="title">{item.name}</span>
         </span>
-      </ListItem>
+      </Box>
       {hasChildren && <MenuSubmenu folderList={item.children} />}
     </StyledFolderMenuItem>
   );

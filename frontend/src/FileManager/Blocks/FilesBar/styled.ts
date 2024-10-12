@@ -1,4 +1,4 @@
-import { styled } from "@mui/system";
+import { styled } from "@mui/material/styles";
 import { Grid, Box } from "@mui/material";
 
 export const StyledFilesBarWrapper = styled(Grid)(({}) => ({

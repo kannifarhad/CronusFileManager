@@ -5,7 +5,7 @@ import FilesListContainer from "./FilesListContainer";
 
 const FileBarWrapper: React.FC = () => {
   return (
-    <StyledFilesBarWrapper item xs={9} sm={10}>
+    <StyledFilesBarWrapper item xs={14} sm={16}>
       <FilesListContainer />
       <StatusBar />
     </StyledFilesBarWrapper>
