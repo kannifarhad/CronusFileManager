@@ -1,5 +1,10 @@
 /* eslint-disable no-nested-ternary */
-import { sortFilter, addFoldersToTree } from "../helpers";
+import { LOCASTORAGE_SETTINGS_KEY } from "../config";
+import {
+  sortFilter,
+  addFoldersToTree,
+  writeJsonToLocalStorage,
+} from "../helpers";
 import {
   ItemMoveActionTypeEnum,
   HistoryStepTypeEnum,
@@ -53,7 +58,7 @@ export const fileManagerReducer = (
     case ActionTypes.SET_FILES_LIST: {
       const { data, message, loading } = action.payload;
       let filesList = Array.isArray(data) ? data : [];
-      filesList = sortFilter(filesList, state.orderFiles);
+      filesList = sortFilter(filesList, state.settings.orderFiles);
       let newfoldersList = state.foldersList;
 
       if (
@@ -112,14 +117,25 @@ export const fileManagerReducer = (
       return { ...state, bufferedItems };
     }
 
-    case ActionTypes.SET_ITEM_VIEW:
-      return { ...state, itemsViewType: action.payload };
+    case ActionTypes.SET_ITEM_VIEW: {
+      const settings = { ...state.settings, itemsViewType: action.payload };
+      writeJsonToLocalStorage(LOCASTORAGE_SETTINGS_KEY, settings);
+      return {
+        ...state,
+        settings,
+      };
+    }
     case ActionTypes.SET_POPUP_DATA:
       return { ...state, popUpData: action.payload };
 
-    case ActionTypes.SET_IMAGE_SETTINGS:
-      return { ...state, showImages: action.payload };
-
+    case ActionTypes.SET_IMAGE_SETTINGS: {
+      const settings = { ...state.settings, showImages: action.payload };
+      writeJsonToLocalStorage(LOCASTORAGE_SETTINGS_KEY, settings);
+      return {
+        ...state,
+        settings,
+      };
+    }
     case ActionTypes.UNSET_SELECTED_FILES:
       return { ...state, selectedFiles: new Set() };
 
@@ -143,13 +159,19 @@ export const fileManagerReducer = (
     }
 
     case ActionTypes.SET_SORT_ORDER_BY: {
-      return {
-        ...state,
-        filesList: sortFilter(state.filesList, state.orderFiles),
+      const settings = {
+        ...state.settings,
         orderFiles: {
           field: action.payload.field,
           orderBy: action.payload.orderBy,
         },
+      };
+      writeJsonToLocalStorage(LOCASTORAGE_SETTINGS_KEY, settings);
+
+      return {
+        ...state,
+        filesList: sortFilter(state.filesList, state.settings.orderFiles),
+        settings,
       };
     }
     case ActionTypes.SET_HISTORY_INDEX: {
@@ -192,8 +214,14 @@ export const fileManagerReducer = (
     case ActionTypes.TOGGLE_FULLSCREEN:
       return { ...state, fullScreen: !state.fullScreen };
 
-    case ActionTypes.SET_SELECTED_THEME:
-      return { ...state, selectedTheme: action.payload };
+    case ActionTypes.SET_SELECTED_THEME: {
+      const settings = { ...state.settings, selectedTheme: action.payload };
+      writeJsonToLocalStorage(LOCASTORAGE_SETTINGS_KEY, settings);
+      return {
+        ...state,
+        settings,
+      };
+    }
 
     case ActionTypes.TOGGLE_UPLOAD_POPUP:
       if (action.payload && state.uploadPopup) {
@@ -208,7 +236,7 @@ export const fileManagerReducer = (
           ...initialState,
           selectedVolume: action.payload,
           volumesList: state.volumesList,
-          selectedTheme: state.selectedTheme,
+          settings: state.settings,
         };
         return newState;
       }

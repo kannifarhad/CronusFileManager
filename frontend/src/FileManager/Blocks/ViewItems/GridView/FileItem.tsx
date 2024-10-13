@@ -23,7 +23,7 @@ const FileItem: React.FC<{
     operations: { handleContextClick },
     selectedFiles,
     bufferedItems,
-    showImages,
+    settings,
   } = useFileManagerState();
 
   const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
@@ -63,7 +63,7 @@ const FileItem: React.FC<{
       <StyledItemExtension>{item.extension}</StyledItemExtension>
 
       <StyledItemInfoBox {...listeners} {...attributes}>
-        <img alt={item.name} src={getThumb(item, showImages)} />
+        <img alt={item.name} src={getThumb(item, settings.showImages)} />
       </StyledItemInfoBox>
       <Tooltip title={item.name}>
         <StyledItemTitle>

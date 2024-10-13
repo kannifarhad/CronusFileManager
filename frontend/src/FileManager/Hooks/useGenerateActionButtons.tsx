@@ -15,12 +15,13 @@ type GenerateButtonsStateProps = Pick<
   | "selectedFiles"
   | "contextMenu"
   | "filesList"
-  | "itemsViewType"
   | "bufferedItems"
   | "history"
   | "selectedFolder"
   | "foldersList"
->;
+> & {
+  itemsViewType: FileManagerState["settings"]["itemsViewType"];
+};
 const isSelectedFileType = (
   type: ItemExtensionCategoryFilter,
   contextMenu: CreateContextType["contextMenu"],
@@ -318,7 +319,7 @@ export const useGenerateActionButtons = ({
     selectedFiles,
     contextMenu,
     filesList,
-    itemsViewType,
+    settings,
     bufferedItems,
     history,
     selectedFolder,
@@ -330,7 +331,7 @@ export const useGenerateActionButtons = ({
         selectedFiles,
         contextMenu,
         filesList,
-        itemsViewType,
+        itemsViewType: settings.itemsViewType,
         bufferedItems,
         history,
         selectedFolder,
@@ -341,7 +342,7 @@ export const useGenerateActionButtons = ({
       selectedFiles,
       contextMenu,
       filesList,
-      itemsViewType,
+      settings.itemsViewType,
       bufferedItems,
       history,
       selectedFolder,

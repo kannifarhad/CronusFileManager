@@ -388,3 +388,27 @@ export function organizeFiles(
 
   return tree;
 }
+
+export function writeJsonToLocalStorage(key: string, data: any): void {
+  try {
+    const jsonData = JSON.stringify(data);
+    localStorage.setItem(key, jsonData);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error writing JSON to localStorage:", error);
+  }
+}
+
+export function readJsonFromLocalStorage<T>(key: string): T | null {
+  try {
+    const jsonData = localStorage.getItem(key);
+    if (jsonData) {
+      return JSON.parse(jsonData) as T;
+    }
+    return null;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error reading JSON from localStorage:", error);
+    return null;
+  }
+}

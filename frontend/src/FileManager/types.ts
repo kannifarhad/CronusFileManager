@@ -168,12 +168,9 @@ export interface FileManagerState {
     menuType: ContextMenuTypeEnum;
   } | null;
   selectedFolder: FolderList | null;
-  itemsViewType: ViewTypeEnum;
-  showImages: ImagesThumbTypeEnum;
   loading: boolean;
   messages: Messages;
   filesList: ItemsList;
-  orderFiles: OrderByType;
   history: HistoryType;
   popUpData: PopupStoreType;
   fileEdit: FileEditPopupProps | null;
@@ -181,7 +178,12 @@ export interface FileManagerState {
   uploadPopup: any;
   volumesList: VolumeListType;
   selectedVolume: VolumeListItem | null;
-  selectedTheme: string | null;
+  settings: {
+    selectedTheme: string | null;
+    itemsViewType: ViewTypeEnum;
+    showImages: ImagesThumbTypeEnum;
+    orderFiles: OrderByType;
+  };
 }
 
 export interface FileManagerAction {
