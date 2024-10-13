@@ -62,9 +62,7 @@ const imageViewOptions: {
 
 const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
   const {
-    showImages,
-    orderFiles,
-    selectedTheme,
+    settings,
     operations: { handleSetOrder, handleSetThumbView, handleSelectTheme },
   } = useFileManagerState();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -110,14 +108,14 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
               <FormControl fullWidth variant="filled" size="small">
                 <InputLabel id="files-orderby-label">Field</InputLabel>
                 <SettingsSelect
-                  value={orderFiles?.field}
+                  value={settings.orderFiles?.field}
                   label="Field"
                   size="small"
                   labelId="files-orderby-label"
                   onClick={(event: any) => {
                     if (event.target.dataset.value) {
                       handleSetOrder({
-                        ...orderFiles,
+                        ...settings.orderFiles,
                         field: event.target.dataset.value as OrderByFieldEnum,
                       });
                     }
@@ -136,14 +134,14 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
               <FormControl fullWidth variant="filled" size="small">
                 <InputLabel id="files-orderby-label">Order</InputLabel>
                 <SettingsSelect
-                  value={orderFiles?.orderBy}
+                  value={settings.orderFiles?.orderBy}
                   label="Order"
                   size="small"
                   labelId="files-orderby-label"
                   onClick={(event: any) => {
                     if (event.target.dataset.value) {
                       handleSetOrder({
-                        ...orderFiles,
+                        ...settings.orderFiles,
                         orderBy: event.target.dataset.value as SortByFieldEnum,
                       });
                     }
@@ -166,7 +164,7 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
           <Grid container sx={{ marginTop: "5px" }} spacing={1}>
             <SettingsSelect
               fullWidth
-              value={selectedTheme ?? themeList[1].id}
+              value={settings.selectedTheme ?? themeList[1].id}
               size="small"
               labelId="files-orderby-label"
               onClick={(event: any) => {
@@ -194,7 +192,7 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
               <Grid size={6}>
                 <StyledTopBarMenuItem
                   key={option.name}
-                  selected={option.value === showImages}
+                  selected={option.value === settings.showImages}
                   onClick={() => handleSetThumbView(option.value)}
                 >
                   <FormControlLabel
@@ -202,7 +200,7 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
                     control={
                       <Radio
                         name="orderField"
-                        checked={option.value === showImages}
+                        checked={option.value === settings.showImages}
                         value={option.value}
                       />
                     }

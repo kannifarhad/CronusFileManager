@@ -17,12 +17,12 @@ export const themeList: ThemeItemList = [
   },
 ];
 export const useCurrentTheme = () => {
-  const { selectedTheme } = useFileManagerState();
+  const { settings } = useFileManagerState();
   const currentTheme = useMemo(
     () =>
-      themeList.find((theme) => theme.id === selectedTheme)?.theme ??
+      themeList.find((theme) => theme.id === settings.selectedTheme)?.theme ??
       themeList[1].theme,
-    [selectedTheme]
+    [settings.selectedTheme]
   );
   return currentTheme;
 };

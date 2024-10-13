@@ -1,0 +1,2 @@
+export const LOCASTORAGE_SETTINGS_KEY = "CRONUS_SETTINGS";
+export const VOLUME_SETTINGS_LIST = "";

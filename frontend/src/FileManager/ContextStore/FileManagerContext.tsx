@@ -4,13 +4,25 @@ import {
   FileManagerAction,
   CreateContextType,
   ImagesThumbTypeEnum,
+  FileManagerState,
   OrderByFieldEnum,
   SortByFieldEnum,
   ViewTypeEnum,
   VolumeListType,
 } from "../types";
 import fileManagerReducer from "./FileManagerReducer";
+import { readJsonFromLocalStorage } from "../helpers";
+import { LOCASTORAGE_SETTINGS_KEY } from "../config";
 
+const settingsInitalState = {
+  selectedTheme: null,
+  itemsViewType: ViewTypeEnum.GRID,
+  showImages: ImagesThumbTypeEnum.ICONS,
+  orderFiles: {
+    field: OrderByFieldEnum.NAME,
+    orderBy: SortByFieldEnum.ASC,
+  },
+};
 export const initialState = {
   selectedFiles: new Set([]),
   bufferedItems: { files: new Set([]), type: null },
@@ -18,13 +30,7 @@ export const initialState = {
   messages: [],
   loading: false,
   selectedFolder: null,
-  itemsViewType: ViewTypeEnum.GRID,
-  showImages: ImagesThumbTypeEnum.ICONS,
   filesList: [],
-  orderFiles: {
-    field: OrderByFieldEnum.NAME,
-    orderBy: SortByFieldEnum.ASC,
-  },
   foldersList: null,
   history: { currentIndex: 0, steps: [] },
   popUpData: null,
@@ -33,7 +39,12 @@ export const initialState = {
   uploadPopup: null,
   volumesList: [],
   selectedVolume: null,
-  selectedTheme: null,
+  settings: {
+    ...settingsInitalState,
+    ...readJsonFromLocalStorage<FileManagerState["settings"]>(
+      LOCASTORAGE_SETTINGS_KEY
+    ),
+  },
 };
 
 const FileManagerStateContext = createContext<CreateContextType | undefined>(

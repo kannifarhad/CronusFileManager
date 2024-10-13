@@ -23,7 +23,7 @@ const ListFileItem: React.FC<{
     operations: { handleContextClick, handleAddSelected },
     selectedFiles,
     bufferedItems,
-    showImages,
+    settings,
   } = useFileManagerState();
 
   const handleContextMenuClick = useCallback(
@@ -79,7 +79,7 @@ const ListFileItem: React.FC<{
         <img
           alt={item.name}
           style={{ width: "20px", maxHeight: "30px" }}
-          src={getThumb(item, showImages)}
+          src={getThumb(item, settings.showImages)}
         />
       </StyledListTableCell>
       <StyledListTableCell align="left" style={{ flexGrow: 1 }}>
