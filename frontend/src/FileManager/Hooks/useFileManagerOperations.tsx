@@ -291,8 +291,14 @@ export const useFileManagerOperations = ({
         bufferedItems: BufferedItemsType,
         selectedFolder: FolderList
       ) => {
+        let includesFolder = false;
         const files: string[] = Array.from(bufferedItems.files).map(
-          (item: Items) => item.path
+          (item: Items) => {
+            if (item.type === ItemType.FOLDER) {
+              includesFolder = true;
+            }
+            return item.path;
+          }
         );
         const apiFunction =
           bufferedItems.type === ItemMoveActionTypeEnum.CUT
@@ -302,6 +308,9 @@ export const useFileManagerOperations = ({
         apiFunction({ items: files, destination: selectedFolder.path })
           .then(() => {
             operations.handleSelectFolder(selectedFolder, true, true, false);
+            if (includesFolder) {
+              operations.handleReloadFolderTree();
+            }
             setMessage({
               title: "File Successfully Pasted",
               type: "success",
@@ -313,9 +322,14 @@ export const useFileManagerOperations = ({
       },
 
       handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => {
-        const items: string[] = Array.from(selectedFiles).map(
-          (item: Items) => item.path
-        );
+        let includesFolder = false;
+        const items: string[] = Array.from(selectedFiles).map((item: Items) => {
+          if (item.type === ItemType.FOLDER) {
+            includesFolder = true;
+          }
+          return item.path;
+        });
+
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
@@ -327,6 +341,9 @@ export const useFileManagerOperations = ({
             .deleteItems({ items })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
+              if (includesFolder) {
+                operations.handleReloadFolderTree();
+              }
               setMessage({
                 title: "Delete files and folders request",
                 type: "success",
@@ -376,6 +393,7 @@ export const useFileManagerOperations = ({
             .emptyDir({ path })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
+              operations.handleReloadFolderTree();
               setMessage({
                 title: "Empty folder request",
                 type: "success",
@@ -530,7 +548,7 @@ export const useFileManagerOperations = ({
       handleRename: (selectedFile: Items, selectedFolder: FolderList) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
-
+        const includesFolder = selectedFile.type === ItemType.FOLDER;
         const handleRenameSubmit = (folderName: string) => {
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
@@ -539,6 +557,10 @@ export const useFileManagerOperations = ({
             .renameFiles({ path: selectedFile.path, newname: folderName })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
+              if (includesFolder) {
+                operations.handleReloadFolderTree();
+              }
+
               setMessage({
                 title: "Renaming selected item",
                 type: "success",
@@ -923,8 +945,8 @@ export const useFileManagerOperations = ({
           .uploadFile(formData)
           .then(() => {
             handleCloseEdit();
-            // setTimeout(()=> operations.handleSelectFolder(selectedFolder, true, true, false), 1000);
             operations.handleSelectFolder(selectedFolder, true, true, false);
+            operations.handleReloadFolderTree();
             setMessage({
               title: "File upload",
               type: "success",
@@ -944,7 +966,13 @@ export const useFileManagerOperations = ({
 
       handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => {
         dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-        const files: string[] = draggedItems.map((item: Items) => item.path);
+        let includesFolder = false;
+        const files: string[] = draggedItems.map((item: Items) => {
+          if (item.type === ItemType.FOLDER) {
+            includesFolder = true;
+          }
+          return item.path;
+        });
         const isSelectedItemDroppedIntoSelf = draggedItems.find(
           (item) => item.id === destination.id
         );
@@ -964,6 +992,9 @@ export const useFileManagerOperations = ({
           .cutFilesToFolder({ items: files, destination: destination.path })
           .then(() => {
             operations.handleSelectFolder(destination, true, true, false);
+            if (includesFolder) {
+              operations.handleReloadFolderTree();
+            }
             setMessage({
               title: "Files successfully moved",
               type: "success",

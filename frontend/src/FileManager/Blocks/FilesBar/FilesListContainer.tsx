@@ -33,8 +33,8 @@ const ContainerBar: React.FC = () => {
 
   return (
     <StyledFilesListWrapper>
+      <OverlayBlocks />
       <StyledFilesListContainer onContextMenu={handleContextMenuClick}>
-        <OverlayBlocks />
         <ViewItems />
       </StyledFilesListContainer>
     </StyledFilesListWrapper>

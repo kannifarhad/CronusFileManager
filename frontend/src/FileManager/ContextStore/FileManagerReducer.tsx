@@ -70,6 +70,7 @@ export const fileManagerReducer = (
       return {
         ...state,
         filesList,
+        selectedFiles: new Set([]),
         foldersList: newfoldersList,
         messages: message ? [...state.messages, message] : state.messages,
         loading: loading !== undefined ? loading : state.loading,
