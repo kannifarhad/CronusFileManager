@@ -98,5 +98,7 @@ export abstract class IServerConnection {
 
   abstract uploadFile(body: any): Promise<any>;
 
+  abstract downloadFile(params: PathParam): void;
+
   abstract getThumb(filePath: string): string;
 }

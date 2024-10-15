@@ -65,6 +65,12 @@ class Ec2ServerConnection extends IServerConnection {
     return `${this.baseURL}${filePath}`;
   }
 
+  async downloadFile({ path }: PathParam) {
+    setTimeout(() => {
+      window.open(`${this.baseURL}${path}`);
+    }, 100);
+  }
+
   async copyFilesToFolder({
     items,
     destination,

@@ -919,10 +919,8 @@ export const useFileManagerOperations = ({
         });
       },
       handleDownload: (selectedFile: FileType) => {
-        setTimeout(() => {
-          window.open(`${selectedFile.path}`);
-          // window.open(`${mainconfig.serverPath}${selectedFile.path}`);
-        }, 100);
+        if (!apiClient) return undefined;
+        return apiClient.downloadFile({ path: selectedFile.path });
       },
       handleGetThumb: (selectedFile: FileType) => {
         if (!apiClient) return undefined;

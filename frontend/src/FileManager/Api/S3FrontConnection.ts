@@ -526,6 +526,11 @@ class S3Connection extends IServerConnection {
   getThumb(filePath: string): string {
     return `${filePath}`;
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  async downloadFile({ path }: PathParam) {
+    throw new Error("Can't generate downlaod file path in front connection");
+  }
 }
 
 export default S3Connection;

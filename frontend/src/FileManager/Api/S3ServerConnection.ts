@@ -148,6 +148,18 @@ class S3ServerConnection extends IServerConnection {
   getThumb(filePath: string): string {
     return `${this.baseURL}/thumb/${filePath}`;
   }
+
+  async downloadFile({ path }: PathParam) {
+    const link = await this.axiosInstance
+      .post("getlink", { path })
+      .then((response) => response.data?.path);
+
+    if (link) {
+      setTimeout(() => {
+        window.open(link);
+      }, 100);
+    }
+  }
 }
 
 export default S3ServerConnection;

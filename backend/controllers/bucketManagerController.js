@@ -27,6 +27,7 @@ const {
 const { Buffer } = require("buffer"); // Import Buffer to handle base64 and binary data
 const AppError = require("../utilits/appError");
 const { Upload } = require("@aws-sdk/lib-storage");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 // Convert common prefixes to folder structure
 const convertCommonPrefixes = (commonPrefixes = []) => {
@@ -912,7 +913,6 @@ class S3Controller {
     if (bucketName) {
       this.bucketName = bucketName;
     }
-    console.log('bucket', this.bucketName);
     try {
       const fileStream = await this.getFileStream(filePath);
 
@@ -935,7 +935,23 @@ class S3Controller {
       );
     }
   }
-  
+
+  async getLink(req, res, next) {
+    const { path } = req.body;
+    const bucketName = req.headers["bucket-name"];
+
+    if (bucketName) {
+      this.bucketName = bucketName;
+    }
+    try {
+      const filePath = await this.getPresignedUrl(path);
+      res.status(200).send({ path: filePath });
+    } catch (error) {
+      return next(
+        new AppError(`Error generating link to S3: ${error.message}`, 400)
+      );
+    }
+  }
 }
 
 module.exports = S3Controller;
