@@ -252,6 +252,38 @@ class S3Controller {
     }
   }
 
+  async getPresignedUrl(filePath) {
+    const params = {
+      Bucket: this.bucketName,
+      Key: filePath, // Path of the file in S3
+    };
+
+    try {
+      const command = new GetObjectCommand(params);
+      // Generate a pre-signed URL valid for 1 hour
+      return await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
+    } catch (error) {
+      console.error("Error generating pre-signed URL:", error);
+      throw error;
+    }
+  }
+
+  // Function to get the file stream from S3
+  async getFileStream(filePath) {
+    const params = {
+      Bucket: this.bucketName, // Your S3 bucket name
+      Key: filePath, // Path of the file in S3
+    };
+
+    try {
+      const command = new GetObjectCommand(params);
+      const data = await this.s3Client.send(command);
+      return data.Body; // Returns a readable stream
+    } catch (error) {
+      console.error("Error getting file from S3:", error);
+      throw error;
+    }
+  }
   // END PRIVATE METHODS //
 
   // Recursive function to get the folder tree
@@ -817,7 +849,7 @@ class S3Controller {
         .status(400)
         .send({ error: "Bucket name is required in headers" });
     }
-
+    this.bucketName = bucketName;
     const zipStream = new stream.PassThrough();
     const archive = archiver("zip", { zlib: { level: 9 } });
 
@@ -872,6 +904,38 @@ class S3Controller {
       );
     }
   }
+
+  async getThumb(req, res, next) {
+    const filePath = req.params[0]; // Extract the file path from the URL
+    const bucketName = req.headers["bucket-name"];
+
+    if (bucketName) {
+      this.bucketName = bucketName;
+    }
+    console.log('bucket', this.bucketName);
+    try {
+      const fileStream = await this.getFileStream(filePath);
+
+      // Set appropriate headers for the file
+      res.setHeader(
+        "Content-Disposition",
+        `inline; filename="${filePath.split("/").pop()}"`
+      );
+      res.setHeader("Content-Type", "application/octet-stream"); // You can set the content type based on the file type
+
+      // Pipe the file stream to the response
+      fileStream.pipe(res);
+    } catch (uploadError) {
+      console.error(`Error uploading archive to S3: ${uploadError.message}`);
+      return next(
+        new AppError(
+          `Error uploading archive to S3: ${uploadError.message}`,
+          400
+        )
+      );
+    }
+  }
+  
 }
 
 module.exports = S3Controller;

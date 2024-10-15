@@ -12,11 +12,11 @@ export const useApiController = (
 
     switch (selectedVolume.type) {
       case VolumeTypes.SERVER: {
-        return new Ec2ServerConnection(selectedVolume.server);
+        return new Ec2ServerConnection(selectedVolume.endpoint);
       }
       case VolumeTypes.S3BUCKET_BACK: {
         return new S3ServerConnection(
-          selectedVolume.server,
+          selectedVolume.endpoint,
           selectedVolume.bucket
         );
       }

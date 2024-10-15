@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo } from "react";
 import { Tooltip } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
-import { getThumb, classNames } from "../../../helpers";
+import { classNames, getFileIcon } from "../../../helpers";
 import ItemSelectButton from "./ItemSelectButton";
 import {
   StyledFileItem,
@@ -14,13 +14,15 @@ import {
   FileType,
   ItemMoveActionTypeEnum,
   ContextMenuTypeEnum,
+  ImagesThumbTypeEnum,
 } from "../../../types";
+import { FILE_EXTENSION_MAP } from "../../../config";
 
 const FileItem: React.FC<{
   item: FileType;
 }> = ({ item }) => {
   const {
-    operations: { handleContextClick },
+    operations: { handleContextClick, handleGetThumb },
     selectedFiles,
     bufferedItems,
     settings,
@@ -49,6 +51,23 @@ const FileItem: React.FC<{
     [item, bufferedItems]
   );
 
+  const getImageThumb = useCallback(
+    (fileItem: FileType) => {
+      try {
+        if (
+          settings.showImages === ImagesThumbTypeEnum.THUMB &&
+          FILE_EXTENSION_MAP.imageFiles.includes(fileItem.extension)
+        ) {
+          return handleGetThumb(fileItem);
+        }
+        return getFileIcon(fileItem);
+      } catch (error) {
+        return getFileIcon(fileItem);
+      }
+    },
+    [handleGetThumb, settings.showImages]
+  );
+
   return (
     <StyledFileItem
       onContextMenu={(event) => handleContextMenuClick(item, event)}
@@ -63,7 +82,7 @@ const FileItem: React.FC<{
       <StyledItemExtension>{item.extension}</StyledItemExtension>
 
       <StyledItemInfoBox {...listeners} {...attributes}>
-        <img alt={item.name} src={getThumb(item, settings.showImages)} />
+        <img alt={item.name} src={getImageThumb(item) as unknown as string} />
       </StyledItemInfoBox>
       <Tooltip title={item.name}>
         <StyledItemTitle>

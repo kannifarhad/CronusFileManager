@@ -268,6 +268,7 @@ export interface Operations {
   handleSelectCallback: (path: string) => void;
   handleInitFileManagerData: () => void;
   handleSelectTheme: (theme: string) => void;
+  handleGetThumb: (file: FileType) => string | undefined;
 }
 
 export interface Message {
@@ -326,7 +327,7 @@ export enum VolumeTypes {
 export interface ServerInstance {
   id: string;
   name: string;
-  server: string;
+  endpoint: string;
   type: VolumeTypes.SERVER;
 }
 export interface S3BucketInstance {
@@ -343,7 +344,7 @@ export interface S3BucketInstance {
 }
 export interface S3BucketInstanceV2 {
   type: VolumeTypes.S3BUCKET_BACK;
-  server: string;
+  endpoint: string;
   bucket: string;
   id: string;
   name: string;

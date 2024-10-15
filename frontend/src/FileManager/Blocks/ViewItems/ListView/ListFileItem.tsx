@@ -5,7 +5,7 @@ import { StyledListTableCell, StyledListTableRow } from "../styled";
 import {
   convertDate,
   formatBytes,
-  getThumb,
+  getFileIcon,
   classNames,
 } from "../../../helpers";
 import {
@@ -23,7 +23,6 @@ const ListFileItem: React.FC<{
     operations: { handleContextClick, handleAddSelected },
     selectedFiles,
     bufferedItems,
-    settings,
   } = useFileManagerState();
 
   const handleContextMenuClick = useCallback(
@@ -79,7 +78,7 @@ const ListFileItem: React.FC<{
         <img
           alt={item.name}
           style={{ width: "20px", maxHeight: "30px" }}
-          src={getThumb(item, settings.showImages)}
+          src={getFileIcon(item)}
         />
       </StyledListTableCell>
       <StyledListTableCell align="left" style={{ flexGrow: 1 }}>
