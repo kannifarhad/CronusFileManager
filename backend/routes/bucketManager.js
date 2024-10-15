@@ -12,16 +12,8 @@ const nodePath = require("path");
 const router = express.Router();
 const { bucketManagerController } = require("../controllers");
 const { S3Client } = require("@aws-sdk/client-s3");
+const { config } = require("../config/bucket");
 
-const config = {
-  region: "us-east-1",
-  endpoint: "http://192.168.1.6:9001",
-  bucket: "cronusfilemanager",
-  credentials: {
-    accessKeyId: process.env.S3_ACCESS_KEY,
-    secretAccessKey: process.env.S3_SECRET_KEY,
-  },
-};
 const s3Client = new S3Client(config);
 const s3Controller = new bucketManagerController(s3Client, config.bucket);
 
@@ -40,9 +32,15 @@ router.post("/copy", s3Controller.copy.bind(s3Controller));
 router.post("/move", s3Controller.move.bind(s3Controller));
 router.post("/duplicate", s3Controller.duplicateFile.bind(s3Controller));
 router.post("/emptydir", s3Controller.emptydir.bind(s3Controller));
-router.post("/upload", upload.any(), s3Controller.uploadFiles.bind(s3Controller));
+router.post(
+  "/upload",
+  upload.any(),
+  s3Controller.uploadFiles.bind(s3Controller)
+);
 router.post("/unzip", s3Controller.unzipFile.bind(s3Controller));
 router.post("/archive", s3Controller.archive.bind(s3Controller));
+router.get("/thumb/*", s3Controller.getThumb.bind(s3Controller));
+
 // router.post("/saveimage", bucketManagerController.saveImage);
 
 module.exports = router;

@@ -24,7 +24,6 @@ import {
 } from "../types";
 import { SaveFileParams } from "../Api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
-import mainconfig from "../../Data/Config";
 import useApiController from "./useApiController";
 
 export const useFileManagerOperations = ({
@@ -876,7 +875,7 @@ export const useFileManagerOperations = ({
                   <img
                     style={{ maxWidth: "400px", maxHeight: "400px" }}
                     alt={selectedFile.name}
-                    src={`${mainconfig.serverPath}${selectedFile.path}`}
+                    src={operations.handleGetThumb(selectedFile)}
                   />
                 )}
               </>
@@ -904,7 +903,7 @@ export const useFileManagerOperations = ({
               <img
                 style={{ maxWidth: "400px", maxHeight: "400px" }}
                 alt={selectedFile.name}
-                src={`${mainconfig.serverPath}${selectedFile.path}`}
+                src={operations.handleGetThumb(selectedFile)}
               />
             ),
             actionButtons: [
@@ -921,9 +920,15 @@ export const useFileManagerOperations = ({
       },
       handleDownload: (selectedFile: FileType) => {
         setTimeout(() => {
-          window.open(`${mainconfig.serverPath}${selectedFile.path}`);
+          window.open(`${selectedFile.path}`);
+          // window.open(`${mainconfig.serverPath}${selectedFile.path}`);
         }, 100);
       },
+      handleGetThumb: (selectedFile: FileType) => {
+        if (!apiClient) return undefined;
+        return apiClient.getThumb(selectedFile.path);
+      },
+
       handleToggleFullScreen: () => {
         dispatch({ type: ActionTypes.TOGGLE_FULLSCREEN, payload: null });
       },

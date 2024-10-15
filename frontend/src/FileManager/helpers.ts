@@ -1,9 +1,7 @@
 /* eslint-disable no-use-before-define */
 import config from "./Elements/config.json";
-import mainconfig from "../Data/Config";
 import {
   FileType,
-  ImagesThumbTypeEnum,
   ItemsList,
   OrderByFieldEnum,
   OrderByType,
@@ -181,14 +179,8 @@ export const getFileExtensionIcon = (extension: keyof typeof config.icons) => {
   return toAbsoluteUrl(extensionIconPath);
 };
 
-export const getThumb = (item: FileType, showImages: ImagesThumbTypeEnum) => {
+export const getFileIcon = (item: FileType) => {
   try {
-    if (
-      showImages === ImagesThumbTypeEnum.THUMB &&
-      config.imageFiles.includes(item.extension)
-    ) {
-      return `${mainconfig.serverPath}${item.path}`;
-    }
     return getFileExtensionIcon(item.extension);
   } catch (error) {
     return toAbsoluteUrl(config.icons.broken);

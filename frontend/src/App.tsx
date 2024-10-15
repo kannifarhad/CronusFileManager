@@ -6,13 +6,13 @@ const volumesList: VolumeListType = [
   {
     id: "1",
     type: VolumeTypes.SERVER,
-    server: "http://localhost:3131",
+    endpoint: "http://localhost:3131",
     name: "My EC2 server",
   },
   {
     id: "2",
     type: VolumeTypes.S3BUCKET_BACK,
-    server: "http://localhost:3131",
+    endpoint: "http://localhost:3131",
     bucket: "cronusfilemanager",
     name: "S3 Server Connection",
   },

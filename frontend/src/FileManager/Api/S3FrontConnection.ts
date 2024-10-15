@@ -521,6 +521,11 @@ class S3Connection extends IServerConnection {
       `Archiving files is not supported directly by S3. ${this.bucketName}`
     );
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  getThumb(filePath: string): string {
+    return `${filePath}`;
+  }
 }
 
 export default S3Connection;

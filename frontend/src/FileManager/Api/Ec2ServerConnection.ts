@@ -17,11 +17,14 @@ import {
 class Ec2ServerConnection extends IServerConnection {
   private axiosInstance: AxiosInstance;
 
+  private baseURL: string;
+
   constructor(baseURL: string) {
     super();
     if (!baseURL) {
       throw new Error("Base URL is not defined.");
     }
+    this.baseURL = baseURL;
 
     this.axiosInstance = axios.create({
       baseURL: `${baseURL}/fm`,
@@ -56,6 +59,10 @@ class Ec2ServerConnection extends IServerConnection {
     return this.axiosInstance
       .post("folder", { path })
       .then((response) => response.data?.children);
+  }
+
+  getThumb(filePath: string): string {
+    return `${this.baseURL}${filePath}`;
   }
 
   async copyFilesToFolder({

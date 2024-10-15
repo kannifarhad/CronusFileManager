@@ -17,14 +17,17 @@ import {
 class S3ServerConnection extends IServerConnection {
   private axiosInstance: AxiosInstance;
 
+  private baseURL: string;
+
   constructor(baseURL: string, bucketName: string) {
     super();
     if (!baseURL) {
       throw new Error("Base URL is not defined.");
     }
+    this.baseURL = `${baseURL}/s3`;
 
     this.axiosInstance = axios.create({
-      baseURL: `${baseURL}/s3`,
+      baseURL: this.baseURL,
       timeout: 2000,
       headers: {
         "Content-Type": "application/json",
@@ -139,6 +142,11 @@ class S3ServerConnection extends IServerConnection {
         },
       })
       .then((response) => response.data);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getThumb(filePath: string): string {
+    return `${this.baseURL}/thumb/${filePath}`;
   }
 }
 
