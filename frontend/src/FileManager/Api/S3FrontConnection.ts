@@ -299,9 +299,9 @@ class S3Connection extends IServerConnection {
   }
 
   // Method to save a file in S3
-  async saveFile({ file, path, isnew }: SaveFileParams): Promise<any> {
+  async saveFile({ file, selectedFile, isnew }: SaveFileParams): Promise<any> {
     const params = {
-      Key: `${path}${isnew ? String(Date.now()) : ""}`, // Combine path and filename
+      Key: `${selectedFile.path}${isnew ? String(Date.now()) : ""}`, // Combine path and filename
       Body: file,
       ContentType: file.type,
     };

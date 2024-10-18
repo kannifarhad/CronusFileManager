@@ -1,4 +1,4 @@
-import { FolderList, ItemsList } from "../types";
+import { FileType, FolderList, ItemsList } from "../types";
 
 export interface PathParam {
   path: string;
@@ -45,7 +45,7 @@ export interface ArchiveParams {
 
 export interface SaveFileParams {
   file: File;
-  path: string;
+  selectedFile: FileType;
   isnew: boolean;
 }
 
