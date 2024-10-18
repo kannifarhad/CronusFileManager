@@ -9,28 +9,27 @@ import { ImageEditorContainer } from "./styledImageeditor";
 import { StyledFileEditFooter } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
 
-const ImageEditContent: React.FC<FileEditPopupProps> = ({
+const ImageEditContent: React.FC<FileEditPopupProps & { filePath: string }> = ({
   closeCallBack,
   submitCallback,
-  name,
-  extension,
-  path,
+  filePath,
+  selectedFile,
 }) => {
   const editorRef = useRef<any>(null);
 
   const handleClickButton = useCallback(
     (isnew: boolean) => {
-      const format = extension !== ".jpg" ? "jpeg" : "png";
+      const format = selectedFile.extension !== ".jpg" ? "jpeg" : "png";
       const editorInstance = editorRef.current?.getInstance();
       if (editorInstance) {
         const imageData = editorInstance._graphics.toDataURL({
           quality: 0.7,
           format,
         });
-        submitCallback({ file: imageData, path, isnew });
+        submitCallback({ file: imageData, selectedFile, isnew });
       }
     },
-    [extension, submitCallback, path]
+    [selectedFile, submitCallback]
   );
 
   const buttons = useMemo(
@@ -61,7 +60,6 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
     [handleClickButton, closeCallBack]
   );
 
-  const pathToFile = `http://localhost:3131${path}`;
   return (
     <>
       <ImageEditorContainer>
@@ -69,8 +67,8 @@ const ImageEditContent: React.FC<FileEditPopupProps> = ({
           ref={editorRef}
           includeUI={{
             loadImage: {
-              path: pathToFile,
-              name,
+              path: filePath,
+              name: selectedFile.name,
             },
             theme: whiteTheme,
             initMenu: "filter",
@@ -102,7 +100,10 @@ const Transition = forwardRef(
 );
 
 const ImageEditPopup: React.FC<{}> = () => {
-  const { fileEdit } = useFileManagerState();
+  const {
+    fileEdit,
+    operations: { handleGetThumb },
+  } = useFileManagerState();
   if (!fileEdit) return null;
 
   return (
@@ -114,7 +115,10 @@ const ImageEditPopup: React.FC<{}> = () => {
       onClose={fileEdit.closeCallBack}
       className="dialog"
     >
-      <ImageEditContent {...fileEdit} />
+      <ImageEditContent
+        {...fileEdit}
+        filePath={handleGetThumb(fileEdit.selectedFile)!}
+      />
     </Dialog>
   );
 };

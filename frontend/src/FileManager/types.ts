@@ -305,9 +305,7 @@ export interface PopupData {
 export interface FileEditPopupProps {
   closeCallBack: () => void;
   submitCallback: (data: SaveFileParams) => void;
-  name: string;
-  extension: string;
-  path: string;
+  selectedFile: FileType;
 }
 
 export interface EditImage {

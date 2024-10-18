@@ -137,9 +137,9 @@ class Ec2ServerConnection extends IServerConnection {
       .then((response) => response.data);
   }
 
-  async saveFile({ file, path, isnew }: SaveFileParams): Promise<any> {
+  async saveFile({ file, selectedFile, isnew }: SaveFileParams): Promise<any> {
     return this.axiosInstance
-      .post("saveimage", { file, path, isnew })
+      .post("saveimage", { file, path: selectedFile.path, isnew })
       .then((response) => response.data);
   }
 

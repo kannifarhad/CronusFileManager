@@ -41,7 +41,6 @@ router.post("/unzip", s3Controller.unzipFile.bind(s3Controller));
 router.post("/archive", s3Controller.archive.bind(s3Controller));
 router.get("/thumb/*", s3Controller.getThumb.bind(s3Controller));
 router.post("/getlink", s3Controller.getLink.bind(s3Controller));
-
-// router.post("/saveimage", bucketManagerController.saveImage);
+router.post("/saveimage", s3Controller.saveImage.bind(s3Controller));
 
 module.exports = router;

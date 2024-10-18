@@ -19,6 +19,7 @@ const {
 const unzipper = require("unzipper");
 const archiver = require("archiver");
 const stream = require("stream");
+const nodePath = require('path');
 const {
   escapePath,
   checkExtension,
@@ -950,6 +951,57 @@ class S3Controller {
       return next(
         new AppError(`Error generating link to S3: ${error.message}`, 400)
       );
+    }
+  }
+
+  async saveImage(req, res, next) {
+    let { path, file, isnew } = req.body;
+    const bucketName = req.headers["bucket-name"];
+
+    if (bucketName) {
+      this.bucketName = bucketName;
+    }
+
+    // Strip the base64 encoding header and get the actual image data
+    file = file.split(";base64,").pop();
+
+    // Validate the file extension
+    if (!checkExtension(nodePath.extname(path))) {
+      return next(new AppError(`Wrong File Format ${path}`, 400));
+    }
+
+    // Ensure that all necessary variables are set
+    if (!checkVariables([path, file])) {
+      return next(new AppError("Variables not set!", 400));
+    }
+
+    // If 'isnew' is true, modify the file path to include a timestamp
+    if (isnew) {
+      const nameNew = path.split(".");
+      const timestamp = new Date().getTime();
+      path = `${nameNew[0]}_${timestamp}.${nameNew[1]}`;
+    }
+    // Prepare the S3 upload parameters
+    const uploadParams = {
+      Bucket: this.bucketName, // S3 bucket name
+      Key: path, // File path in the S3 bucket
+      Body: Buffer.from(file, "base64"), // Convert base64 data to buffer
+      ContentEncoding: "base64", // Specify the encoding
+      ContentType: "image/jpeg", // Adjust the content type according to your file type
+    };
+
+    try {
+      // Upload the image to S3
+      await this.s3Client.send(new PutObjectCommand(uploadParams));
+
+      // Respond with success
+      res.status(200).json({
+        status: "success",
+        message: "File successfully uploaded to S3!",
+      });
+    } catch (err) {
+      // Handle any errors that occur during the upload
+      return next(new AppError("Error while uploading file to S3", 400));
     }
   }
 }

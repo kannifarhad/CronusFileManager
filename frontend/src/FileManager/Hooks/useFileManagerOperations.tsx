@@ -428,6 +428,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleNewFile: (selectedFolder: FolderList) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -485,6 +486,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleNewFolder: (selectedFolder: FolderList) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -544,6 +546,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleRename: (selectedFile: Items, selectedFolder: FolderList) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -607,6 +610,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -661,6 +665,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleCreateZip: (
         selectedFiles: Set<Items>,
         selectedFolder: FolderList
@@ -733,6 +738,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -789,6 +795,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => {
         const handleCloseEdit = () =>
           dispatch({ type: ActionTypes.SET_FILEEDIT_DATA, payload: null });
@@ -819,12 +826,11 @@ export const useFileManagerOperations = ({
           payload: {
             closeCallBack: handleCloseEdit,
             submitCallback: handleSubmitEdit,
-            name: selectedFile.name,
-            path: selectedFile.path,
-            extension: selectedFile.extension,
+            selectedFile,
           },
         });
       },
+
       handleGetInfo: (selectedFile: Items) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -892,6 +898,7 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handlePreview: (selectedFile: FileType) => {
         const handleClose = () =>
           dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
@@ -918,10 +925,12 @@ export const useFileManagerOperations = ({
           },
         });
       },
+
       handleDownload: (selectedFile: FileType) => {
         if (!apiClient) return undefined;
         return apiClient.downloadFile({ path: selectedFile.path });
       },
+
       handleGetThumb: (selectedFile: FileType) => {
         if (!apiClient) return undefined;
         return apiClient.getThumb(selectedFile.path);
@@ -930,6 +939,7 @@ export const useFileManagerOperations = ({
       handleToggleFullScreen: () => {
         dispatch({ type: ActionTypes.TOGGLE_FULLSCREEN, payload: null });
       },
+
       handleToggleUploadPopUp: (forceShow?: boolean) => {
         dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: forceShow });
       },
