@@ -1,7 +1,7 @@
 /**
  * @package		Cronus File Manager
  * @author		Farhad Aliyev Kanni
- * @copyright	Copyright (c) 2011 - 2019, Kannifarhad, Ltd. (http://www.kanni.pro/)
+ * @copyright	Copyright (c) 2011 - 2024, Kannifarhad, Ltd. (http://www.kanni.pro/)
  * @license		https://opensource.org/licenses/GPL-3.0
  * @link		http://filemanager.kanni.pro
  **/
@@ -11,15 +11,12 @@ const {
   GetObjectCommand,
   ListObjectsCommand,
   ListObjectsV2Command,
-  DeleteObjectCommand,
   DeleteObjectsCommand,
-  CommonPrefix,
-  _Object,
 } = require("@aws-sdk/client-s3");
 const unzipper = require("unzipper");
 const archiver = require("archiver");
 const stream = require("stream");
-const nodePath = require('path');
+const nodePath = require("path");
 const {
   escapePath,
   checkExtension,
@@ -320,7 +317,6 @@ class S3Controller {
     };
   }
 
-  // Folder tree API handler
   async folderTree(req, res, next) {
     try {
       const bucketName = req.headers["bucket-name"];

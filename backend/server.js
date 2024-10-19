@@ -1,7 +1,7 @@
 /**
  * @package		Cronus File Manager
  * @author		Farhad Aliyev Kanni
- * @copyright	Copyright (c) 2011 - 2019, Kannifarhad, Ltd. (http://www.kanni.pro/)
+ * @copyright	Copyright (c) 2011 - 2024, Kannifarhad, Ltd. (http://www.kanni.pro/)
  * @license		https://opensource.org/licenses/GPL-3.0
  * @link		http://filemanager.kanni.pro
 **/
@@ -15,10 +15,11 @@ const app = express();
 const port = 3131
 const AppError = require('./utilits/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const { FILE_STORAGE_MAIN_FOLDER } = require("./config/fileStorage");
 
 //Gathering Routes that used
-var fileManager = require('./routes/fileManager');
-var bucketManager = require('./routes/bucketManager');
+const fileManager = require('./routes/fileManager');
+const bucketManager = require('./routes/bucketManager');
 
 app.use(cors());
 app.use(bodyParser.json({limit: '10mb'}));
@@ -40,7 +41,7 @@ app.use('*', limiter);
 
 app.use('/fm', fileManager);
 app.use('/s3', bucketManager);
-app.use('/uploads', express.static(__dirname + '/uploads'));
+app.use(`/${FILE_STORAGE_MAIN_FOLDER}`, express.static(__dirname + `/${FILE_STORAGE_MAIN_FOLDER}`));
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

@@ -35,11 +35,11 @@ We are excited to announce the upcoming release of our library, which will bring
 - **Folder Tree Upload**: 🕑
     You will be able to upload an entire folder tree, including all files and subfolders, making bulk uploads more efficient.
 
+- **Bug Fixes and Performance Improvements**: 🕑
+    We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
+
 - **Search**: 🔜
     Implementation of searching folders and files inside selected disk volume
-
-- **Bug Fixes and Performance Improvements**: 🔜
-    We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
 
 - **Trash Box**: 🔜
     Implement trash box feature that will hold removed items for 30 days with possibility of recovery 
