@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
-import config from "./Elements/config.json";
+import { FILE_EXTENSION_MAP } from "./config";
+
 import {
   FileType,
   ItemsList,
@@ -156,12 +157,12 @@ export const checkSelectedFileType = (
         return selectedFile.type === ItemType.FILE;
 
       case ItemExtensionCategoryFilter.TEXT:
-        return config.textFiles.includes(selectedFile.extension);
+        return FILE_EXTENSION_MAP.textFiles.includes(selectedFile.extension);
       case ItemExtensionCategoryFilter.ARCHIVE:
-        return config.archiveFiles.includes(selectedFile.extension);
+        return FILE_EXTENSION_MAP.archiveFiles.includes(selectedFile.extension);
 
       case ItemExtensionCategoryFilter.IMAGE:
-        return config.imageFiles.includes(selectedFile.extension);
+        return FILE_EXTENSION_MAP.imageFiles.includes(selectedFile.extension);
 
       default:
         return false;
@@ -174,8 +175,11 @@ export const checkSelectedFileType = (
 export const toAbsoluteUrl = (pathname: string) =>
   process.env.PUBLIC_URL + pathname;
 
-export const getFileExtensionIcon = (extension: keyof typeof config.icons) => {
-  const extensionIconPath = config.icons[extension] || config.icons.broken;
+export const getFileExtensionIcon = (
+  extension: keyof typeof FILE_EXTENSION_MAP.icons
+) => {
+  const extensionIconPath =
+    FILE_EXTENSION_MAP.icons[extension] || FILE_EXTENSION_MAP.icons.broken;
   return toAbsoluteUrl(extensionIconPath);
 };
 
@@ -183,7 +187,7 @@ export const getFileIcon = (item: FileType) => {
   try {
     return getFileExtensionIcon(item.extension);
   } catch (error) {
-    return toAbsoluteUrl(config.icons.broken);
+    return toAbsoluteUrl(FILE_EXTENSION_MAP.icons.broken);
   }
 };
 

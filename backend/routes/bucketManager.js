@@ -13,13 +13,20 @@ const { bucketManagerController } = require("../controllers");
 const { S3Client } = require("@aws-sdk/client-s3");
 const { config } = require("../config/bucket");
 const catchAsync = require("../utilits/catchAsync");
+const {
+  MAX_UPLOAD_FILE_AMOUNT,
+  MAX_UPLOAD_FILE_SIZE,
+} = require("../config/common");
 
 const s3Client = new S3Client(config);
 const s3Controller = new bucketManagerController(s3Client, config.bucket);
 
 const upload = multer({
   storage: multer.memoryStorage(), // Store files in memory
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+  limits: {
+    files: MAX_UPLOAD_FILE_AMOUNT, // allow  files per request,
+    fileSize: MAX_UPLOAD_FILE_SIZE, //(max file size)
+  },
 });
 
 router.get(

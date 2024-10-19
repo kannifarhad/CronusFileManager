@@ -5,7 +5,7 @@ import { useDroppable, useDraggable } from "@dnd-kit/core";
 import ItemSelectButton from "./ItemSelectButton";
 import { toAbsoluteUrl, convertDate, classNames } from "../../../helpers";
 import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from "../styled";
-import config from "../../../Elements/config.json";
+import { FILE_EXTENSION_MAP } from "../../../config";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 import {
   FolderType,
@@ -80,8 +80,8 @@ const FolderItem: React.FC<{
             alt={item.name}
             src={
               isOver
-                ? toAbsoluteUrl(config.icons.folderopen)
-                : toAbsoluteUrl(config.icons.folder)
+                ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen)
+                : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
             }
           />
         </StyledItemInfoBox>

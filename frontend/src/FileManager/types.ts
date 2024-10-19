@@ -2,7 +2,8 @@
 import { AlertColor } from "@mui/material/Alert";
 import React, { ReactNode } from "react";
 import { Theme } from "@mui/system";
-import config from "./Elements/config.json";
+import { FileWithPath } from "react-dropzone";
+import { FILE_EXTENSION_MAP } from "./config";
 import { SaveFileParams } from "./Api/types";
 import { ButtonItemType } from "./Elements/ButtonGroup";
 
@@ -126,7 +127,7 @@ export interface FileType {
   id: string;
   premissions?: Permissions;
   size: number;
-  extension: keyof typeof config.icons;
+  extension: keyof typeof FILE_EXTENSION_MAP.icons;
   private?: boolean;
 }
 
@@ -262,7 +263,10 @@ export interface Operations {
   handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => void;
   handleToggleFullScreen: () => void;
   handleToggleUploadPopUp: (forceShow?: boolean) => void;
-  handleUploadFiles: (files: File[], selectedFolder: FolderList) => void;
+  handleUploadFiles: (
+    files: FileWithPath[],
+    selectedFolder: FolderList
+  ) => void;
   handlingHistory: (historyInfo: HistoryStep, index: number) => void;
   handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
   handleSelectCallback: (path: string) => void;
