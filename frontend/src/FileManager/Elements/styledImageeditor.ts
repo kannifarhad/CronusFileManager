@@ -320,10 +320,11 @@ export const ImageEditorContainer = styled("div")(({}) => ({
       width: "55px",
       whiteSpace: "nowrap",
     },
-  "& .tui-image-editor-container .tui-image-editor-submenu-align:first-child": {
-    marginRight: 0,
-  },
-  "& .tui-image-editor-container .tui-image-editor-submenu-align:first-child label > span":
+  "& .tui-image-editor-container .tui-image-editor-submenu-align:first-of-type":
+    {
+      marginRight: 0,
+    },
+  "& .tui-image-editor-container .tui-image-editor-submenu-align:first-of-type label > span":
     {
       width: "70px",
     },

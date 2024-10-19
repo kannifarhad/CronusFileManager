@@ -5,9 +5,9 @@ import React, {
   useMemo,
 } from "react";
 import {
+  Box,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Zoom,
   ZoomProps,
@@ -55,9 +55,9 @@ const AlertDialog: React.FC<PopupData> = ({
 
       <DialogContent>
         {description && (
-          <DialogContentText className="dialogDescription">
+          <Box className="dialogDescription">
             <div>{description}</div>
-          </DialogContentText>
+          </Box>
         )}
         {nameInputSets && (
           <div className="form-group">

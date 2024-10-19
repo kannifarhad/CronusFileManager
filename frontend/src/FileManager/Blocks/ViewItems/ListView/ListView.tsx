@@ -1,12 +1,5 @@
 import React, { memo, useCallback, useState } from "react";
-import {
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Box,
-} from "@mui/material";
+import { TableContainer, Box } from "@mui/material";
 import {
   DndContext,
   DragOverlay,
@@ -79,25 +72,18 @@ const ListView: React.FC<{}> = () => {
         style={{ height: "100%", overflow: "hidden" }}
       >
         <StyledListTable
-          size="small"
           aria-label="files list table"
           style={{ height: "100%" }}
         >
-          <TableHead>
-            <TableRow className="tableHead">
-              <TableCell style={{ width: "45px" }} />
-              <TableCell style={{ width: "35px" }} align="left" />
-              <TableCell align="left">Name</TableCell>
-              <TableCell style={{ width: "100px" }} align="left">
-                Size
-              </TableCell>
-              <TableCell style={{ width: "165px" }} align="left">
-                Created
-              </TableCell>
-            </TableRow>
-          </TableHead>
+          <Box className="tableHead">
+            <Box style={{ width: "45px" }} />
+            <Box style={{ width: "35px" }} />
+            <Box>Name</Box>
+            <Box style={{ width: "100px", marginLeft: "auto" }}>Size</Box>
+            <Box style={{ width: "165px" }}>Created</Box>
+          </Box>
 
-          <TableBody style={{ height: "100%" }}>
+          <Box style={{ height: "100%", width: "100%" }}>
             <AutoSizer>
               {({ height, width }) => (
                 <VirtualizedList
@@ -121,7 +107,7 @@ const ListView: React.FC<{}> = () => {
                 />
               ) : null}
             </DragOverlay>
-          </TableBody>
+          </Box>
         </StyledListTable>
       </TableContainer>
     </DndContext>

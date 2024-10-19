@@ -106,7 +106,7 @@ body > iframe {
     margin:0px;
     font-size: 20px;
 }
-.MuiTableRow-head th:first-child{
+.MuiTableRow-head th:first-of-type{
     -webkit-border-top-left-radius: 5px;
     -moz-border-radius-topleft: 5px;
     border-top-left-radius: 5px;
