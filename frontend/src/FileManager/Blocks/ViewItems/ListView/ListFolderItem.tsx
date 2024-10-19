@@ -112,13 +112,13 @@ const ListFolderItem: React.FC<{
           }
         />
       </StyledListTableCell>
-      <StyledListTableCell align="left" style={{ flexGrow: 1 }}>
+      <StyledListTableCell style={{ flexGrow: 1 }}>
         <div>{item.name}</div>
       </StyledListTableCell>
-      <StyledListTableCell align="left" style={{ width: "100px" }}>
+      <StyledListTableCell style={{ width: "100px" }}>
         {formatBytes(item.size)}
       </StyledListTableCell>
-      <StyledListTableCell align="left" style={{ width: "150px" }}>
+      <StyledListTableCell style={{ width: "150px", fontSize: "12px" }}>
         {convertDate(item.created)}
       </StyledListTableCell>
     </StyledListTableRow>

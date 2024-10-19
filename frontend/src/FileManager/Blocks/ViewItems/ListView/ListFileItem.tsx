@@ -81,13 +81,13 @@ const ListFileItem: React.FC<{
           src={getFileIcon(item)}
         />
       </StyledListTableCell>
-      <StyledListTableCell align="left" style={{ flexGrow: 1 }}>
+      <StyledListTableCell style={{ flexGrow: 1 }}>
         {item.name}
       </StyledListTableCell>
-      <StyledListTableCell align="left" style={{ width: "100px" }}>
+      <StyledListTableCell style={{ width: "100px" }}>
         {formatBytes(item.size)}
       </StyledListTableCell>
-      <StyledListTableCell align="left" style={{ width: "150px" }}>
+      <StyledListTableCell style={{ width: "150px" }}>
         {convertDate(item.created)}
       </StyledListTableCell>
     </StyledListTableRow>

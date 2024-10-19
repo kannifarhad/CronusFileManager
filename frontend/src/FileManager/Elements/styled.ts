@@ -4,11 +4,11 @@ import {
   Button,
   Dialog,
   Alert,
-  Menu,
   MenuItem,
   List,
   ListItem,
   ButtonProps,
+  Popover,
 } from "@mui/material";
 
 export const StyledButtonGroupWrapper = styled(Box, {
@@ -141,7 +141,7 @@ export const StyledAcceptedFilesList = styled("section")(({}) => ({
   overflowX: "hidden",
 }));
 
-export const StyledContextMenu = styled(Menu)(({}) => ({}));
+export const StyledContextMenu = styled(Popover)(({}) => ({}));
 
 export const StyledContextMenuItem = styled(MenuItem)(({}) => ({
   padding: "9px 10px",

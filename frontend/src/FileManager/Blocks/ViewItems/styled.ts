@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Box, Checkbox, Table, TableCell, TableRow } from "@mui/material";
+import { Box, Checkbox } from "@mui/material";
 
 const ITEM_HEIGHT = 50;
 
@@ -77,39 +77,38 @@ export const StyledSelectCheckbox = styled(Checkbox)(({ checked }) => ({
   display: checked ? "block" : "none",
 }));
 
-export const StyledListTable = styled(Table)(({}) => ({
+export const StyledListTable = styled(Box)(({}) => ({
   padding: "0px",
   "& .tableHead": {
-    "& th": {
-      background: "#0492f2",
-      color: "#fff",
+    width: "100%",
+    borderRadius: "5px 5px 0px 0px",
+    display: "flex",
+    background: "#0492f2",
+    color: "#fff",
+    "& div": {
       padding: "10px 0px 10px 0px",
       fontSize: "13px",
       lineHeight: "19px",
       fontWeight: "700",
     },
-    "& th:first-child": {
-      borderRadius: "5px 0px 0px 0px",
-    },
-    "& th:last-child": {
-      borderRadius: "0px 5px 0px 0px",
-    },
   },
 }));
 
-export const StyledListTableCell = styled(TableCell)(({}) => ({
+export const StyledListTableCell = styled(Box)(({}) => ({
   padding: "0px",
   height: `${ITEM_HEIGHT}px`,
   display: "flex",
   alignItems: "center",
+  fontSize: "14px",
 }));
 
-export const StyledListTableRow = styled(TableRow)(({}) => ({
+export const StyledListTableRow = styled(Box)(({}) => ({
   display: "flex",
   flexDirection: "row",
   height: `${ITEM_HEIGHT}px`,
   alignItems: "center",
   width: "100%",
+  borderBottom: "1px solid #ccc",
   "&:hover td, &.selectmodeTable td": {
     background: "#f1f1f1",
   },
@@ -144,8 +143,8 @@ export const StyledItemTitle = styled(Box)(({}) => ({
     wordBreak: "break-word",
     overflowWrap: "break-word",
     display: "-webkit-box",
-    "-webkit-line-clamp": "2",
-    "-webkit-box-orient": "vertical",
+    WebkitLineClamp: "2",
+    WebkitBoxOrient: "vertical",
   },
   "& :hover": {
     background: "",

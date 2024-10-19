@@ -122,7 +122,10 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
                   }}
                 >
                   {orderOptions.map((option) => (
-                    <SettingsSelectOption value={option.value}>
+                    <SettingsSelectOption
+                      value={option.value}
+                      key={option.name}
+                    >
                       {option.name}
                     </SettingsSelectOption>
                   ))}
@@ -148,7 +151,10 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
                   }}
                 >
                   {sortOptions.map((option) => (
-                    <SettingsSelectOption value={option.value}>
+                    <SettingsSelectOption
+                      value={option.value}
+                      key={option.name}
+                    >
                       {option.name}
                     </SettingsSelectOption>
                   ))}
@@ -174,7 +180,7 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
               }}
             >
               {themeList.map((option) => (
-                <SettingsSelectOption value={option.id}>
+                <SettingsSelectOption value={option.id} key={option.name}>
                   {option.name}
                 </SettingsSelectOption>
               ))}
@@ -189,9 +195,8 @@ const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
           </FormLabel>
           <Grid container sx={{ marginTop: "5px" }} spacing={1}>
             {imageViewOptions.map((option) => (
-              <Grid size={6}>
+              <Grid size={6} key={option.name}>
                 <StyledTopBarMenuItem
-                  key={option.name}
                   selected={option.value === settings.showImages}
                   onClick={() => handleSetThumbView(option.value)}
                 >
