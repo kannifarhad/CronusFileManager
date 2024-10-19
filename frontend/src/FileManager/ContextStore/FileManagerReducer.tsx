@@ -93,7 +93,7 @@ export const fileManagerReducer = (
       };
 
     case ActionTypes.ADD_SELECTED_FILE: {
-      const item = action.payload;
+      const { item, multiSelect } = action.payload;
       // Create a new Set based on the current state
       const selectedFilesNew = new Set(state.selectedFiles);
 
@@ -101,6 +101,22 @@ export const fileManagerReducer = (
       if (selectedFilesNew.has(item)) {
         selectedFilesNew.delete(item);
       } else {
+        if (selectedFilesNew.size !== 0 && multiSelect) {
+          const endIndex = state.filesList.indexOf(item);
+          const selectedFilesArray = Array.from(state.selectedFiles);
+          let startIndex = Infinity;
+
+          // eslint-disable-next-line no-restricted-syntax
+          for (const file of selectedFilesArray) {
+            const index = state.filesList.indexOf(file);
+            if (index !== -1 && index < startIndex) {
+              startIndex = index;
+            }
+          }
+          // Copy all files between startIndex and endIndex (inclusive)
+          const filesToAdd = state.filesList.slice(startIndex, endIndex + 1);
+          return { ...state, selectedFiles: new Set(filesToAdd) };
+        }
         selectedFilesNew.add(item);
       }
       // Return the new state with the updated Set

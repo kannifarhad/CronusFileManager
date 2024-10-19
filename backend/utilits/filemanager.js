@@ -38,7 +38,7 @@ function escapePathWithErrors(path) {
 
   // Check if the path is a non-empty string
   if (typeof path !== "string" || path.trim() === "") {
-    throw new Error("Path must be a non-empty string.");
+    return basePath;
   }
 
   // Use a regular expression to check for invalid patterns (e.g., "..", "./")

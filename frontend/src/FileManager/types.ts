@@ -223,7 +223,7 @@ export interface Operations {
     clearBuffer?: boolean,
     showMessage?: boolean
   ) => void;
-  handleAddSelected: (item: Items) => void;
+  handleAddSelected: (item: Items, multiSelect?: Boolean) => void;
   handleReloadFolderTree: () => void;
   handleContextClick: (args: {
     item: Items | null;

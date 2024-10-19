@@ -404,3 +404,6 @@ export function readJsonFromLocalStorage<T>(key: string): T | null {
     return null;
   }
 }
+
+export const wasMultiSelectKeyUsed = (event: MouseEvent | KeyboardEvent) =>
+  event.shiftKey;

@@ -147,10 +147,13 @@ export const useFileManagerOperations = ({
         });
       },
 
-      handleAddSelected: (item: Items) => {
+      handleAddSelected: (item: Items, multiSelect?: Boolean) => {
         dispatch({
           type: ActionTypes.ADD_SELECTED_FILE,
-          payload: item,
+          payload: {
+            item,
+            multiSelect,
+          },
         });
       },
 
