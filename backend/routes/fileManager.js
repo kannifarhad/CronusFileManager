@@ -12,13 +12,19 @@ const router = express.Router();
 const catchAsync = require("../utilits/catchAsync");
 const { fileManagerController } = require("../controllers");
 const { FILE_STORAGE_TMP_FOLDER } = require("../config/fileStorage");
+const { MAX_UPLOAD_FILE_AMOUNT, MAX_UPLOAD_FILE_SIZE } = require("../config/common");
+
+const AppError = require("../utilits/appError");
 
 // configure multer
 const upload = multer({
   dest: FILE_STORAGE_TMP_FOLDER,
   limits: {
-    files: 15, // allow up to 5 files per request,
-    fieldSize: 5 * 1024 * 1024, // 2 MB (max file size)
+    files: MAX_UPLOAD_FILE_AMOUNT, // allow  files per request,
+    fieldSize:MAX_UPLOAD_FILE_SIZE, //(max file size)
+  },
+  onError: function (err, next) {
+    return next(new AppError(`Error while uploading:  ${err?.message}`, 400));
   },
 });
 

@@ -38,20 +38,20 @@ const handleJWTExpiredError = () =>
 
 
 const sendErrorDev = (err, req, res) => {
-  console.error('ERROR 💥', err);
-  res.status(err.statusCode).json({
-      status: err.status,
+  console.error('ERROR DEV 💥', err);
+  res.status(err?.statusCode ?? 500).json({
+      status: err?.status,
       error: err,
-      message: err.message,
-      stack: err.stack
+      message: err?.message,
+      stack: err?.stack
     });
 };
 
 const sendErrorProd = (err, req, res) => {
   if (err.isOperational) {
-    return res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message
+    return res.status(err?.statusCode ?? 500).json({
+      status: err?.status,
+      message: err?.message
     });
   }
   console.error('ERROR 💥', err);

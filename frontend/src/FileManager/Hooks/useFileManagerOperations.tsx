@@ -139,12 +139,17 @@ export const useFileManagerOperations = ({
       },
 
       handleReloadFolderTree: () => {
-        apiClient!.getFolderTree().then((result) => {
-          dispatch({
-            type: ActionTypes.SET_FOLDERS_LIST,
-            payload: result,
-          });
-        });
+        apiClient!
+          .getFolderTree()
+          .then((result) => {
+            dispatch({
+              type: ActionTypes.SET_FOLDERS_LIST,
+              payload: result,
+            });
+          })
+          .catch((error) =>
+            handleApiError(error, "Error happened while uploading files.")
+          );
       },
 
       handleAddSelected: (item: Items, multiSelect?: Boolean) => {
@@ -948,14 +953,17 @@ export const useFileManagerOperations = ({
       },
 
       handleUploadFiles: (files, selectedFolder) => {
+        const fileMaps: { name: string; path: string }[] = [];
         const handleCloseEdit = () =>
           dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: null });
 
         const formData = new FormData();
         formData.append("path", selectedFolder.path);
         files.forEach((file) => {
+          fileMaps.push({ name: String(file.name), path: String(file.path) });
           formData.append("files", file, file.name);
         });
+        formData.append("fileMaps", JSON.stringify(fileMaps));
 
         apiClient!
           .uploadFile(formData)

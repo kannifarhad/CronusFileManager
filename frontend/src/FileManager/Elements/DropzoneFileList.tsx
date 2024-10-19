@@ -16,7 +16,7 @@ import {
   formatBytes,
 } from "../helpers";
 import { ItemType } from "../types";
-import config from "./config.json";
+import { FILE_EXTENSION_MAP } from "../config";
 import {
   StyledButton,
   StyledDropZoneFileList,
@@ -44,7 +44,7 @@ const FileNode: React.FC<{
             width: "20px",
           }}
           src={getFileExtensionIcon(
-            `.${file?.name?.match(/\.([^.]+)$/)?.[1]}` as keyof typeof config.icons
+            `.${file?.name?.match(/\.([^.]+)$/)?.[1]}` as keyof typeof FILE_EXTENSION_MAP.icons
           )}
         />
       </ListItemIcon>
@@ -111,8 +111,8 @@ const FolderNode: React.FC<{
             }}
             src={
               open
-                ? toAbsoluteUrl(config.icons.folderopen)
-                : toAbsoluteUrl(config.icons.folder)
+                ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen)
+                : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
             }
           />
         </ListItemIcon>

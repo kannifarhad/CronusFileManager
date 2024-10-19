@@ -351,32 +351,71 @@ module.exports = {
   },
 
   async uploadFiles(req, res, next) {
-    let { path } = req.body;
+    let { path, fileMaps } = req.body;
+    let pathMappings = null;
+
+    // Parse fileMaps if provided
+    if (fileMaps) {
+      pathMappings = JSON.parse(fileMaps) ?? [];
+    }
+
+    // Escape the path and ensure it’s valid
     path = escapePathWithErrors(path);
+
+    // Check if files exist
     if (!Array.isArray(req.files) || req.files.length === 0) {
       return next(
         new AppError("No files had been sent or files list is empty", 400)
       );
     }
-    req.files.forEach(function (element, index, array) {
+
+    // Process each file
+    req.files.forEach(async (element, index) => {
       if (checkExtension(nodePath.extname(element.originalname))) {
-        fs.readFile(element.path, function (err, data) {
-          fs.writeFile(
-            `${coreFolder}${path}/${element.originalname}`,
-            data,
-            function (err) {
-              if (err) {
-                return next(new AppError(err.message, 400));
-              }
+        // Read the file from temp storage
+        fs.readFile(element.path, async (err, data) => {
+          if (err) {
+            return next(
+              new AppError(`Error reading file: ${err.message}`, 400)
+            );
+          }
+
+          // Determine relative path and full path
+          const relativePath =
+            pathMappings.find((file) => file?.name === element.originalname)
+              ?.path ?? `/${element.originalname}`;
+
+          // Proper path concatenation
+          const fullPath = nodePath.join(coreFolder, path, relativePath);
+
+          // Ensure the directory exists before writing the file
+          const dir = nodePath.dirname(fullPath);
+          try {
+            await fs.promises.mkdir(dir, { recursive: true }); // Create the directory if not exists
+          } catch (mkdirError) {
+            return next(
+              new AppError(
+                `Error creating directory: ${mkdirError.message}`,
+                400
+              )
+            );
+          }
+
+          // Write the file to the new destination
+          fs.writeFile(fullPath, data, (writeErr) => {
+            if (writeErr) {
+              return next(
+                new AppError(`Error writing file: ${writeErr.message}`, 400)
+              );
             }
-          );
+          });
         });
       }
     });
 
     res.status(200).json({
       status: "success",
-      message: "Files are succesfully uploaded!",
+      message: "Files are successfully uploaded!",
     });
   },
 };
