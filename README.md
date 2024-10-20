@@ -32,7 +32,7 @@ We are excited to announce the upcoming release of our library, which will bring
 - **Theming Support**: ✅
     The library will support theming, allowing developers to customize the appearance to match their application’s look and feel easily.
 
-- **Folder Tree Upload**: 🕑
+- **Folder Tree Upload**: ✅
     You will be able to upload an entire folder tree, including all files and subfolders, making bulk uploads more efficient.
 
 - **Bug Fixes and Performance Improvements**: 🕑

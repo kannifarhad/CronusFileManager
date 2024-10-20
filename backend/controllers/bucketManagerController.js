@@ -723,8 +723,14 @@ class S3Controller {
     try {
       const bucketName = req.headers["bucket-name"];
       const path = req.body.path || ""; // Folder path if any
+      const fileMaps = req.body.fileMaps;
       const files = req.files; // Array of uploaded files from multer
+      let pathMappings = null;
 
+      // Parse fileMaps if provided
+      if (fileMaps) {
+        pathMappings = JSON.parse(fileMaps) ?? [];
+      }
       if (!bucketName || !files || files.length === 0) {
         return res
           .status(400)
@@ -737,9 +743,10 @@ class S3Controller {
 
       // Create an array of promises for each file upload
       const uploadPromises = files.map((file) => {
-        const fullFilePath = `${normalizedPath ? normalizedPath + "/" : ""}${
-          file.originalname
-        }`;
+        const relativePath = pathMappings.find((currFile) => currFile?.name === file.originalname)?.path ?? `/${file.originalname}`;
+        const fullFilePath = `${
+          normalizedPath ? normalizedPath : ""
+        }${relativePath}`;
 
         // Create the S3 PutObjectCommand for each file
         const command = new PutObjectCommand({
