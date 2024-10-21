@@ -10,7 +10,10 @@ const unzipper = require("unzipper");
 const archiver = require("archiver");
 const nodePath = require("path");
 const coreFolder = nodePath.resolve(__dirname + "/../");
-const dirTree = require("../utilits/directory-tree");
+const {
+  directoryTree,
+  searchDirectoryTree,
+} = require("../utilits/directory-tree");
 const {
   checkExtension,
   escapePathWithErrors,
@@ -24,7 +27,7 @@ const fsExtra = require("fs-extra");
 module.exports = {
   async folderTree(req, res, next) {
     const { path } = req.body;
-    const paths = dirTree(normaLisedPath(path), {
+    const paths = await directoryTree(normaLisedPath(path), {
       normalizePath: true,
       removePath: coreFolder,
       withChildren: true,
@@ -33,7 +36,7 @@ module.exports = {
   },
   async folderInfo(req, res, next) {
     const { path } = req.body;
-    const paths = dirTree(normaLisedPath(path), {
+    const paths = await directoryTree(normaLisedPath(path), {
       normalizePath: true,
       removePath: coreFolder,
       includeFiles: true,
@@ -42,13 +45,24 @@ module.exports = {
   },
   async all(req, res, next) {
     const { path } = req.body;
-    const paths = dirTree(normaLisedPath(path), {
+    const paths = await directoryTree(normaLisedPath(path), {
       normalizePath: true,
       removePath: coreFolder,
       includeFiles: true,
       withChildren: true,
     });
     res.status(200).send(paths);
+  },
+
+  async search(req, res, next) {
+    const { text } = req.body;
+    const results = await searchDirectoryTree(normaLisedPath(), text, {
+      normalizePath: true,
+      removePath: coreFolder,
+      includeFiles: true,
+      withChildren: true,
+    });
+    res.status(200).send(results);
   },
 
   async rename(req, res, next) {

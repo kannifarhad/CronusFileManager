@@ -38,7 +38,7 @@ We are excited to announce the upcoming release of our library, which will bring
 - **Bug Fixes and Performance Improvements**: 🕑
     We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
 
-- **Search**: 🔜
+- **Search**: 🕑
     Implementation of searching folders and files inside selected disk volume
 
 - **Trash Box**: 🔜
