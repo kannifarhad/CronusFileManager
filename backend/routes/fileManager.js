@@ -42,6 +42,7 @@ router.post("/unzip", catchAsync(fileManagerController.unzip));
 router.post("/archive", catchAsync(fileManagerController.archive));
 router.post("/duplicate", catchAsync(fileManagerController.duplicate));
 router.post("/saveimage", catchAsync(fileManagerController.saveImage));
+router.post("/search", catchAsync(fileManagerController.search));
 router.post(
   "/upload",
   upload.any(),
