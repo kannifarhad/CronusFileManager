@@ -26,6 +26,7 @@ import {
   GetFoldersListResponse,
   GetFilesListResponse,
   IServerConnection,
+  SearchParams,
 } from "./types";
 import { FolderList, ItemType, S3BucketInstance, FileType } from "../types";
 
@@ -504,6 +505,12 @@ class S3Connection extends IServerConnection {
 
     // Wait for all copy operations to complete
     await Promise.all(copyPromises);
+  }
+
+  async search({ path, text }: SearchParams): Promise<any> {
+    throw new Error(
+      `search files is not supported directly by S3. ${this.bucketName}`
+    );
   }
 
   // Method to unzip a file (you'd likely need a third-party library to handle actual unzipping)

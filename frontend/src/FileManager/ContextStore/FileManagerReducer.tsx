@@ -81,6 +81,35 @@ export const fileManagerReducer = (
         loading: loading !== undefined ? loading : state.loading,
       };
     }
+
+    case ActionTypes.SET_SEARCH_RESULTS: {
+      const { result, text } = action.payload;
+      let filesList = Array.isArray(result) ? result : [];
+      filesList = sortFilter(filesList, state.settings.orderFiles);
+      // let newfoldersList = state.foldersList;
+      // if (
+      //   state.selectedVolume?.type === VolumeTypes.S3BUCKET_FRONT &&
+      //   state.selectedFolder?.path !== "/"
+      // ) {
+      //   const newFolders: FolderType[] = filesList.filter(
+      //     (item) => item.type === ItemType.FOLDER
+      //   );
+      //   if (newFolders.length > 0) {
+      //     newfoldersList = addFoldersToTree(state.foldersList, newFolders);
+      //   }
+      // }
+      return {
+        ...state,
+        filesList,
+        selectedFiles: new Set([]),
+        selectedFolder: null,
+        search: {
+          prevSelectedFolder:
+            state.selectedFolder || state.search.prevSelectedFolder,
+          text,
+        },
+      };
+    }
     case ActionTypes.SET_MESSAGES:
       return { ...state, messages: [...state.messages, action.payload] };
 

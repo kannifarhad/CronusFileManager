@@ -12,6 +12,7 @@ import {
   GetFoldersListResponse,
   GetFilesListResponse,
   IServerConnection,
+  SearchParams,
 } from "./types";
 
 class S3ServerConnection extends IServerConnection {
@@ -60,6 +61,12 @@ class S3ServerConnection extends IServerConnection {
     return this.axiosInstance
       .post("folder", { path })
       .then((response) => response.data?.children);
+  }
+
+  async search({ path, text }: SearchParams): Promise<any> {
+    return this.axiosInstance
+      .post("search", { path, text })
+      .then((response) => response.data);
   }
 
   async copyFilesToFolder({

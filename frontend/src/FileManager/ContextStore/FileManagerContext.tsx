@@ -23,7 +23,7 @@ const settingsInitalState = {
     orderBy: SortByFieldEnum.ASC,
   },
 };
-export const initialState = {
+export const initialState: FileManagerState = {
   selectedFiles: new Set([]),
   bufferedItems: { files: new Set([]), type: null },
   contextMenu: null,
@@ -44,6 +44,10 @@ export const initialState = {
     ...readJsonFromLocalStorage<FileManagerState["settings"]>(
       LOCASTORAGE_SETTINGS_KEY
     ),
+  },
+  search: {
+    text: null,
+    prevSelectedFolder: null,
   },
 };
 
