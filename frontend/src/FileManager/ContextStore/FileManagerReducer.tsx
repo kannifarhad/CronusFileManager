@@ -31,6 +31,7 @@ export const fileManagerReducer = (
         ...state,
         selectedFolder: folder,
         loading: loading !== undefined ? loading : state.loading,
+        search: initialState.search,
       };
 
       if (!history) {
@@ -102,6 +103,7 @@ export const fileManagerReducer = (
         ...state,
         filesList,
         selectedFiles: new Set([]),
+        loading: false,
         selectedFolder: null,
         search: {
           prevSelectedFolder:

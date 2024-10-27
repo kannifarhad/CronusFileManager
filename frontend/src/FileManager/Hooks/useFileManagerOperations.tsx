@@ -78,6 +78,10 @@ export const useFileManagerOperations = ({
       },
 
       handleSearchItems: (text: string, path?: string) => {
+        dispatch({
+          type: ActionTypes.SET_LOADING,
+          payload: true,
+        });
         apiClient!.search({ text, path }).then((result) => {
           dispatch({
             type: ActionTypes.SET_SEARCH_RESULTS,

@@ -13,6 +13,7 @@ import ListItemRender from "./ListItemRender";
 import { StyledListTable, StyledEmptyFolderContainer } from "../styled";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 import { Items } from "../../../types";
+import useText from "../../../Hooks/useTexts";
 
 export const ROW_HEIGHT = 50;
 
@@ -20,9 +21,12 @@ const ListView: React.FC<{}> = () => {
   const {
     filesList,
     selectedFiles,
+    search,
     operations: { handleDragEnd },
   } = useFileManagerState();
   const [activeItem, setActiveItem] = useState<Items | null>(null);
+  const texts = useText();
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5, delay: 200 },
@@ -54,9 +58,16 @@ const ListView: React.FC<{}> = () => {
   };
 
   if (filesList.length === 0) {
+    if (search.text) {
+      return (
+        <StyledEmptyFolderContainer>
+          <h6>{texts.noResults}</h6>
+        </StyledEmptyFolderContainer>
+      );
+    }
     return (
       <StyledEmptyFolderContainer>
-        <h6>The folder is empty!</h6>
+        <h6>{texts.emptyFolder}</h6>
       </StyledEmptyFolderContainer>
     );
   }
@@ -78,9 +89,11 @@ const ListView: React.FC<{}> = () => {
           <Box className="tableHead">
             <Box style={{ width: "45px" }} />
             <Box style={{ width: "35px" }} />
-            <Box>Name</Box>
-            <Box style={{ width: "100px", marginLeft: "auto" }}>Size</Box>
-            <Box style={{ width: "165px" }}>Created</Box>
+            <Box>{texts.name}</Box>
+            <Box style={{ width: "100px", marginLeft: "auto" }}>
+              {texts.size}
+            </Box>
+            <Box style={{ width: "165px" }}>{texts.created}</Box>
           </Box>
 
           <Box style={{ height: "100%", width: "100%" }}>
