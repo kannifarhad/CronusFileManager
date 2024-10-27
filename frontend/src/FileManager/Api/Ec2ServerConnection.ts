@@ -12,6 +12,7 @@ import {
   GetFoldersListResponse,
   GetFilesListResponse,
   IServerConnection,
+  SearchParams,
 } from "./types";
 
 class Ec2ServerConnection extends IServerConnection {
@@ -77,6 +78,12 @@ class Ec2ServerConnection extends IServerConnection {
   }: PasteFilesParams): Promise<any> {
     return this.axiosInstance
       .post("copy", { items, destination })
+      .then((response) => response.data);
+  }
+
+  async search({ path, text }: SearchParams): Promise<any> {
+    return this.axiosInstance
+      .post("search", { path, text })
       .then((response) => response.data);
   }
 

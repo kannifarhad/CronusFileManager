@@ -37,6 +37,11 @@ export interface UnzipParams {
   destination: string;
 }
 
+export interface SearchParams {
+  text: string;
+  path?: string;
+}
+
 export interface ArchiveParams {
   files: string[];
   destination: string;
@@ -99,6 +104,8 @@ export abstract class IServerConnection {
   abstract uploadFile(body: any): Promise<any>;
 
   abstract downloadFile(params: PathParam): void;
+
+  abstract search(params: SearchParams): Promise<any>;
 
   abstract getThumb(filePath: string): string;
 }

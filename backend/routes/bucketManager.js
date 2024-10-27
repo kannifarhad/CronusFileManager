@@ -60,6 +60,7 @@ router.post("/unzip", catchAsync(s3Controller.unzipFile.bind(s3Controller)));
 router.post("/archive", catchAsync(s3Controller.archive.bind(s3Controller)));
 router.get("/thumb/*", catchAsync(s3Controller.getThumb.bind(s3Controller)));
 router.post("/getlink", catchAsync(s3Controller.getLink.bind(s3Controller)));
+router.post("/search", catchAsync(s3Controller.search.bind(s3Controller)));
 router.post(
   "/saveimage",
   catchAsync(s3Controller.saveImage.bind(s3Controller))

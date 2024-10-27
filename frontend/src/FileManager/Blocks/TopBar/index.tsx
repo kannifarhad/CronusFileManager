@@ -1,7 +1,8 @@
 import React, { memo, useRef, useMemo, useCallback } from "react";
-import { Grid } from "@mui/material";
+import { Grid2 as Grid } from "@mui/material";
 import TopBarButtonGroups from "./TopBarButtonGroups";
-import TopBarRightMenus, { SettingsMenuEnum } from "./TopBarRightMenus";
+import TopBarRightMenus from "./TopBarRightMenus";
+import { SettingsMenuEnum } from "./Settings/constants";
 import { TopBarWrapper } from "./styled";
 import { Button } from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
@@ -31,20 +32,26 @@ const TopBar: React.FC<{}> = () => {
   const additionalButtons: Button[] = useMemo(
     () => [
       {
+        title: "Search",
+        icon: "Search",
+        onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SEARCH),
+        disabled: !state.selectedVolume,
+      },
+      {
         title: "Settings",
         icon: "settings",
         onClick: (e) => handleOpenMenu(e, SettingsMenuEnum.SETTINGS),
         disabled: false,
       },
     ],
-    [handleOpenMenu]
+    [handleOpenMenu, state.selectedVolume]
   );
 
   return (
     <TopBarWrapper container>
       {topbar.map((groups, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <Grid item key={index}>
+        <Grid key={index}>
           <TopBarButtonGroups buttons={groups} />
         </Grid>
       ))}

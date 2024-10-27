@@ -1,7 +1,16 @@
 import { useMemo } from "react";
+import en from "../Assets/Translations/en";
 
-export const useText = (props: any) => {
-  const allTexts = useMemo(() => ({ ...props }), [props]);
+const lang = "en";
+export const useText = () => {
+  const allTexts = useMemo(() => {
+    switch (lang) {
+      case "en":
+        return en;
+      default:
+        return en;
+    }
+  }, []);
   return allTexts;
 };
 

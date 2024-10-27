@@ -76,6 +76,19 @@ export const useFileManagerOperations = ({
           selectItemCallback(path);
         }
       },
+
+      handleSearchItems: (text: string, path?: string) => {
+        apiClient!.search({ text, path }).then((result) => {
+          dispatch({
+            type: ActionTypes.SET_SEARCH_RESULTS,
+            payload: {
+              text,
+              result,
+            },
+          });
+        });
+      },
+
       handleSelectTheme: (theme: string) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_THEME,

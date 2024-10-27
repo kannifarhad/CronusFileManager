@@ -96,6 +96,7 @@ export enum ActionTypes {
   TOGGLE_UPLOAD_POPUP = "TOGGLE_UPLOAD_POPUP",
   SET_SELECTED_VOLUME = "SET_SELECTED_VOLUME",
   SET_SELECTED_THEME = "SET_SELECTED_THEME",
+  SET_SEARCH_RESULTS = "SET_SEARCH_RESULTS",
 }
 
 // Define interfaces and types
@@ -185,6 +186,10 @@ export interface FileManagerState {
     showImages: ImagesThumbTypeEnum;
     orderFiles: OrderByType;
   };
+  search: {
+    text: string | null;
+    prevSelectedFolder: FolderList | null;
+  };
 }
 
 export interface FileManagerAction {
@@ -270,6 +275,7 @@ export interface Operations {
   handlingHistory: (historyInfo: HistoryStep, index: number) => void;
   handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
   handleSelectCallback: (path: string) => void;
+  handleSearchItems: (text: string, path?: string) => void;
   handleInitFileManagerData: () => void;
   handleSelectTheme: (theme: string) => void;
   handleGetThumb: (file: FileType) => string | undefined;

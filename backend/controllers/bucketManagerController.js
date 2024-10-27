@@ -743,7 +743,9 @@ class S3Controller {
 
       // Create an array of promises for each file upload
       const uploadPromises = files.map((file) => {
-        const relativePath = pathMappings.find((currFile) => currFile?.name === file.originalname)?.path ?? `/${file.originalname}`;
+        const relativePath =
+          pathMappings.find((currFile) => currFile?.name === file.originalname)
+            ?.path ?? `/${file.originalname}`;
         const fullFilePath = `${
           normalizedPath ? normalizedPath : ""
         }${relativePath}`;
@@ -1005,6 +1007,52 @@ class S3Controller {
     } catch (err) {
       // Handle any errors that occur during the upload
       return next(new AppError("Error while uploading file to S3", 400));
+    }
+  }
+
+  async search(req, res, next) {
+    const bucketName = req.headers["bucket-name"];
+    const { text, path = "" } = req.body;
+    const searchResults = [];
+    let continuationToken = null;
+
+    // // Ensure bucket name exists in the headers
+    // if (!bucketName) {
+    //   return res
+    //     .status(400)
+    //     .send({ error: "Bucket name is required in headers" });
+    // }
+    // this.bucketName = bucketName;
+
+    try {
+      // List all objects in the bucket (or within the specified path) in a paginated way
+      do {
+        const params = {
+          Bucket: this.bucketName,
+          Prefix: path, // Restrict the search to the given path if provided
+          ContinuationToken: continuationToken, // For paginated results
+        };
+        const folderTree = await this.getFolderTree(this.bucketName, path);
+        // Use the ListObjectsV2Command
+        const command = new ListObjectsV2Command(params);
+        const response = await this.s3Client.send(command);
+
+        // Filter objects whose filenames (not full paths) include the searchText
+        const matchingItems = response.Contents.filter((item) => {
+          const fileName = item.Key.split("/").pop(); // Extract the filename from the key
+          return fileName.toLowerCase().includes(text.toLowerCase());
+        });
+
+        searchResults.push(...matchingItems);
+        continuationToken = response.IsTruncated
+          ? response.NextContinuationToken
+          : null;
+      } while (continuationToken);
+
+      res.status(200).json(searchResults);
+    } catch (error) {
+      console.error("Error searching S3 bucket:", error);
+      throw new Error("Error searching the S3 bucket");
     }
   }
 }
