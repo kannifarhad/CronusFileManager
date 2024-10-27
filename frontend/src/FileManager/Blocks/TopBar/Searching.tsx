@@ -17,15 +17,21 @@ import useText from "../../Hooks/useTexts";
 
 const Searching = () => {
   const [name, setName] = React.useState("");
-  const [searchLocation, setSearchLocation] = useState<string | null>(null);
+  const [searchEveryWhere, setSearchEveryWhere] = useState<boolean>(true);
   const {
-    // search,
-    // selectedFolder
+    selectedFolder,
     operations: { handleSearchItems },
   } = useFileManagerState();
   const texts = useText();
 
-  const disabled = !(name.length > 3);
+  const handleSearch = () => {
+    const path = searchEveryWhere ? undefined : selectedFolder?.path;
+    if (name.length > 2) {
+      handleSearchItems(name, path);
+    }
+  };
+  const disabled = !(name.length > 2);
+
   return (
     <Box sx={{ marginTop: "10px" }}>
       <FormControl
@@ -55,7 +61,7 @@ const Searching = () => {
               type="button"
               sx={{ p: "10px" }}
               aria-label="search"
-              onClick={() => handleSearchItems(name)}
+              onClick={handleSearch}
             >
               <Icon
                 name="Search"
@@ -74,19 +80,17 @@ const Searching = () => {
         <Grid container sx={{ marginTop: "5px" }} spacing={1}>
           <Grid>
             <StyledTopBarMenuItem
-              selected={!searchLocation}
-              onClick={() => setSearchLocation(null)}
+              selected={searchEveryWhere}
+              onClick={() => {
+                setSearchEveryWhere(true);
+                handleSearch();
+              }}
               sx={{ paddingRight: "9px" }}
             >
               <FormControlLabel
-                value="EVERYWHERE"
+                checked={searchEveryWhere}
                 control={
-                  <Radio
-                    name="imageViewOption"
-                    checked={!searchLocation}
-                    value="EVERYWHERE"
-                    sx={{ padding: "4px 9px" }}
-                  />
+                  <Radio name={texts.everywhere} sx={{ padding: "4px 9px" }} />
                 }
                 label={
                   <span style={{ fontSize: "11px" }}>{texts.everywhere}</span>
@@ -96,18 +100,19 @@ const Searching = () => {
           </Grid>
           <Grid>
             <StyledTopBarMenuItem
-              selected={Boolean(searchLocation)}
-              onClick={() => setSearchLocation("here")}
+              selected={!searchEveryWhere}
+              onClick={() => {
+                setSearchEveryWhere(false);
+                handleSearch();
+              }}
               sx={{ paddingRight: "9px", fontSize: "11px" }}
             >
               <FormControlLabel
-                value="EVERYWHERE"
+                checked={!searchEveryWhere}
                 control={
                   <Radio
                     sx={{ padding: "4px 9px" }}
-                    name="imageViewOption"
-                    checked={Boolean(searchLocation)}
-                    value="EVERYWHERE"
+                    name={texts.onSelectedFolder}
                   />
                 }
                 label={

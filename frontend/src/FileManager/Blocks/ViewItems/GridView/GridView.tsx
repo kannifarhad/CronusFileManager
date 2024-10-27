@@ -11,12 +11,14 @@ import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 import { Items } from "../../../types";
 import DraggedElementsStack from "./DraggedElementsStack";
 import VirtualizedGrid from "./VirtualizedGrid";
+import useText from "../../../Hooks/useTexts";
 
 export const ITEM_SIZE = 100;
 
 const GridView = () => {
   const {
     filesList,
+    search,
     selectedFiles,
     operations: { handleDragEnd },
   } = useFileManagerState();
@@ -26,6 +28,7 @@ const GridView = () => {
       activationConstraint: { distance: 5, delay: 200 },
     })
   );
+  const texts = useText();
 
   const handleDragStart = useCallback((event: any) => {
     setActiveItem(event.active.data.current);
@@ -46,9 +49,16 @@ const GridView = () => {
   );
 
   if (filesList.length === 0) {
+    if (search.text) {
+      return (
+        <StyledEmptyFolderContainer>
+          <h6>{texts.noResults}</h6>
+        </StyledEmptyFolderContainer>
+      );
+    }
     return (
       <StyledEmptyFolderContainer>
-        <h6>The folder is empty!</h6>
+        <h6>{texts.emptyFolder}</h6>
       </StyledEmptyFolderContainer>
     );
   }
