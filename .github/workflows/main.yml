@@ -1,0 +1,63 @@
+name: CI Workflow
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'frontend') || contains(github.event.head_commit.message, 'frontend/**')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: './frontend/.nvmrc'
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      # - name: Run React tests
+      #   working-directory: frontend
+      #   run: npm test -- --watchAll=false
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'backend') || contains(github.event.head_commit.message, 'backend/**')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: './backend/.nvmrc'
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      # - name: Run Backend Tests
+      #   working-directory: backend
+      #   run: npm test
+
+      - name: Start Server and Verify
+        working-directory: backend
+        run: |
+          npm start &
+          sleep 10
+          curl -I http://localhost:3000
