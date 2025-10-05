@@ -1,13 +1,118 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta charset="utf-8" />
+    <title>Cronus File Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cronus-file-manager</title>
+    <link rel="icon" type="image/x-icon" href="img/logos/darkIcon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" id="layout-styles-anchor" href="css/styles.css" />
+    <link rel="stylesheet" id="layout-styles-anchor" href="css/demo.css" />
+    <script type="module" src="/src/main.tsx"></script>
   </head>
   <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <article class="demo-content" itemprop="text">
+      <p><img height="100px" src="/img/logos/lightLogo.svg" /></p>
+      <h1>Cronus File Manager</h1>
+
+      <p>Filemanager with React &amp; Nodejs</p>
+      <h4>Used technologies</h4>
+      <p>React, Redux, Material UI, Nodejs, ExpressJs</p>
+      <h4>Basic usage</h4>
+      <p>React, Redux, Material UI, Nodejs, ExpressJs</p>
+      <p>
+        Plugin has two parts: Front-end &amp; Back-end. For initialising file manager you have to install and run both
+        of them from terminal with commands
+      </p>
+      <div class="highlight highlight-source-shell">
+        <pre>
+          npm install
+          npm run start
+        </pre>
+      </div>
+      <h4>Design</h4>
+      <p><img src="http://api.kanni.pro/uploads/projects/filemanager/demo.gif" /></p>
+
+      <h4>Requirements</h4>
+      <ul>
+        <li>NodeJs min. ver 11.x.</li>
+        <li>NPM min. ver 6.x.</li>
+      </ul>
+
+      <h4>Functionality</h4>
+      <ul>
+        <li>Expandable folder tree view</li>
+        <li>List view or Grid view of files and folders</li>
+        <li>Thumb or Icon view of files</li>
+        <li>Expand file manager to full window and minimize</li>
+        <li>Reload files and folders list</li>
+        <li>Drag &amp; Drop to move files and folders</li>
+        <li>Right click (context click) on files and folder</li>
+        <li>Selecting items: Select all, Deselect all, Inverse selected, Select by click</li>
+        <li>Sorting items: By date, size, name (ascending, descending)</li>
+        <li>Go Back, Foward, Parent Folder</li>
+        <li>Copy files and folders</li>
+        <li>Move files and folders</li>
+        <li>Add new file and folder</li>
+        <li>Duplicate file and folder</li>
+        <li>Empty current folder</li>
+        <li>Delete selected files and folders</li>
+        <li>Upload files by select or Drag &amp; Drop</li>
+        <li>Rename selected file or folder</li>
+        <li>Zip - archive selected files</li>
+        <li>Unzip - unarchive file</li>
+        <li>Get file info</li>
+        <li>Download file</li>
+        <li>Preview file</li>
+        <li>Return file path with callback</li>
+        <li>
+          Fully Image editor -
+          <a href="https://ui.toast.com/tui-image-editor/" rel="nofollow">Integrated TOAST UI Image Editor</a>
+        </li>
+        <li>Localisation texts of plugin</li>
+      </ul>
+
+      <h4>Future changes</h4>
+      <ul>
+        <li>Refactoring of codes</li>
+        <li>Adding comments for better understanding to modify</li>
+      </ul>
+
+      <h4><a href="https://github.com/kannifarhad/CronusFileManager" rel="nofollow">Guthub Repository</a></h4>
+      <div class="lisence">
+        <p><strong>MIT License</strong></p>
+
+        <p>Copyright (c) 2020 Farhad Aliyev</p>
+
+        <p>Selling this software is prohibited. Any violation of this contract will be prosecuted.</p>
+
+        <p>
+          Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+          documentation files (the "Software"), to deal in the Software without restriction, including without
+          limitation the rights to use, copy, modify, merge, publish, distribute and to permit persons to whom the
+          Software is furnished to do so, subject to the following conditions:
+        </p>
+
+        <p>
+          The above copyright notice and this permission notice shall be included in all copies or substantial portions
+          of the Software.
+        </p>
+
+        <p>
+          THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+          TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+          THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+          CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+          DEALINGS IN THE SOFTWARE.
+        </p>
+      </div>
+    </article>
   </body>
 </html>
