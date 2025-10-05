@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import { ListItemText, Collapse, ListItemIcon, ListItemSecondaryAction, Chip, useTheme } from "@mui/material";
-import {
-  type DroppedFile,
-  type DroppedFolder,
-  type DroppedFilesTree,
-  toAbsoluteUrl,
-  getFileExtensionIcon,
-  formatBytes,
-} from "../helpers";
+import { type DroppedFile, type DroppedFolder, type DroppedFilesTree, getFileIcon, formatBytes } from "../helpers";
 import { ItemType } from "../types";
-import { FILE_EXTENSION_MAP } from "../config";
 import { StyledButton, StyledDropZoneFileList, StyledDropZoneFileListItem } from "./styled";
 import Icon from "./Icon";
+import ContentIcons from "./ContentIcons";
 
 interface FileTreeProps {
   tree: DroppedFilesTree;
@@ -27,15 +20,7 @@ const FileNode: React.FC<{
   return (
     <StyledDropZoneFileListItem>
       <ListItemIcon style={{ minWidth: "30px" }}>
-        <img
-          alt={file.name}
-          style={{
-            width: "20px",
-          }}
-          src={getFileExtensionIcon(
-            `.${file?.name?.match(/\.([^.]+)$/)?.[1]}` as keyof typeof FILE_EXTENSION_MAP.icons
-          )}
-        />
+        <ContentIcons name={getFileIcon(`.${file?.name?.match(/\.([^.]+)$/)?.[1]}`)} />
       </ListItemIcon>
       <ListItemText
         primary={
@@ -90,15 +75,7 @@ const FolderNode: React.FC<{
     <>
       <StyledDropZoneFileListItem onClick={handleToggle} style={{ cursor: "pointer" }}>
         <ListItemIcon style={{ minWidth: "30px" }}>
-          <img
-            alt={folder.name}
-            style={{
-              width: "20px",
-            }}
-            src={
-              open ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen) : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
-            }
-          />
+          <ContentIcons name={open ? "folderopen" : "folder"} size={20} />
         </ListItemIcon>
         <ListItemText primary={folder.name} />
         <ListItemSecondaryAction>

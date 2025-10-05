@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
-import { resolve } from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -22,13 +21,6 @@ export default defineConfig({
     port: 3000, // Default Vite port
     fs: {
       strict: false, // Allow history-based routing
-    },
-  },
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, "public/index.html"),
-      },
     },
   },
 });

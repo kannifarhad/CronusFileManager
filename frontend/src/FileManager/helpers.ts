@@ -142,17 +142,10 @@ export const checkSelectedFileType = (type: ItemExtensionCategoryFilter, selecte
   }
 };
 
-export const toAbsoluteUrl = (pathname: string) => import.meta.env.PUBLIC_URL + pathname;
-
-export const getFileExtensionIcon = (extension: keyof typeof FILE_EXTENSION_MAP.icons) => {
-  const extensionIconPath = FILE_EXTENSION_MAP.icons[extension] || FILE_EXTENSION_MAP.icons.broken;
-  return toAbsoluteUrl(extensionIconPath);
-};
-
-export const getFileIcon = (item: FileType): ContentIconType => {
+export const getFileIcon = (extension: string): ContentIconType => {
   try {
-    const extension = item.extension as keyof typeof FILE_EXTENSION_MAP.icons;
-    return (FILE_EXTENSION_MAP.icons[extension] || FILE_EXTENSION_MAP.icons.broken) as ContentIconType;
+    const fileextension = extension as keyof typeof FILE_EXTENSION_MAP.icons;
+    return (FILE_EXTENSION_MAP.icons[fileextension] || FILE_EXTENSION_MAP.icons.broken) as ContentIconType;
   } catch (error) {
     return FILE_EXTENSION_MAP.icons.broken as ContentIconType;
   }

@@ -1,6 +1,4 @@
-/* eslint-disable react/no-unused-class-component-methods */
-/* eslint-disable react/sort-comp */
-import React, { Component, createRef, type RefObject } from "react";
+import { Component, createRef, type RefObject } from "react";
 import TuiImageEditor from "tui-image-editor";
 
 interface ImageEditorProps {

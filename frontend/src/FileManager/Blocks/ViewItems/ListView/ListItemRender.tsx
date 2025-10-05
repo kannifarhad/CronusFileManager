@@ -1,6 +1,4 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react/require-default-props */
-import React, { memo } from "react";
+import { memo } from "react";
 import FolderItem from "./ListFolderItem";
 import FileItem from "./ListFileItem";
 import { type Items, ItemType } from "../../../types";

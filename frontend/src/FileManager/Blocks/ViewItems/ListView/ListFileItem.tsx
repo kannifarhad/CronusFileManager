@@ -5,6 +5,7 @@ import { StyledListTableCell, StyledListTableRow } from "../styled";
 import { convertDate, formatBytes, getFileIcon, classNames } from "../../../helpers";
 import { type FileType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../types";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
+import ContentIcons from "../../../Elements/ContentIcons";
 
 const ListFileItem: React.FC<{
   item: FileType;
@@ -57,7 +58,7 @@ const ListFileItem: React.FC<{
         <Checkbox checked={isSelected} onChange={() => handleAddSelected(item)} value={item.id} />
       </StyledListTableCell>
       <StyledListTableCell style={{ width: "40px" }}>
-        <img alt={item.name} style={{ width: "20px", maxHeight: "30px" }} src={getFileIcon(item)} />
+        <ContentIcons name={getFileIcon(item.extension)} />
       </StyledListTableCell>
       <StyledListTableCell style={{ flexGrow: 1 }}>{item.name}</StyledListTableCell>
       <StyledListTableCell style={{ width: "100px" }}>{formatBytes(item.size)}</StyledListTableCell>

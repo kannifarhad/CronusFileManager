@@ -1,6 +1,5 @@
 import { styled } from "@mui/material/styles";
 import { Box, Checkbox } from "@mui/material";
-import { minHeight, minWidth, width } from "@mui/system";
 
 const ITEM_HEIGHT = 50;
 
@@ -76,13 +75,15 @@ export const StyledSelectCheckbox = styled(Checkbox)(({ checked }) => ({
   left: "0px",
   padding: "0px",
   display: checked ? "block" : "none",
+  background: "#ffffffa9 !important",
+  height: "24px",
+  borderRadius: "3px",
 }));
 
 export const StyledListTable = styled(Box)(({}) => ({
   padding: "0px",
   "& .tableHead": {
     width: "100%",
-    borderRadius: "5px 5px 0px 0px",
     display: "flex",
     background: "#0492f2",
     color: "#fff",
@@ -101,6 +102,15 @@ export const StyledListTableCell = styled(Box)(({}) => ({
   display: "flex",
   alignItems: "center",
   fontSize: "14px",
+  "& .content-icon": {
+    width: "20px",
+    height: "20px",
+    objectFit: "contain",
+    // maxWidth: "50px",
+    maxHeight: "30px",
+    margin: "0px auto",
+    display: "block",
+  },
 }));
 
 export const StyledListTableRow = styled(Box)(({}) => ({
@@ -110,10 +120,11 @@ export const StyledListTableRow = styled(Box)(({}) => ({
   alignItems: "center",
   width: "100%",
   borderBottom: "1px solid #ccc",
-  "&:hover td, &.selectmodeTable td": {
+  "&:hover, &.selectmodeTable": {
     background: "#f1f1f1",
+    cursor: "pointer",
   },
-  "&.selected td": {
+  "&.selected": {
     background: "#e0f0fb",
   },
 }));

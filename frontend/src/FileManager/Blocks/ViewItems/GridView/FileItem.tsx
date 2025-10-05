@@ -49,9 +49,9 @@ const FileItem: React.FC<{
         ) {
           return <img alt={item.name} src={handleGetThumb(fileItem) as unknown as string} />;
         }
-        return <ContentIcons name={getFileIcon(fileItem)} />;
+        return <ContentIcons name={getFileIcon(fileItem.extension)} />;
       } catch (error) {
-        return <ContentIcons name={getFileIcon(fileItem)} />;
+        return <ContentIcons name={getFileIcon(fileItem.extension)} />;
       }
     },
     [handleGetThumb, settings.showImages]
