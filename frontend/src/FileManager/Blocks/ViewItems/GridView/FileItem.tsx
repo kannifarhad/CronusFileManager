@@ -3,20 +3,11 @@ import { Tooltip } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
 import { classNames, getFileIcon } from "../../../helpers";
 import ItemSelectButton from "./ItemSelectButton";
-import {
-  StyledFileItem,
-  StyledItemExtension,
-  StyledItemTitle,
-  StyledItemInfoBox,
-} from "../styled";
+import { StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox } from "../styled";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
-import {
-  type FileType,
-  ItemMoveActionTypeEnum,
-  ContextMenuTypeEnum,
-  ImagesThumbTypeEnum,
-} from "../../../types";
+import { type FileType, ItemMoveActionTypeEnum, ContextMenuTypeEnum, ImagesThumbTypeEnum } from "../../../types";
 import { FILE_EXTENSION_MAP } from "../../../config";
+import ContentIcons from "../../../Elements/ContentIcons";
 
 const FileItem: React.FC<{
   item: FileType;
@@ -45,9 +36,7 @@ const FileItem: React.FC<{
   );
 
   const isCuted = useMemo(
-    () =>
-      bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
-      bufferedItems.files.has(item),
+    () => bufferedItems.type === ItemMoveActionTypeEnum.CUT && bufferedItems.files.has(item),
     [item, bufferedItems]
   );
 
@@ -58,11 +47,11 @@ const FileItem: React.FC<{
           settings.showImages === ImagesThumbTypeEnum.THUMB &&
           FILE_EXTENSION_MAP.imageFiles.includes(fileItem.extension)
         ) {
-          return handleGetThumb(fileItem);
+          return <img alt={item.name} src={handleGetThumb(fileItem) as unknown as string} />;
         }
-        return getFileIcon(fileItem);
+        return <ContentIcons name={getFileIcon(fileItem)} />;
       } catch (error) {
-        return getFileIcon(fileItem);
+        return <ContentIcons name={getFileIcon(fileItem)} />;
       }
     },
     [handleGetThumb, settings.showImages]
@@ -82,7 +71,7 @@ const FileItem: React.FC<{
       <StyledItemExtension>{item.extension}</StyledItemExtension>
 
       <StyledItemInfoBox {...listeners} {...attributes}>
-        <img alt={item.name} src={getImageThumb(item) as unknown as string} />
+        {getImageThumb(item)}
       </StyledItemInfoBox>
       <Tooltip title={item.name}>
         <StyledItemTitle>

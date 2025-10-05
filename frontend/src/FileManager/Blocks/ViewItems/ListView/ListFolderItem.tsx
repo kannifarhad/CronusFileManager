@@ -1,11 +1,11 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { Checkbox } from "@mui/material";
 import { useDroppable, useDraggable } from "@dnd-kit/core";
-import { toAbsoluteUrl, convertDate, formatBytes, classNames } from "../../../helpers";
-import { FILE_EXTENSION_MAP } from "../../../config";
+import { convertDate, formatBytes, classNames } from "../../../helpers";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 import { type FolderType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../types";
 import { StyledListTableCell, StyledListTableRow } from "../styled";
+import ContentIcons from "../../../Elements/ContentIcons";
 
 const ListFolderItem: React.FC<{
   item: FolderType;
@@ -82,13 +82,7 @@ const ListFolderItem: React.FC<{
         <Checkbox checked={isSelected} onChange={() => handleAddSelected(item)} value={item.id} />
       </StyledListTableCell>
       <StyledListTableCell style={{ width: "40px" }}>
-        <img
-          alt={item.name}
-          style={{ width: "20px" }}
-          src={
-            isOver ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen) : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
-          }
-        />
+        <ContentIcons name={isOver ? "folderopen" : "folder"} size={50} />
       </StyledListTableCell>
       <StyledListTableCell style={{ flexGrow: 1 }}>
         <div>{item.name}</div>

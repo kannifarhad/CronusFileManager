@@ -1,4 +1,5 @@
 import { FILE_EXTENSION_MAP } from "./config";
+import type { ContentIconType } from "./Elements/ContentIcons";
 import { OrderByFieldEnum, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "./types";
 import type { FileType, ItemsList, OrderByType, FolderType, FolderList } from "./types";
 
@@ -148,11 +149,12 @@ export const getFileExtensionIcon = (extension: keyof typeof FILE_EXTENSION_MAP.
   return toAbsoluteUrl(extensionIconPath);
 };
 
-export const getFileIcon = (item: FileType) => {
+export const getFileIcon = (item: FileType): ContentIconType => {
   try {
-    return getFileExtensionIcon(item.extension);
+    const extension = item.extension as keyof typeof FILE_EXTENSION_MAP.icons;
+    return (FILE_EXTENSION_MAP.icons[extension] || FILE_EXTENSION_MAP.icons.broken) as ContentIconType;
   } catch (error) {
-    return toAbsoluteUrl(FILE_EXTENSION_MAP.icons.broken);
+    return FILE_EXTENSION_MAP.icons.broken as ContentIconType;
   }
 };
 

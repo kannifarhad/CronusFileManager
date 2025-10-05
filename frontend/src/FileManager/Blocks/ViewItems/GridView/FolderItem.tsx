@@ -3,11 +3,11 @@ import { Tooltip } from "@mui/material";
 import { Box } from "@mui/system";
 import { useDroppable, useDraggable } from "@dnd-kit/core";
 import ItemSelectButton from "./ItemSelectButton";
-import { toAbsoluteUrl, convertDate, classNames } from "../../../helpers";
+import { convertDate, classNames } from "../../../helpers";
 import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from "../styled";
-import { FILE_EXTENSION_MAP } from "../../../config";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 import { type FolderType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../types";
+import ContentIcons from "../../../Elements/ContentIcons";
 
 const FolderItem: React.FC<{
   item: FolderType;
@@ -70,14 +70,7 @@ const FolderItem: React.FC<{
       <Box>
         <ItemSelectButton item={item} />
         <StyledItemInfoBox ref={setDraggableRef} {...listeners} {...attributes}>
-          <img
-            alt={item.name}
-            src={
-              isOver
-                ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen)
-                : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
-            }
-          />
+          <ContentIcons name={isOver ? "folderopen" : "folder"} size={50} />
         </StyledItemInfoBox>
         <Tooltip
           title={

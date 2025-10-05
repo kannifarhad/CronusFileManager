@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
 import { Box, Checkbox } from "@mui/material";
+import { minHeight, minWidth, width } from "@mui/system";
 
 const ITEM_HEIGHT = 50;
 
@@ -156,10 +157,22 @@ export const StyledItemInfoBox = styled(Box)(({}) => ({
   height: "50px",
   overflow: "hidden",
   borderRadius: "3px",
-  "& img": {
-    minWidth: "100%",
-    maxHeight: "50px",
+  "& .content-icon": {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+    // maxWidth: "50px",
+    maxHeight: "48px",
     margin: "0px auto",
     display: "block",
+  },
+  "& img": {
+    minWidth: "50px",
+    minHeight: "50px",
+    margin: "0px auto",
+    display: "block",
+    height: "max-content",
+    width: "-webkit-fill-available",
+    maxWidth: "200%",
   },
 }));

@@ -37,9 +37,6 @@ import Pencil from "./pencil.svg?react";
 import Search from "./loupe.svg?react";
 import Volume from "./vol3.svg?react";
 
-// Define the type for imported SVGs
-type SVGComponent = React.FC<React.SVGProps<SVGSVGElement>>;
-
 // Map of all icon components
 export const iconMap = {
   Information,
