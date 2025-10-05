@@ -1,19 +1,10 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { Checkbox } from "@mui/material";
 import { useDroppable, useDraggable } from "@dnd-kit/core";
-import {
-  toAbsoluteUrl,
-  convertDate,
-  formatBytes,
-  classNames,
-} from "../../../helpers";
+import { toAbsoluteUrl, convertDate, formatBytes, classNames } from "../../../helpers";
 import { FILE_EXTENSION_MAP } from "../../../config";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
-import {
-  FolderType,
-  ItemMoveActionTypeEnum,
-  ContextMenuTypeEnum,
-} from "../../../types";
+import { type FolderType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../types";
 import { StyledListTableCell, StyledListTableRow } from "../styled";
 
 const ListFolderItem: React.FC<{
@@ -61,16 +52,11 @@ const ListFolderItem: React.FC<{
   );
 
   const isCuted = useMemo(
-    () =>
-      bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
-      bufferedItems.files.has(item),
+    () => bufferedItems.type === ItemMoveActionTypeEnum.CUT && bufferedItems.files.has(item),
     [item, bufferedItems]
   );
 
-  const isSelected = useMemo(
-    () => selectedFiles.has(item),
-    [selectedFiles, item]
-  );
+  const isSelected = useMemo(() => selectedFiles.has(item), [selectedFiles, item]);
 
   return (
     <StyledListTableRow
@@ -87,37 +73,27 @@ const ListFolderItem: React.FC<{
         fileCuted: isCuted,
       })}
       onDoubleClick={() => doubleClick(item)}
-      onContextMenu={(event: React.MouseEvent<HTMLTableRowElement>) =>
-        handleContextMenuClick(item, event)
-      }
+      onContextMenu={(event: React.MouseEvent<HTMLTableRowElement>) => handleContextMenuClick(item, event)}
       {...listeners}
       {...attributes}
       style={style}
     >
       <StyledListTableCell style={{ width: "40px" }}>
-        <Checkbox
-          checked={isSelected}
-          onChange={() => handleAddSelected(item)}
-          value={item.id}
-        />
+        <Checkbox checked={isSelected} onChange={() => handleAddSelected(item)} value={item.id} />
       </StyledListTableCell>
       <StyledListTableCell style={{ width: "40px" }}>
         <img
           alt={item.name}
           style={{ width: "20px" }}
           src={
-            isOver
-              ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen)
-              : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
+            isOver ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen) : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
           }
         />
       </StyledListTableCell>
       <StyledListTableCell style={{ flexGrow: 1 }}>
         <div>{item.name}</div>
       </StyledListTableCell>
-      <StyledListTableCell style={{ width: "100px" }}>
-        {formatBytes(item.size)}
-      </StyledListTableCell>
+      <StyledListTableCell style={{ width: "100px" }}>{formatBytes(item.size)}</StyledListTableCell>
       <StyledListTableCell style={{ width: "150px", fontSize: "12px" }}>
         {convertDate(item.created)}
       </StyledListTableCell>

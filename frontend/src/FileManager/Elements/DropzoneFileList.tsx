@@ -1,27 +1,16 @@
 import React, { useState } from "react";
+import { ListItemText, Collapse, ListItemIcon, ListItemSecondaryAction, Chip, useTheme } from "@mui/material";
 import {
-  ListItemText,
-  Collapse,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  Chip,
-  useTheme,
-} from "@mui/material";
-import {
-  DroppedFile,
-  DroppedFolder,
-  DroppedFilesTree,
+  type DroppedFile,
+  type DroppedFolder,
+  type DroppedFilesTree,
   toAbsoluteUrl,
   getFileExtensionIcon,
   formatBytes,
 } from "../helpers";
 import { ItemType } from "../types";
 import { FILE_EXTENSION_MAP } from "../config";
-import {
-  StyledButton,
-  StyledDropZoneFileList,
-  StyledDropZoneFileListItem,
-} from "./styled";
+import { StyledButton, StyledDropZoneFileList, StyledDropZoneFileListItem } from "./styled";
 import Icon from "./Icon";
 
 interface FileTreeProps {
@@ -99,10 +88,7 @@ const FolderNode: React.FC<{
 
   return (
     <>
-      <StyledDropZoneFileListItem
-        onClick={handleToggle}
-        style={{ cursor: "pointer" }}
-      >
+      <StyledDropZoneFileListItem onClick={handleToggle} style={{ cursor: "pointer" }}>
         <ListItemIcon style={{ minWidth: "30px" }}>
           <img
             alt={folder.name}
@@ -110,9 +96,7 @@ const FolderNode: React.FC<{
               width: "20px",
             }}
             src={
-              open
-                ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen)
-                : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
+              open ? toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folderopen) : toAbsoluteUrl(FILE_EXTENSION_MAP.icons.folder)
             }
           />
         </ListItemIcon>
@@ -137,18 +121,9 @@ const FolderNode: React.FC<{
         <StyledDropZoneFileList disablePadding style={{ marginLeft: "10px" }}>
           {folder.children.map((node) => {
             if (node.type === ItemType.FOLDER) {
-              return (
-                <FolderNode
-                  key={node.name}
-                  folder={node}
-                  onRemove={onRemove}
-                  onFileRemove={onFileRemove}
-                />
-              );
+              return <FolderNode key={node.name} folder={node} onRemove={onRemove} onFileRemove={onFileRemove} />;
             }
-            return (
-              <FileNode key={node.name} file={node} onRemove={onFileRemove} />
-            );
+            return <FileNode key={node.name} file={node} onRemove={onFileRemove} />;
           })}
         </StyledDropZoneFileList>
       </Collapse>
@@ -156,23 +131,12 @@ const FolderNode: React.FC<{
   );
 };
 
-const FileTree: React.FC<FileTreeProps> = ({
-  tree,
-  onRemove,
-  onRemoveFolder,
-}) => {
+const FileTree: React.FC<FileTreeProps> = ({ tree, onRemove, onRemoveFolder }) => {
   const theme = useTheme();
   const renderTree = (nodes: DroppedFilesTree) => {
     return nodes.map((node) => {
       if (node.type === ItemType.FOLDER) {
-        return (
-          <FolderNode
-            key={node.name}
-            folder={node}
-            onRemove={onRemoveFolder}
-            onFileRemove={onRemove}
-          />
-        );
+        return <FolderNode key={node.name} folder={node} onRemove={onRemoveFolder} onFileRemove={onRemove} />;
       }
       return <FileNode key={node.name} file={node} onRemove={onRemove} />;
     });

@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from "react";
-import { TextField, TextFieldProps } from "@mui/material";
+import { type ChangeEvent } from "react";
+import { TextField, type TextFieldProps } from "@mui/material";
 
 interface InputFieldProps extends Omit<TextFieldProps, "onChange"> {
   onChange: (value: string) => void;
@@ -12,7 +12,5 @@ export default function InputField(props: InputFieldProps) {
     onChange(event.target.value);
   };
 
-  return (
-    <TextField fullWidth margin="none" onChange={handleChange} {...rest} />
-  );
+  return <TextField fullWidth margin="none" onChange={handleChange} {...rest} />;
 }

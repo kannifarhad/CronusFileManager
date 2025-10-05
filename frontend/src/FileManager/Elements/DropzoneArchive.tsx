@@ -1,5 +1,4 @@
-/*eslint-disable*/
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList from "./ButtonGroupSimple";
 import { formatBytes } from "../helpers";
@@ -19,10 +18,7 @@ export default function UploadFiles() {
   } = useFileManagerState();
   const handleCancel = () => {};
 
-  const traverseFileTree = async (
-    item: any,
-    path: string = "",
-  ): Promise<FileWithPreview[]> =>
+  const traverseFileTree = async (item: any, path: string = ""): Promise<FileWithPreview[]> =>
     new Promise((resolve, reject) => {
       if (item.isFile) {
         item.file((file: File) => {
@@ -37,9 +33,7 @@ export default function UploadFiles() {
       } else if (item.isDirectory) {
         const dirReader = item.createReader();
         dirReader.readEntries(async (entries: any[]) => {
-          const promises = entries.map((entry) =>
-            traverseFileTree(entry, `${path + item.name}/`),
-          );
+          const promises = entries.map((entry) => traverseFileTree(entry, `${path + item.name}/`));
           const results = await Promise.all(promises);
           resolve(results.flat());
         });
@@ -73,8 +67,7 @@ export default function UploadFiles() {
       "text/*": [],
       "application/pdf": [],
       "application/msword": [],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
     },
     onDrop,
   });
@@ -150,16 +143,14 @@ export default function UploadFiles() {
       // Make sure to revoke the data uris to avoid memory leaks
       files.forEach((file) => URL.revokeObjectURL(file.preview));
     },
-    [files],
+    [files]
   );
 
   return (
     <StyledDropZoneSection>
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} data-webkitdirectory="true" />
-        <p>
-          Drag 'n' drop some files or folders here, or click to select files
-        </p>
+        <p>Drag 'n' drop some files or folders here, or click to select files</p>
       </div>
       <StyledAcceptedFilesList>{acceptedFiles}</StyledAcceptedFilesList>
       <ButtonList buttons={buttons} />

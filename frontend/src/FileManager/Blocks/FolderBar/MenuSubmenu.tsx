@@ -1,7 +1,7 @@
-import React, { FC } from "react";
+import { type FC } from "react";
 import { List } from "@mui/material";
 import MenuItem from "./MenuItem";
-import { FolderList } from "../../types";
+import { type FolderList } from "../../types";
 
 interface MenuSubmenuProps {
   folderList: FolderList["children"];
@@ -9,8 +9,7 @@ interface MenuSubmenuProps {
 
 const MenuSubmenu: FC<MenuSubmenuProps> = ({ folderList }) => (
   <List className="folderSubmenu">
-    {Array.isArray(folderList) &&
-      folderList.map((child) => <MenuItem key={child.name} item={child} />)}
+    {Array.isArray(folderList) && folderList.map((child) => <MenuItem key={child.name} item={child} />)}
   </List>
 );
 

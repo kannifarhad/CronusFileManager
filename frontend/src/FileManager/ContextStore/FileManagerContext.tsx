@@ -1,15 +1,8 @@
-import React, { createContext, useReducer, ReactNode, useMemo } from "react";
+import React, { createContext, useReducer, type ReactNode, useMemo } from "react";
 import useFileManagerOperations from "../Hooks/useFileManagerOperations";
-import {
-  FileManagerAction,
-  CreateContextType,
-  ImagesThumbTypeEnum,
-  FileManagerState,
-  OrderByFieldEnum,
-  SortByFieldEnum,
-  ViewTypeEnum,
-  VolumeListType,
-} from "../types";
+import type { FileManagerAction, CreateContextType, FileManagerState, VolumeListType } from "../types";
+import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum, ViewTypeEnum } from "../types";
+
 import fileManagerReducer from "./FileManagerReducer";
 import { readJsonFromLocalStorage } from "../helpers";
 import { LOCASTORAGE_SETTINGS_KEY } from "../config";
@@ -41,9 +34,7 @@ export const initialState: FileManagerState = {
   selectedVolume: null,
   settings: {
     ...settingsInitalState,
-    ...readJsonFromLocalStorage<FileManagerState["settings"]>(
-      LOCASTORAGE_SETTINGS_KEY
-    ),
+    ...readJsonFromLocalStorage<FileManagerState["settings"]>(LOCASTORAGE_SETTINGS_KEY),
   },
   search: {
     text: null,
@@ -51,12 +42,8 @@ export const initialState: FileManagerState = {
   },
 };
 
-const FileManagerStateContext = createContext<CreateContextType | undefined>(
-  undefined
-);
-const FileManagerDispatchContext = createContext<
-  React.Dispatch<FileManagerAction>
->(() => {});
+const FileManagerStateContext = createContext<CreateContextType | undefined>(undefined);
+const FileManagerDispatchContext = createContext<React.Dispatch<FileManagerAction>>(() => {});
 
 export function FileManagerProvider({
   children,
@@ -80,9 +67,7 @@ export function FileManagerProvider({
 
   return (
     <FileManagerStateContext.Provider value={value}>
-      <FileManagerDispatchContext.Provider value={dispatch}>
-        {children}
-      </FileManagerDispatchContext.Provider>
+      <FileManagerDispatchContext.Provider value={dispatch}>{children}</FileManagerDispatchContext.Provider>
     </FileManagerStateContext.Provider>
   );
 }
@@ -90,9 +75,7 @@ export function FileManagerProvider({
 export const useFileManagerState = () => {
   const context = React.useContext(FileManagerStateContext);
   if (context === undefined) {
-    throw new Error(
-      "useFileManagerState must be used within a FileManagerProvider"
-    );
+    throw new Error("useFileManagerState must be used within a FileManagerProvider");
   }
   return context;
 };
@@ -100,9 +83,7 @@ export const useFileManagerState = () => {
 export const useFileManagerDispatch = () => {
   const context = React.useContext(FileManagerDispatchContext);
   if (context === undefined) {
-    throw new Error(
-      "useFileManagerDispatch must be used within a FileManagerProvider"
-    );
+    throw new Error("useFileManagerDispatch must be used within a FileManagerProvider");
   }
   return context;
 };

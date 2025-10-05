@@ -3,8 +3,8 @@ import Dialog from "@mui/material/Dialog";
 import Zoom from "@mui/material/Zoom";
 import ImageEditor from "./ImageEditorComponent";
 import whiteTheme from "../Assets/whiteTheme";
-import ButtonList, { ButtonGroupProps } from "./ButtonGroup";
-import { FileEditPopupProps } from "../types";
+import ButtonList, { type ButtonGroupProps } from "./ButtonGroup";
+import { type FileEditPopupProps } from "../types";
 import { ImageEditorContainer } from "./styledImageeditor";
 import { StyledFileEditFooter } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
@@ -93,11 +93,9 @@ const ImageEditContent: React.FC<FileEditPopupProps & { filePath: string }> = ({
   );
 };
 
-const Transition = forwardRef(
-  (transitionProps: any, ref: React.Ref<unknown>) => (
-    <Zoom in={transitionProps.open} ref={ref} {...transitionProps} />
-  )
-);
+const Transition = forwardRef((transitionProps: any, ref: React.Ref<unknown>) => (
+  <Zoom in={transitionProps.open} ref={ref} {...transitionProps} />
+));
 
 const ImageEditPopup: React.FC<{}> = () => {
   const {
@@ -115,10 +113,7 @@ const ImageEditPopup: React.FC<{}> = () => {
       onClose={fileEdit.closeCallBack}
       className="dialog"
     >
-      <ImageEditContent
-        {...fileEdit}
-        filePath={handleGetThumb(fileEdit.selectedFile)!}
-      />
+      <ImageEditContent {...fileEdit} filePath={handleGetThumb(fileEdit.selectedFile)!} />
     </Dialog>
   );
 };

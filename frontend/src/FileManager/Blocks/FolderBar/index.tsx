@@ -1,9 +1,5 @@
-import React, { memo } from "react";
-import {
-  StyledFolderBar,
-  FileManagerFolderBarGrid,
-  FileManagerFolderBarWrapper,
-} from "./styled";
+import { memo } from "react";
+import { StyledFolderBar, FileManagerFolderBarGrid, FileManagerFolderBarWrapper } from "./styled";
 import VolumesList from "./VolumesList";
 
 function FolderBar() {

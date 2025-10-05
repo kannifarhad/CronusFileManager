@@ -34,12 +34,7 @@ const Searching = () => {
 
   return (
     <Box sx={{ marginTop: "10px" }}>
-      <FormControl
-        sx={{ fontSize: "14px" }}
-        fullWidth
-        variant="outlined"
-        size="small"
-      >
+      <FormControl sx={{ fontSize: "14px" }} fullWidth variant="outlined" size="small">
         <InputLabel id="search-input-label" sx={{ fontSize: "14px" }}>
           {texts.search}
         </InputLabel>
@@ -57,17 +52,8 @@ const Searching = () => {
           }}
           aria-describedby="search-input-label"
           endAdornment={
-            <IconButton
-              type="button"
-              sx={{ p: "10px" }}
-              aria-label="search"
-              onClick={handleSearch}
-            >
-              <Icon
-                name="Search"
-                color={disabled ? "#ccc" : "#556cd6"}
-                size={14}
-              />
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={handleSearch}>
+              <Icon name="Search" color={disabled ? "#ccc" : "#556cd6"} size={14} />
             </IconButton>
           }
         />
@@ -89,12 +75,8 @@ const Searching = () => {
             >
               <FormControlLabel
                 checked={searchEveryWhere}
-                control={
-                  <Radio name={texts.everywhere} sx={{ padding: "4px 9px" }} />
-                }
-                label={
-                  <span style={{ fontSize: "11px" }}>{texts.everywhere}</span>
-                }
+                control={<Radio name={texts.everywhere} sx={{ padding: "4px 9px" }} />}
+                label={<span style={{ fontSize: "11px" }}>{texts.everywhere}</span>}
               />
             </StyledTopBarMenuItem>
           </Grid>
@@ -109,17 +91,8 @@ const Searching = () => {
             >
               <FormControlLabel
                 checked={!searchEveryWhere}
-                control={
-                  <Radio
-                    sx={{ padding: "4px 9px" }}
-                    name={texts.onSelectedFolder}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "11px" }}>
-                    {texts.onSelectedFolder}
-                  </span>
-                }
+                control={<Radio sx={{ padding: "4px 9px" }} name={texts.onSelectedFolder} />}
+                label={<span style={{ fontSize: "11px" }}>{texts.onSelectedFolder}</span>}
               />
             </StyledTopBarMenuItem>
           </Grid>

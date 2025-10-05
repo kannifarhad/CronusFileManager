@@ -1,4 +1,4 @@
-import React, { FC, useEffect, memo } from "react";
+import { type FC, useEffect, memo } from "react";
 import { Box, List, useTheme } from "@mui/material";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import Icon from "../../Elements/Icon";
@@ -38,10 +38,7 @@ const VolumesList: FC<VolumesListProps> = () => {
               isActive: selectedVolume?.name === volume.name,
             })}
           >
-            <Box
-              className="volumeTitleWrapper"
-              onClick={() => handleSelectVolume(volume)}
-            >
+            <Box className="volumeTitleWrapper" onClick={() => handleSelectVolume(volume)}>
               <Icon
                 name="Volume"
                 color={theme.cronus.folderBar.volumeIconBack}
@@ -50,9 +47,7 @@ const VolumesList: FC<VolumesListProps> = () => {
               />
               {volume.name}
             </Box>
-            <List className="volumeFolderTreeWrapper">
-              {selectedVolume?.name === volume.name && <FolderTree />}
-            </List>
+            <List className="volumeFolderTreeWrapper">{selectedVolume?.name === volume.name && <FolderTree />}</List>
           </StyledVolumeMenuItem>
         ))}
     </List>

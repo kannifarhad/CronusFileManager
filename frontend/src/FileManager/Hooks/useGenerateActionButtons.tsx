@@ -1,24 +1,12 @@
 import { useMemo } from "react";
-import {
-  ButtonObject,
-  ViewTypeEnum,
-  ItemType,
-  ItemExtensionCategoryFilter,
-  // Operations,
-  CreateContextType,
-  FileManagerState,
-} from "../types";
+import type { ButtonObject, CreateContextType, FileManagerState } from "../types";
+import { ViewTypeEnum, ItemType, ItemExtensionCategoryFilter } from "../types";
+
 import { checkSelectedFileType } from "../helpers";
 
 type GenerateButtonsStateProps = Pick<
   FileManagerState,
-  | "selectedFiles"
-  | "contextMenu"
-  | "filesList"
-  | "bufferedItems"
-  | "history"
-  | "selectedFolder"
-  | "foldersList"
+  "selectedFiles" | "contextMenu" | "filesList" | "bufferedItems" | "history" | "selectedFolder" | "foldersList"
 > & {
   itemsViewType: FileManagerState["settings"]["itemsViewType"];
 };
@@ -34,31 +22,13 @@ const isSelectedFileType = (
 };
 
 // export const generateAllButtons = (operations: Operations, state: FileManagerState): ButtonObject => {
-export const generateAllButtons = (
-  operations: any,
-  state: GenerateButtonsStateProps
-): ButtonObject => {
-  const {
-    selectedFiles,
-    contextMenu,
-    filesList,
-    itemsViewType,
-    bufferedItems,
-    history,
-    selectedFolder,
-    foldersList,
-  } = state;
+export const generateAllButtons = (operations: any, state: GenerateButtonsStateProps): ButtonObject => {
+  const { selectedFiles, contextMenu, filesList, itemsViewType, bufferedItems, history, selectedFolder, foldersList } =
+    state;
   const isItemFocusedOrSelected = ((contextMenuProp, selectedFilesList) =>
-    Boolean(contextMenuProp?.item) || selectedFilesList.size === 1)(
-    contextMenu,
-    selectedFiles
-  );
+    Boolean(contextMenuProp?.item) || selectedFilesList.size === 1)(contextMenu, selectedFiles);
 
-  const isSelectedItemImage = isSelectedFileType(
-    ItemExtensionCategoryFilter.IMAGE,
-    contextMenu,
-    selectedFiles
-  );
+  const isSelectedItemImage = isSelectedFileType(ItemExtensionCategoryFilter.IMAGE, contextMenu, selectedFiles);
 
   const allButtons: ButtonObject = {
     copy: {
@@ -83,8 +53,7 @@ export const generateAllButtons = (
       title: "Delete",
       icon: "Trash",
       onClick: () => {
-        const items =
-          selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
+        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
         operations.handleDelete(items, selectedFolder);
       },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
@@ -99,10 +68,7 @@ export const generateAllButtons = (
       title: "Rename",
       icon: "Text",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleRename(item, selectedFolder);
       },
       disabled: !isItemFocusedOrSelected,
@@ -153,9 +119,7 @@ export const generateAllButtons = (
       title: "Invert selection",
       icon: "Refresh",
       onClick: operations.handleInverseSelected,
-      disabled: !(
-        selectedFiles.size !== filesList.length && selectedFiles.size > 0
-      ),
+      disabled: !(selectedFiles.size !== filesList.length && selectedFiles.size > 0),
     },
     reload: {
       title: "Reload",
@@ -166,26 +130,16 @@ export const generateAllButtons = (
       title: "Duplicate",
       icon: "Layers",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleDuplicate(item, selectedFolder);
       },
-      disabled: !isSelectedFileType(
-        ItemExtensionCategoryFilter.FILE,
-        contextMenu,
-        selectedFiles
-      ),
+      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.FILE, contextMenu, selectedFiles),
     },
     editImage: {
       title: "Resize & Rotate",
       icon: "PaintPalette",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleEditFile(item, selectedFolder);
       },
       disabled: !isSelectedItemImage,
@@ -194,8 +148,7 @@ export const generateAllButtons = (
       title: "Create archive",
       icon: "UnZip",
       onClick: () => {
-        const items =
-          selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
+        const items = selectedFiles.size > 0 ? selectedFiles : new Set([contextMenu?.item]);
         operations.handleCreateZip(items, selectedFolder);
       },
       disabled: !(selectedFiles.size > 0 || isItemFocusedOrSelected),
@@ -204,17 +157,10 @@ export const generateAllButtons = (
       title: "Extract files from archive",
       icon: "Zip",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleExtractZip(item, selectedFolder);
       },
-      disabled: !isSelectedFileType(
-        ItemExtensionCategoryFilter.ARCHIVE,
-        contextMenu,
-        selectedFiles
-      ),
+      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.ARCHIVE, contextMenu, selectedFiles),
     },
     gridView: {
       title: "Grid view",
@@ -232,10 +178,7 @@ export const generateAllButtons = (
       title: "Get Info",
       icon: "Information",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleGetInfo(item);
       },
       disabled: !isItemFocusedOrSelected,
@@ -244,10 +187,7 @@ export const generateAllButtons = (
       title: "View",
       icon: "View",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handlePreview(item);
       },
       disabled: !isSelectedItemImage,
@@ -256,10 +196,7 @@ export const generateAllButtons = (
       title: "Download File",
       icon: "Download",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleDownload(item);
       },
       disabled: !isItemFocusedOrSelected,
@@ -280,24 +217,17 @@ export const generateAllButtons = (
 
     searchFile: {
       title: "Search File",
-      icon: "icon-search",
+      icon: "Search",
       onClick: operations.handleSearchFile,
     },
     editFile: {
       title: "Edit File",
-      icon: "icon-pencil",
+      icon: "Pencil",
       onClick: () => {
-        const item =
-          selectedFiles.size > 0
-            ? Array.from(selectedFiles)[0]
-            : contextMenu?.item;
+        const item = selectedFiles.size > 0 ? Array.from(selectedFiles)[0] : contextMenu?.item;
         operations.handleEditFile(item, selectedFolder);
       },
-      disabled: !isSelectedFileType(
-        ItemExtensionCategoryFilter.TEXT,
-        contextMenu,
-        selectedFiles
-      ),
+      disabled: !isSelectedFileType(ItemExtensionCategoryFilter.TEXT, contextMenu, selectedFiles),
     },
     selectFile: {
       title: "Select file",
@@ -309,11 +239,7 @@ export const generateAllButtons = (
   return allButtons;
 };
 
-export const useGenerateActionButtons = ({
-  state,
-}: {
-  state: CreateContextType;
-}) => {
+export const useGenerateActionButtons = ({ state }: { state: CreateContextType }) => {
   const {
     operations,
     selectedFiles,
@@ -354,12 +280,7 @@ export const useGenerateActionButtons = ({
     () => ({
       topbar: [
         [allButtons.goBack, allButtons.goForwad, allButtons.goParent],
-        [
-          allButtons.newFile,
-          allButtons.newFolder,
-          allButtons.uploadFile,
-          allButtons.reload,
-        ],
+        [allButtons.newFile, allButtons.newFolder, allButtons.uploadFile, allButtons.reload],
         [
           allButtons.copy,
           allButtons.cut,
@@ -369,36 +290,16 @@ export const useGenerateActionButtons = ({
           allButtons.dubplicate,
         ],
         [allButtons.rename, allButtons.editImage],
-        [
-          allButtons.inverseSelected,
-          allButtons.selectNone,
-          allButtons.selectAll,
-        ],
+        [allButtons.inverseSelected, allButtons.selectNone, allButtons.selectAll],
         [allButtons.createZip, allButtons.extractZip],
-        [
-          allButtons.preview,
-          allButtons.getInfo,
-          allButtons.selectFile,
-          allButtons.download,
-        ],
+        [allButtons.preview, allButtons.getInfo, allButtons.selectFile, allButtons.download],
         [allButtons.gridView, allButtons.listView, allButtons.fullScreen],
       ],
       file: [
-        [
-          allButtons.copy,
-          allButtons.cut,
-          allButtons.paste,
-          allButtons.delete,
-          allButtons.dubplicate,
-        ],
+        [allButtons.copy, allButtons.cut, allButtons.paste, allButtons.delete, allButtons.dubplicate],
         [allButtons.rename, allButtons.editImage],
         [allButtons.createZip, allButtons.extractZip],
-        [
-          allButtons.preview,
-          allButtons.getInfo,
-          allButtons.selectFile,
-          allButtons.download,
-        ],
+        [allButtons.preview, allButtons.getInfo, allButtons.selectFile, allButtons.download],
       ],
       container: [
         [allButtons.goBack, allButtons.goForwad, allButtons.goParent],
@@ -410,11 +311,7 @@ export const useGenerateActionButtons = ({
           allButtons.uploadFile,
           allButtons.reload,
         ],
-        [
-          allButtons.inverseSelected,
-          allButtons.selectNone,
-          allButtons.selectAll,
-        ],
+        [allButtons.inverseSelected, allButtons.selectNone, allButtons.selectAll],
         [allButtons.gridView, allButtons.listView, allButtons.fullScreen],
       ],
     }),

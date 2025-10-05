@@ -1,11 +1,5 @@
-import React, { memo } from "react";
-import {
-  Grid2 as Grid,
-  FormLabel,
-  FormControl,
-  InputLabel,
-  Box,
-} from "@mui/material";
+import { memo } from "react";
+import { Grid2 as Grid, FormLabel, FormControl, InputLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { OrderByFieldEnum, SortByFieldEnum } from "../../../types";
 import { orderOptions, sortOptions } from "./constants";
@@ -19,9 +13,7 @@ const SortingOptions = () => {
 
   return (
     <Box>
-      <FormLabel sx={{ fontSize: "14px", fontWeight: "bold" }}>
-        Sorting
-      </FormLabel>
+      <FormLabel sx={{ fontSize: "14px", fontWeight: "bold" }}>Sorting</FormLabel>
       <Grid container sx={{ marginTop: "5px" }} spacing={1}>
         <Grid size={6}>
           <FormControl fullWidth variant="filled" size="small">

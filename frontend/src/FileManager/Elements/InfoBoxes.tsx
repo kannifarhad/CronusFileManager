@@ -5,7 +5,7 @@ import {
   Collapse,
   LinearProgress,
 } from "@mui/material";
-import { Message, ActionTypes } from "../types";
+import { type Message, ActionTypes } from "../types";
 import { StyledInfoBox } from "./styled";
 import { useFileManagerDispatch } from "../ContextStore/FileManagerContext";
 import Icon from "./Icon";

@@ -1,8 +1,8 @@
-import React, { memo, FC } from "react";
+import { memo, type FC } from "react";
 import InfoBoxes from "../../Elements/InfoBoxes";
 import { StyledToasterMessages } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
-import { Message } from "../../types";
+import type { Message } from "../../types";
 
 const ToasterMessages: FC = () => {
   const { messages } = useFileManagerState();

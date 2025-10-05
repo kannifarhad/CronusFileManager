@@ -11,7 +11,7 @@ import {
 } from "../styled";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 import {
-  FileType,
+  type FileType,
   ItemMoveActionTypeEnum,
   ContextMenuTypeEnum,
   ImagesThumbTypeEnum,

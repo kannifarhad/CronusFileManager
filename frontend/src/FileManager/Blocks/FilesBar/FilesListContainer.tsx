@@ -1,4 +1,4 @@
-import React, { memo, useCallback, MouseEvent } from "react";
+import React, { memo, useCallback, type MouseEvent } from "react";
 import ViewItems from "../ViewItems/ViewItems";
 import { StyledFilesListContainer, StyledFilesListWrapper } from "./styled";
 import OverlayBlocks from "./OverlayBlocks";

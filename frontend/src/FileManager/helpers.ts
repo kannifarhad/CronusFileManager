@@ -1,28 +1,10 @@
-/* eslint-disable no-use-before-define */
 import { FILE_EXTENSION_MAP } from "./config";
+import { OrderByFieldEnum, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "./types";
+import type { FileType, ItemsList, OrderByType, FolderType, FolderList } from "./types";
 
-import {
-  FileType,
-  ItemsList,
-  OrderByFieldEnum,
-  OrderByType,
-  SortByFieldEnum,
-  ItemType,
-  ItemExtensionCategoryFilter,
-  FolderType,
-  FolderList,
-} from "./types";
-
-export const sortFilter = (
-  filesList: ItemsList,
-  order: OrderByType
-): ItemsList => {
+export const sortFilter = (filesList: ItemsList, order: OrderByType): ItemsList => {
   // Helper function to sort items based on the field and order
-  const sortItems = (
-    items: ItemsList,
-    field: OrderByFieldEnum,
-    orderBy: SortByFieldEnum
-  ): ItemsList =>
+  const sortItems = (items: ItemsList, field: OrderByFieldEnum, orderBy: SortByFieldEnum): ItemsList =>
     items.sort((a, b) => {
       let comparison = 0;
       switch (field) {
@@ -37,8 +19,7 @@ export const sortFilter = (
           break;
 
         case OrderByFieldEnum.DATE:
-          comparison =
-            new Date(a.created).getTime() - new Date(b.created).getTime();
+          comparison = new Date(a.created).getTime() - new Date(b.created).getTime();
           break;
 
         default:
@@ -68,10 +49,7 @@ export const sortFilter = (
 };
 
 // Function to add folders to the folder tree based on the path
-export function addFoldersToTree(
-  folderTreeState: FolderList | null,
-  foldersArray: FolderType[]
-): FolderList | null {
+export function addFoldersToTree(folderTreeState: FolderList | null, foldersArray: FolderType[]): FolderList | null {
   if (!folderTreeState) return null;
   const folderTree = { ...folderTreeState };
   // Helper function to find or create the parent folder where the new folder should be added
@@ -91,9 +69,7 @@ export function addFoldersToTree(
       if (!currentNode.children) currentNode.children = [];
 
       // Find the next node in the path by matching 'name'
-      const foundNode = currentNode.children.find(
-        (child) => child.name === part
-      );
+      const foundNode = currentNode.children.find((child) => child.name === part);
 
       if (foundNode) {
         currentNode = foundNode;
@@ -121,9 +97,7 @@ export function addFoldersToTree(
   // Iterate through each folder in the array
   foldersArray.forEach((folder: FolderType) => {
     // Get the parent path by removing the last segment
-    const trimmedPath = folder.path.endsWith("/")
-      ? folder.path.slice(0, -1)
-      : folder.path;
+    const trimmedPath = folder.path.endsWith("/") ? folder.path.slice(0, -1) : folder.path;
 
     // Get the parent path by removing the last segment
     const parentPath = `${trimmedPath.split("/").slice(0, -1).join("/")}/`;
@@ -132,9 +106,7 @@ export function addFoldersToTree(
     const parentFolder = findParentFolder(folderTree, parentPath);
 
     // Check if folder already exists in the parent's children using 'path' or 'name'
-    let existingFolder = parentFolder?.children?.find(
-      (child: any) => child.path === folder.path
-    );
+    let existingFolder = parentFolder?.children?.find((child: any) => child.path === folder.path);
 
     // If no existing folder, add it as a new child
     if (!existingFolder) {
@@ -147,10 +119,7 @@ export function addFoldersToTree(
   return folderTree;
 }
 
-export const checkSelectedFileType = (
-  type: ItemExtensionCategoryFilter,
-  selectedFile: FileType
-) => {
+export const checkSelectedFileType = (type: ItemExtensionCategoryFilter, selectedFile: FileType) => {
   try {
     switch (type) {
       case ItemExtensionCategoryFilter.FILE:
@@ -172,14 +141,10 @@ export const checkSelectedFileType = (
   }
 };
 
-export const toAbsoluteUrl = (pathname: string) =>
-  process.env.PUBLIC_URL + pathname;
+export const toAbsoluteUrl = (pathname: string) => import.meta.env.PUBLIC_URL + pathname;
 
-export const getFileExtensionIcon = (
-  extension: keyof typeof FILE_EXTENSION_MAP.icons
-) => {
-  const extensionIconPath =
-    FILE_EXTENSION_MAP.icons[extension] || FILE_EXTENSION_MAP.icons.broken;
+export const getFileExtensionIcon = (extension: keyof typeof FILE_EXTENSION_MAP.icons) => {
+  const extensionIconPath = FILE_EXTENSION_MAP.icons[extension] || FILE_EXTENSION_MAP.icons.broken;
   return toAbsoluteUrl(extensionIconPath);
 };
 
@@ -234,14 +199,7 @@ const hasOwn = {}.hasOwnProperty;
 interface ClassDictionary {
   [key: string]: any;
 }
-type ClassValue =
-  | string
-  | number
-  | boolean
-  | undefined
-  | null
-  | ClassDictionary
-  | ClassArray;
+type ClassValue = string | number | boolean | undefined | null | ClassDictionary | ClassArray;
 
 interface ClassArray extends Array<ClassValue> {}
 
@@ -259,11 +217,7 @@ export function classNames(...args: ClassValue[]): string {
 }
 
 function parseValue(arg: ClassValue): string {
-  if (
-    typeof arg === "string" ||
-    typeof arg === "number" ||
-    typeof arg === "boolean"
-  ) {
+  if (typeof arg === "string" || typeof arg === "number" || typeof arg === "boolean") {
     return arg.toString();
   }
 
@@ -275,10 +229,7 @@ function parseValue(arg: ClassValue): string {
     return classNames(...arg);
   }
 
-  if (
-    arg.toString !== Object.prototype.toString &&
-    !arg.toString.toString().includes("[native code]")
-  ) {
+  if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes("[native code]")) {
     return arg.toString();
   }
 
@@ -338,8 +289,7 @@ function addFileToTree(tree: DroppedFilesTree, file: DroppedFile): void {
     } else {
       // Check if the folder already exists
       let folder = currentFolder.find(
-        (item) =>
-          "name" in item && item.name === part && item.type === ItemType.FOLDER
+        (item) => "name" in item && item.name === part && item.type === ItemType.FOLDER
       ) as DroppedFolder | undefined;
 
       // If folder doesn't exist, create it
@@ -361,9 +311,7 @@ function addFileToTree(tree: DroppedFilesTree, file: DroppedFile): void {
 }
 
 // Main function to organize files into folders and subfolders
-export function organizeFiles(
-  files: DroppedFile[]
-): (DroppedFolder | DroppedFile)[] {
+export function organizeFiles(files: DroppedFile[]): (DroppedFolder | DroppedFile)[] {
   const tree: (DroppedFolder | DroppedFile)[] = [];
 
   files.forEach((file, index) => {
@@ -409,5 +357,4 @@ export function readJsonFromLocalStorage<T>(key: string): T | null {
   }
 }
 
-export const wasMultiSelectKeyUsed = (event: MouseEvent | KeyboardEvent) =>
-  event.shiftKey;
+export const wasMultiSelectKeyUsed = (event: MouseEvent | KeyboardEvent) => event.shiftKey;

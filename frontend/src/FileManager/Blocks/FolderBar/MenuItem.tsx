@@ -1,11 +1,11 @@
 /* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useRef, FC, memo, useMemo } from "react";
+import { useState, useRef, type FC, memo, useMemo } from "react";
 import { Box } from "@mui/material";
 import MenuSubmenu from "./MenuSubmenu";
 import { StyledFolderMenuItem } from "./styled";
-import { FolderList } from "../../types";
+import { type FolderList } from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import Icon from "../../Elements/Icon";
 import { classNames } from "../../helpers";
@@ -14,17 +14,11 @@ interface MenuItemProps {
   item: FolderList | null;
 }
 
-const isMenuItemIsActive = (
-  item: FolderList,
-  currentFolder: string = ""
-): boolean => {
+const isMenuItemIsActive = (item: FolderList, currentFolder: string = ""): boolean => {
   // Helper function to recursively check for active state
   const isMenuRootItemIsActive = (curremtItem: FolderList): boolean => {
     // Check if the current item's path is exactly the currentFolder
-    if (
-      Boolean(currentFolder) &&
-      currentFolder.indexOf(curremtItem.path) === 0
-    ) {
+    if (Boolean(currentFolder) && currentFolder.indexOf(curremtItem.path) === 0) {
       return true;
     }
     // Recursively check children
@@ -52,10 +46,7 @@ const MenuItem: FC<MenuItemProps> = ({ item }) => {
   const asideLeftLIRef = useRef<HTMLLIElement>(null);
   const [expand, setExpand] = useState(false);
 
-  const isActive = useMemo(
-    () => item && isMenuItemIsActive(item, selectedFolder?.path),
-    [item, selectedFolder?.path]
-  );
+  const isActive = useMemo(() => item && isMenuItemIsActive(item, selectedFolder?.path), [item, selectedFolder?.path]);
 
   if (!item) return null;
 
@@ -72,13 +63,7 @@ const MenuItem: FC<MenuItemProps> = ({ item }) => {
       })}
     >
       <Box className="folderTitle">
-        <Icon
-          name="Next"
-          size={10}
-          color="#ccc"
-          className="iconArrow"
-          onClick={() => setExpand(!expand)}
-        />
+        <Icon name="Next" size={10} color="#ccc" className="iconArrow" onClick={() => setExpand(!expand)} />
         <span className="titleWrap" onClick={() => handleSelectFolder(item)}>
           <Icon name={`${isActive ? "FolderOpen" : "Folder"}`} />
           <span className="title">{item.name}</span>

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect } from "react";
 import Dropzone from "../../Elements/Dropzone";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 

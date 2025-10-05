@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
-import {
+import axios, { type AxiosInstance } from "axios";
+import type {
   PathParam,
   RenameFilesParams,
   CreateNewFileParams,
@@ -11,9 +11,9 @@ import {
   SaveFileParams,
   GetFoldersListResponse,
   GetFilesListResponse,
-  IServerConnection,
   SearchParams,
 } from "./types";
+import { IServerConnection } from "./types";
 
 class S3ServerConnection extends IServerConnection {
   private axiosInstance: AxiosInstance;
@@ -52,87 +52,55 @@ class S3ServerConnection extends IServerConnection {
   }
 
   async getFolderTree(): Promise<GetFoldersListResponse> {
-    return this.axiosInstance
-      .get("foldertree")
-      .then((response) => response.data);
+    return this.axiosInstance.get("foldertree").then((response) => response.data);
   }
 
   async getFilesList({ path }: PathParam): Promise<GetFilesListResponse> {
-    return this.axiosInstance
-      .post("folder", { path })
-      .then((response) => response.data?.children);
+    return this.axiosInstance.post("folder", { path }).then((response) => response.data?.children);
   }
 
   async search({ path, text }: SearchParams): Promise<any> {
-    return this.axiosInstance
-      .post("search", { path, text })
-      .then((response) => response.data);
+    return this.axiosInstance.post("search", { path, text }).then((response) => response.data);
   }
 
-  async copyFilesToFolder({
-    items,
-    destination,
-  }: PasteFilesParams): Promise<any> {
-    return this.axiosInstance
-      .post("copy", { items, destination })
-      .then((response) => response.data);
+  async copyFilesToFolder({ items, destination }: PasteFilesParams): Promise<any> {
+    return this.axiosInstance.post("copy", { items, destination }).then((response) => response.data);
   }
 
-  async cutFilesToFolder({
-    items,
-    destination,
-  }: PasteFilesParams): Promise<any> {
-    return this.axiosInstance
-      .post("move", { items, destination })
-      .then((response) => response.data);
+  async cutFilesToFolder({ items, destination }: PasteFilesParams): Promise<any> {
+    return this.axiosInstance.post("move", { items, destination }).then((response) => response.data);
   }
 
   async deleteItems({ items }: DeleteItemsParams): Promise<any> {
-    return this.axiosInstance
-      .post("delete", { items })
-      .then((response) => response?.data);
+    return this.axiosInstance.post("delete", { items }).then((response) => response?.data);
   }
 
   async emptyDir({ path }: PathParam): Promise<any> {
-    return this.axiosInstance
-      .post("emptydir", { path })
-      .then((response) => response.data);
+    return this.axiosInstance.post("emptydir", { path }).then((response) => response.data);
   }
 
   async createNewFile({ path, file }: CreateNewFileParams): Promise<any> {
-    return this.axiosInstance
-      .post("createfile", { path, file })
-      .then((response) => response.data);
+    return this.axiosInstance.post("createfile", { path, file }).then((response) => response.data);
   }
 
   async createNewFolder({ path, folder }: CreateNewFolderParams): Promise<any> {
-    return this.axiosInstance
-      .post("createfolder", { path, folder })
-      .then((response) => response.data);
+    return this.axiosInstance.post("createfolder", { path, folder }).then((response) => response.data);
   }
 
   async renameFiles({ path, newname }: RenameFilesParams): Promise<any> {
-    return this.axiosInstance
-      .post("rename", { path, newname })
-      .then((response) => response.data);
+    return this.axiosInstance.post("rename", { path, newname }).then((response) => response.data);
   }
 
   async duplicateItem({ path }: PathParam): Promise<any> {
-    return this.axiosInstance
-      .post("duplicate", { path })
-      .then((response) => response.data);
+    return this.axiosInstance.post("duplicate", { path }).then((response) => response.data);
   }
 
   async unzip({ file, destination }: UnzipParams): Promise<any> {
-    return this.axiosInstance
-      .post("unzip", { file, destination })
-      .then((response) => response.data);
+    return this.axiosInstance.post("unzip", { file, destination }).then((response) => response.data);
   }
 
   async archive({ files, destination, name }: ArchiveParams): Promise<any> {
-    return this.axiosInstance
-      .post("archive", { files, destination, name })
-      .then((response) => response.data);
+    return this.axiosInstance.post("archive", { files, destination, name }).then((response) => response.data);
   }
 
   async saveFile({ file, selectedFile, isnew }: SaveFileParams): Promise<any> {
@@ -151,15 +119,12 @@ class S3ServerConnection extends IServerConnection {
       .then((response) => response.data);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getThumb(filePath: string): string {
     return `${this.baseURL}/thumb/${filePath}`;
   }
 
   async downloadFile({ path }: PathParam) {
-    const link = await this.axiosInstance
-      .post("getlink", { path })
-      .then((response) => response.data?.path);
+    const link = await this.axiosInstance.post("getlink", { path }).then((response) => response.data?.path);
 
     if (link) {
       setTimeout(() => {

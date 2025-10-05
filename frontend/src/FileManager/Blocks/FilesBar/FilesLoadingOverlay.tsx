@@ -1,4 +1,4 @@
-import React, { memo, FC } from "react";
+import { memo, type FC } from "react";
 import { StyledFilesLoadingOverlay } from "./styled";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import useText from "../../Hooks/useTexts";

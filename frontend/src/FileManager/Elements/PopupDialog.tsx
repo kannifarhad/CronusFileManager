@@ -1,41 +1,18 @@
-import React, {
-  useState,
-  ForwardRefRenderFunction,
-  memo,
-  useMemo,
-} from "react";
-import {
-  Box,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Zoom,
-  ZoomProps,
-} from "@mui/material";
+import React, { useState, type ForwardRefRenderFunction, memo, useMemo } from "react";
+import { Box, DialogActions, DialogContent, DialogTitle, Zoom, type ZoomProps } from "@mui/material";
 import InputField from "./InputField";
 import { StyledPopUpDialog } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
-import { PopupData } from "../types";
+import { type PopupData } from "../types";
 import CustomButtonGroup from "./ButtonGroup";
 
-const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (
-  props,
-  ref
-) => <Zoom ref={ref} {...props} />;
+const Transition: ForwardRefRenderFunction<unknown, ZoomProps> = (props, ref) => <Zoom ref={ref} {...props} />;
 
-const AlertDialog: React.FC<PopupData> = ({
-  title,
-  description,
-  nameInputSets,
-  actionButtons,
-}) => {
-  const [renameText, setRenameText] = useState<string>(
-    nameInputSets?.value ?? ""
-  );
+const AlertDialog: React.FC<PopupData> = ({ title, description, nameInputSets, actionButtons }) => {
+  const [renameText, setRenameText] = useState<string>(nameInputSets?.value ?? "");
 
   const ActionButtonsList = useMemo(() => {
-    if (!Array.isArray(actionButtons) || actionButtons.length === 0)
-      return null;
+    if (!Array.isArray(actionButtons) || actionButtons.length === 0) return null;
     if (renameText) {
       return (
         <CustomButtonGroup
@@ -75,9 +52,7 @@ const AlertDialog: React.FC<PopupData> = ({
         )}
       </DialogContent>
 
-      <DialogActions className="dialogButtons">
-        {ActionButtonsList}
-      </DialogActions>
+      <DialogActions className="dialogButtons">{ActionButtonsList}</DialogActions>
     </>
   );
 };

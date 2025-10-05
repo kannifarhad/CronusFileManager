@@ -1,26 +1,11 @@
-/* eslint-disable no-nested-ternary */
 import { LOCASTORAGE_SETTINGS_KEY } from "../config";
-import {
-  sortFilter,
-  addFoldersToTree,
-  writeJsonToLocalStorage,
-} from "../helpers";
-import {
-  ItemMoveActionTypeEnum,
-  HistoryStepTypeEnum,
-  FileManagerAction,
-  FileManagerState,
-  ActionTypes,
-  VolumeTypes,
-  ItemType,
-  FolderType,
-} from "../types";
+import { sortFilter, addFoldersToTree, writeJsonToLocalStorage } from "../helpers";
+import { ItemMoveActionTypeEnum, HistoryStepTypeEnum, ActionTypes, VolumeTypes, ItemType } from "../types";
+import type { FileManagerAction, FileManagerState, FolderType } from "../types";
+
 import { initialState } from "./FileManagerContext";
 
-export const fileManagerReducer = (
-  state: FileManagerState,
-  action: FileManagerAction
-): FileManagerState => {
+export const fileManagerReducer = (state: FileManagerState, action: FileManagerAction): FileManagerState => {
   switch (action.type) {
     case ActionTypes.SET_FOLDERS_LIST:
       return { ...state, foldersList: action.payload };
@@ -39,10 +24,7 @@ export const fileManagerReducer = (
           action: HistoryStepTypeEnum.FOLDERCHANGE,
           payload: folder,
         });
-        newState.history.currentIndex = Math.max(
-          0,
-          newState.history.steps.length - 1
-        );
+        newState.history.currentIndex = Math.max(0, newState.history.steps.length - 1);
       }
       if (clearBuffer) {
         newState.bufferedItems = {
@@ -62,13 +44,8 @@ export const fileManagerReducer = (
       filesList = sortFilter(filesList, state.settings.orderFiles);
       let newfoldersList = state.foldersList;
 
-      if (
-        state.selectedVolume?.type === VolumeTypes.S3BUCKET_FRONT &&
-        state.selectedFolder?.path !== "/"
-      ) {
-        const newFolders: FolderType[] = filesList.filter(
-          (item) => item.type === ItemType.FOLDER
-        );
+      if (state.selectedVolume?.type === VolumeTypes.S3BUCKET_FRONT && state.selectedFolder?.path !== "/") {
+        const newFolders: FolderType[] = filesList.filter((item) => item.type === ItemType.FOLDER);
         if (newFolders.length > 0) {
           newfoldersList = addFoldersToTree(state.foldersList, newFolders);
         }
@@ -106,8 +83,7 @@ export const fileManagerReducer = (
         loading: false,
         selectedFolder: null,
         search: {
-          prevSelectedFolder:
-            state.selectedFolder || state.search.prevSelectedFolder,
+          prevSelectedFolder: state.selectedFolder || state.search.prevSelectedFolder,
           text,
         },
       };
@@ -118,9 +94,7 @@ export const fileManagerReducer = (
     case ActionTypes.REMOVE_MESSAGES:
       return {
         ...state,
-        messages: state.messages.filter(
-          (message) => message.id !== action.payload.id
-        ),
+        messages: state.messages.filter((message) => message.id !== action.payload.id),
       };
 
     case ActionTypes.ADD_SELECTED_FILE: {
@@ -196,9 +170,7 @@ export const fileManagerReducer = (
 
     case ActionTypes.INVERSE_SELECTED_FILES: {
       const { selectedFiles } = state;
-      const inversedSelected = state.filesList.filter(
-        (file) => !selectedFiles.has(file)
-      );
+      const inversedSelected = state.filesList.filter((file) => !selectedFiles.has(file));
       return {
         ...state,
         selectedFiles: new Set(inversedSelected),
@@ -232,8 +204,8 @@ export const fileManagerReducer = (
         state.selectedFiles.size > 0
           ? state.selectedFiles
           : state.contextMenu?.item
-            ? new Set([state.contextMenu?.item])
-            : new Set([]);
+          ? new Set([state.contextMenu?.item])
+          : new Set([]);
       const bufferedItems = {
         type: ItemMoveActionTypeEnum.COPY,
         files,
@@ -246,8 +218,8 @@ export const fileManagerReducer = (
         state.selectedFiles.size > 0
           ? state.selectedFiles
           : state.contextMenu?.item
-            ? new Set([state.contextMenu?.item])
-            : new Set([]);
+          ? new Set([state.contextMenu?.item])
+          : new Set([]);
       const bufferedItems = {
         type: ItemMoveActionTypeEnum.CUT,
         files,

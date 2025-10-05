@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { FileManagerState, VolumeTypes } from "../types";
+import { type FileManagerState, VolumeTypes } from "../types";
 import Ec2ServerConnection from "../Api/Ec2ServerConnection";
 import S3FrontConnection from "../Api/S3FrontConnection";
 import S3ServerConnection from "../Api/S3ServerConnection";

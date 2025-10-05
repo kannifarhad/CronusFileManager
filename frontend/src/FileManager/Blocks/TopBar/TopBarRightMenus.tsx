@@ -1,10 +1,4 @@
-import React, {
-  memo,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  useMemo,
-} from "react";
+import React, { memo, useState, forwardRef, useImperativeHandle, useMemo } from "react";
 import { Box } from "@mui/material";
 import Settings from "./Settings";
 import { SettingsMenuEnum } from "./Settings/constants";
@@ -12,10 +6,7 @@ import { SettingsPopover } from "./styled";
 import Searching from "./Searching";
 
 interface MenuRef {
-  handleOpenMenu: (
-    event: React.MouseEvent<HTMLElement>,
-    name: SettingsMenuEnum
-  ) => void;
+  handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: SettingsMenuEnum) => void;
 }
 
 const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {

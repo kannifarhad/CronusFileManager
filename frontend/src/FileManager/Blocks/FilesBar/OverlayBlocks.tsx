@@ -1,4 +1,4 @@
-import React, { memo, FC } from "react";
+import { memo, type FC } from "react";
 import DropZoneWrapper from "./DropZoneWrapper";
 import FilesLoadingOverlay from "./FilesLoadingOverlay";
 import ContextMenu from "./ContextMenu";

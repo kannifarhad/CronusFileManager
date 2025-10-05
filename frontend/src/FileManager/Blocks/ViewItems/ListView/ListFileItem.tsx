@@ -2,17 +2,8 @@ import React, { memo, useCallback, useMemo } from "react";
 import { Checkbox } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
 import { StyledListTableCell, StyledListTableRow } from "../styled";
-import {
-  convertDate,
-  formatBytes,
-  getFileIcon,
-  classNames,
-} from "../../../helpers";
-import {
-  FileType,
-  ItemMoveActionTypeEnum,
-  ContextMenuTypeEnum,
-} from "../../../types";
+import { convertDate, formatBytes, getFileIcon, classNames } from "../../../helpers";
+import { type FileType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../types";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
 
 const ListFileItem: React.FC<{
@@ -37,16 +28,11 @@ const ListFileItem: React.FC<{
   );
 
   const isCuted = useMemo(
-    () =>
-      bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
-      bufferedItems.files.has(item),
+    () => bufferedItems.type === ItemMoveActionTypeEnum.CUT && bufferedItems.files.has(item),
     [item, bufferedItems]
   );
 
-  const isSelected = useMemo(
-    () => selectedFiles.has(item),
-    [selectedFiles, item]
-  );
+  const isSelected = useMemo(() => selectedFiles.has(item), [selectedFiles, item]);
 
   const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
     id: item.id,
@@ -68,28 +54,14 @@ const ListFileItem: React.FC<{
       style={style}
     >
       <StyledListTableCell style={{ width: "40px" }}>
-        <Checkbox
-          checked={isSelected}
-          onChange={() => handleAddSelected(item)}
-          value={item.id}
-        />
+        <Checkbox checked={isSelected} onChange={() => handleAddSelected(item)} value={item.id} />
       </StyledListTableCell>
       <StyledListTableCell style={{ width: "40px" }}>
-        <img
-          alt={item.name}
-          style={{ width: "20px", maxHeight: "30px" }}
-          src={getFileIcon(item)}
-        />
+        <img alt={item.name} style={{ width: "20px", maxHeight: "30px" }} src={getFileIcon(item)} />
       </StyledListTableCell>
-      <StyledListTableCell style={{ flexGrow: 1 }}>
-        {item.name}
-      </StyledListTableCell>
-      <StyledListTableCell style={{ width: "100px" }}>
-        {formatBytes(item.size)}
-      </StyledListTableCell>
-      <StyledListTableCell style={{ width: "150px" }}>
-        {convertDate(item.created)}
-      </StyledListTableCell>
+      <StyledListTableCell style={{ flexGrow: 1 }}>{item.name}</StyledListTableCell>
+      <StyledListTableCell style={{ width: "100px" }}>{formatBytes(item.size)}</StyledListTableCell>
+      <StyledListTableCell style={{ width: "150px" }}>{convertDate(item.created)}</StyledListTableCell>
     </StyledListTableRow>
   );
 };

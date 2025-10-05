@@ -1,28 +1,30 @@
 import React, { useMemo, useCallback } from "react";
-import {
+import type {
   FolderType,
   Items,
-  ContextMenuTypeEnum,
-  ViewTypeEnum,
   OrderByType,
-  ImagesThumbTypeEnum,
   HistoryType,
-  HistoryStepTypeEnum,
   HistoryStep,
   FolderList,
   Message,
   BufferedItemsType,
-  ItemMoveActionTypeEnum,
   ItemsList,
   FileType,
-  ItemExtensionCategoryFilter,
-  ItemType,
   Operations,
-  ActionTypes,
   VolumeListItem,
   FileManagerState,
 } from "../types";
-import { SaveFileParams } from "../Api/types";
+import {
+  ActionTypes,
+  ItemType,
+  HistoryStepTypeEnum,
+  ContextMenuTypeEnum,
+  ViewTypeEnum,
+  ImagesThumbTypeEnum,
+  ItemMoveActionTypeEnum,
+  ItemExtensionCategoryFilter,
+} from "../types";
+import { type SaveFileParams } from "../Api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
 import useApiController from "./useApiController";
 
@@ -164,9 +166,7 @@ export const useFileManagerOperations = ({
               payload: result,
             });
           })
-          .catch((error) =>
-            handleApiError(error, "Error happened while uploading files.")
-          );
+          .catch((error) => handleApiError(error, "Error happened while uploading files."));
       },
 
       handleAddSelected: (item: Items, multiSelect?: Boolean) => {
@@ -311,19 +311,14 @@ export const useFileManagerOperations = ({
         });
       },
 
-      handlePaste: (
-        bufferedItems: BufferedItemsType,
-        selectedFolder: FolderList
-      ) => {
+      handlePaste: (bufferedItems: BufferedItemsType, selectedFolder: FolderList) => {
         let includesFolder = false;
-        const files: string[] = Array.from(bufferedItems.files).map(
-          (item: Items) => {
-            if (item.type === ItemType.FOLDER) {
-              includesFolder = true;
-            }
-            return item.path;
+        const files: string[] = Array.from(bufferedItems.files).map((item: Items) => {
+          if (item.type === ItemType.FOLDER) {
+            includesFolder = true;
           }
-        );
+          return item.path;
+        });
         const apiFunction =
           bufferedItems.type === ItemMoveActionTypeEnum.CUT
             ? apiClient!.cutFilesToFolder
@@ -354,8 +349,7 @@ export const useFileManagerOperations = ({
           return item.path;
         });
 
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
         const handleDeleteSubmit = () => {
           handleClose();
@@ -382,8 +376,7 @@ export const useFileManagerOperations = ({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: `Deleting selected files and folders: ${selectedFiles.size} items`,
-            description:
-              "All selected files and folder will remove without recover",
+            description: "All selected files and folder will remove without recover",
             actionButtons: [
               {
                 icon: "Ban",
@@ -406,8 +399,7 @@ export const useFileManagerOperations = ({
 
       handleEmptyFolder: (selectedFolder: FolderList) => {
         const { path } = selectedFolder;
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
         const handleEmptySubmit = () => {
           handleClose();
@@ -432,8 +424,7 @@ export const useFileManagerOperations = ({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: "Empty Folder",
-            description:
-              "Are you sure, you want to empty this folder? All content will be lost without recover!",
+            description: "Are you sure, you want to empty this folder? All content will be lost without recover!",
             actionButtons: [
               {
                 icon: "Ban",
@@ -455,8 +446,7 @@ export const useFileManagerOperations = ({
       },
 
       handleNewFile: (selectedFolder: FolderList) => {
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
         const handleNewFileSubmit = (fileName: string) => {
           handleClose();
@@ -472,22 +462,18 @@ export const useFileManagerOperations = ({
                 timer: 1500,
                 message: (
                   <>
-                    Successfully created new file with the name:{" "}
-                    <strong>${fileName}</strong>
+                    Successfully created new file with the name: <strong>${fileName}</strong>
                   </>
                 ),
               });
             })
-            .catch((error) =>
-              handleApiError(error, "Error happened while creating file")
-            );
+            .catch((error) => handleApiError(error, "Error happened while creating file"));
         };
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: "Creating new file",
-            description:
-              "Only allowed file extensions can be created. Otherwise will be ignored by server.",
+            description: "Only allowed file extensions can be created. Otherwise will be ignored by server.",
             actionButtons: [
               {
                 icon: "Ban",
@@ -513,8 +499,7 @@ export const useFileManagerOperations = ({
       },
 
       handleNewFolder: (selectedFolder: FolderList) => {
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
         const handleNewFolderSubmit = (folderName: string) => {
           handleClose();
@@ -531,23 +516,19 @@ export const useFileManagerOperations = ({
                 timer: 1500,
                 message: (
                   <>
-                    Successfully created new folder with the name:{" "}
-                    <strong>${folderName}</strong>
+                    Successfully created new folder with the name: <strong>${folderName}</strong>
                   </>
                 ),
               });
             })
-            .catch((error) =>
-              handleApiError(error, "Error happened while creating folder")
-            );
+            .catch((error) => handleApiError(error, "Error happened while creating folder"));
         };
 
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: "Creating new folder",
-            description:
-              "Dont use spaces, localised symbols or emojies. This can affect problems",
+            description: "Dont use spaces, localised symbols or emojies. This can affect problems",
             actionButtons: [
               {
                 icon: "Ban",
@@ -573,8 +554,7 @@ export const useFileManagerOperations = ({
       },
 
       handleRename: (selectedFile: Items, selectedFolder: FolderList) => {
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
         const includesFolder = selectedFile.type === ItemType.FOLDER;
         const handleRenameSubmit = (folderName: string) => {
           handleClose();
@@ -601,17 +581,14 @@ export const useFileManagerOperations = ({
                 ),
               });
             })
-            .catch((error) =>
-              handleApiError(error, "Error happened while renaming file")
-            );
+            .catch((error) => handleApiError(error, "Error happened while renaming file"));
         };
 
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: `Renaming ${selectedFile.name}`,
-            description:
-              "Dont use spaces, localised symbols or emojies. This can affect problems",
+            description: "Dont use spaces, localised symbols or emojies. This can affect problems",
             actionButtons: [
               {
                 icon: "Ban",
@@ -637,8 +614,7 @@ export const useFileManagerOperations = ({
       },
 
       handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => {
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
         const handleDuplicateSubmit = () => {
           handleClose();
@@ -653,24 +629,19 @@ export const useFileManagerOperations = ({
                 timer: 1500,
                 message: (
                   <>
-                    Selected file <strong>{selectedFile.name}</strong>{" "}
-                    successfully duplicated
+                    Selected file <strong>{selectedFile.name}</strong> successfully duplicated
                   </>
                 ),
               });
             })
-            .catch((error) =>
-              handleApiError(error, "Error happened while duplicating file")
-            );
+            .catch((error) => handleApiError(error, "Error happened while duplicating file"));
         };
 
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: `Duplicating ${selectedFile.name}`,
-            description: (
-              <>New file will be named &quot;copy_of_[original_name]&quot;</>
-            ),
+            description: <>New file will be named &quot;copy_of_[original_name]&quot;</>,
             actionButtons: [
               {
                 icon: "Ban",
@@ -691,15 +662,9 @@ export const useFileManagerOperations = ({
         });
       },
 
-      handleCreateZip: (
-        selectedFiles: Set<Items>,
-        selectedFolder: FolderList
-      ) => {
-        const files: string[] = Array.from(selectedFiles).map(
-          (item: Items) => item.path
-        );
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+      handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => {
+        const files: string[] = Array.from(selectedFiles).map((item: Items) => item.path);
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
         const handleArchiveSubmit = (fileName: string) => {
           handleClose();
@@ -719,27 +684,19 @@ export const useFileManagerOperations = ({
                 message: (
                   <>
                     Selected <strong />
-                    {selectedFiles.size} items are successfully archived into
-                    file <strong>{fileName}</strong>
+                    {selectedFiles.size} items are successfully archived into file <strong>{fileName}</strong>
                   </>
                 ),
               });
             })
-            .catch((error) =>
-              handleApiError(error, "Error happened while creating archive")
-            );
+            .catch((error) => handleApiError(error, "Error happened while creating archive"));
         };
 
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: `Creating archive for ${selectedFiles.size} items`,
-            description: (
-              <>
-                Dont use spaces, localised symbols or emojies. This can affect
-                problems
-              </>
-            ),
+            description: <>Dont use spaces, localised symbols or emojies. This can affect problems</>,
             actionButtons: [
               {
                 icon: "Ban",
@@ -765,8 +722,7 @@ export const useFileManagerOperations = ({
       },
 
       handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => {
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
 
         const handleExtractSubmit = () => {
           handleClose();
@@ -789,18 +745,14 @@ export const useFileManagerOperations = ({
                 message: <>Successfully extracted selected archive</>,
               });
             })
-            .catch((error) =>
-              handleApiError(error, "Error happened while extracting archive")
-            );
+            .catch((error) => handleApiError(error, "Error happened while extracting archive"));
         };
 
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
             title: `Extracting archive ${selectedFile.name}`,
-            description: (
-              <>Do you want extract selected archive in this folder</>
-            ),
+            description: <>Do you want extract selected archive in this folder</>,
             actionButtons: [
               {
                 icon: "Ban",
@@ -822,8 +774,7 @@ export const useFileManagerOperations = ({
       },
 
       handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => {
-        const handleCloseEdit = () =>
-          dispatch({ type: ActionTypes.SET_FILEEDIT_DATA, payload: null });
+        const handleCloseEdit = () => dispatch({ type: ActionTypes.SET_FILEEDIT_DATA, payload: null });
         const handleSubmitEdit = (data: SaveFileParams) => {
           apiClient!
             .saveFile(data)
@@ -842,9 +793,7 @@ export const useFileManagerOperations = ({
                 ),
               });
             })
-            .catch((error) =>
-              handleApiError(error, "Error happened while saving")
-            );
+            .catch((error) => handleApiError(error, "Error happened while saving"));
         };
         dispatch({
           type: ActionTypes.SET_FILEEDIT_DATA,
@@ -857,14 +806,9 @@ export const useFileManagerOperations = ({
       },
 
       handleGetInfo: (selectedFile: Items) => {
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
         const isImage =
-          selectedFile.type === ItemType.FILE &&
-          checkSelectedFileType(
-            ItemExtensionCategoryFilter.IMAGE,
-            selectedFile
-          );
+          selectedFile.type === ItemType.FILE && checkSelectedFileType(ItemExtensionCategoryFilter.IMAGE, selectedFile);
 
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
@@ -896,10 +840,8 @@ export const useFileManagerOperations = ({
                     <b>Modified</b> : {convertDate(selectedFile.modified)}
                   </li>
                   <li>
-                    <b>Permissions</b> : Others -
-                    {selectedFile.premissions?.others}, Group -
-                    {selectedFile.premissions?.group}, Owner -
-                    {selectedFile.premissions?.owner}
+                    <b>Permissions</b> : Others -{selectedFile.premissions?.others}, Group -
+                    {selectedFile.premissions?.group}, Owner -{selectedFile.premissions?.owner}
                   </li>
                 </ul>
                 {isImage && (
@@ -925,8 +867,7 @@ export const useFileManagerOperations = ({
       },
 
       handlePreview: (selectedFile: FileType) => {
-        const handleClose = () =>
-          dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
+        const handleClose = () => dispatch({ type: ActionTypes.SET_POPUP_DATA, payload: null });
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
@@ -971,8 +912,7 @@ export const useFileManagerOperations = ({
 
       handleUploadFiles: (files, selectedFolder) => {
         const fileMaps: { name: string; path: string }[] = [];
-        const handleCloseEdit = () =>
-          dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: null });
+        const handleCloseEdit = () => dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: null });
 
         const formData = new FormData();
         formData.append("path", selectedFolder.path);
@@ -1000,9 +940,7 @@ export const useFileManagerOperations = ({
               ),
             });
           })
-          .catch((error) =>
-            handleApiError(error, "Error happened while uploading files.")
-          );
+          .catch((error) => handleApiError(error, "Error happened while uploading files."));
       },
 
       handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => {
@@ -1014,9 +952,7 @@ export const useFileManagerOperations = ({
           }
           return item.path;
         });
-        const isSelectedItemDroppedIntoSelf = draggedItems.find(
-          (item) => item.id === destination.id
-        );
+        const isSelectedItemDroppedIntoSelf = draggedItems.find((item) => item.id === destination.id);
 
         if (isSelectedItemDroppedIntoSelf) {
           setMessage({

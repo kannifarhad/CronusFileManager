@@ -1,11 +1,11 @@
 import React from "react";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import { ButtonProps } from "@mui/material/Button";
+import type { ButtonProps } from "@mui/material/Button";
 import { StyledActionButton } from "./styled";
-import Icon from "./Icon";
+import Icon, { type IconName } from "./Icon";
 
 export interface ButtonItemType extends Omit<ButtonProps, "sx"> {
-  icon: string;
+  icon: IconName;
   label: string;
   onClick: (params: any) => void;
 }

@@ -1,15 +1,5 @@
 import { styled } from "@mui/material/styles";
-import {
-  Box,
-  Button,
-  Dialog,
-  Alert,
-  MenuItem,
-  List,
-  ListItem,
-  ButtonProps,
-  Popover,
-} from "@mui/material";
+import { Box, Button, Dialog, Alert, MenuItem, List, ListItem, type ButtonProps, Popover } from "@mui/material";
 
 export const StyledButtonGroupWrapper = styled(Box, {
   shouldForwardProp: (prop: string) => !["expanded"].includes(prop),
@@ -25,24 +15,20 @@ export const StyledButtonGroupWrapper = styled(Box, {
 // Define a new interface extending MUI ButtonProps with 'isActive'
 interface StyledButtonProps extends ButtonProps {}
 
-export const StyledButton = styled(Button)<StyledButtonProps>(
-  ({ style, theme, disabled }) => ({
-    fontSize: "14px",
-    padding: "10px 5px",
-    minWidth: "35px !important",
-    background: disabled
-      ? theme.cronus.iconButton.background
-      : theme.cronus.iconButton.backgroundEnabled,
-    borderColor: theme.cronus.iconButton.borderColor,
-    "& .buttonTitle": {
-      fontSize: "12px",
-      textTransform: "none",
-      lineHeight: "11px",
-      padding: "0px 5px",
-    },
-    ...style,
-  })
-);
+export const StyledButton = styled(Button)<StyledButtonProps>(({ style, theme, disabled }) => ({
+  fontSize: "14px",
+  padding: "10px 5px",
+  minWidth: "35px !important",
+  background: disabled ? theme.cronus.iconButton.background : theme.cronus.iconButton.backgroundEnabled,
+  borderColor: theme.cronus.iconButton.borderColor,
+  "& .buttonTitle": {
+    fontSize: "12px",
+    textTransform: "none",
+    lineHeight: "11px",
+    padding: "0px 5px",
+  },
+  ...style,
+}));
 export const StyledActionButton = styled(Button)(({}) => ({
   fontSize: "14px",
   padding: "10px 15px",

@@ -7,11 +7,7 @@ import { toAbsoluteUrl, convertDate, classNames } from "../../../helpers";
 import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from "../styled";
 import { FILE_EXTENSION_MAP } from "../../../config";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
-import {
-  FolderType,
-  ItemMoveActionTypeEnum,
-  ContextMenuTypeEnum,
-} from "../../../types";
+import { type FolderType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../types";
 
 const FolderItem: React.FC<{
   item: FolderType;
@@ -41,9 +37,7 @@ const FolderItem: React.FC<{
   );
 
   const isCuted = useMemo(
-    () =>
-      bufferedItems.type === ItemMoveActionTypeEnum.CUT &&
-      bufferedItems.files.has(item),
+    () => bufferedItems.type === ItemMoveActionTypeEnum.CUT && bufferedItems.files.has(item),
     [item, bufferedItems]
   );
   const {

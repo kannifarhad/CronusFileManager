@@ -1,5 +1,6 @@
 export const LOCASTORAGE_SETTINGS_KEY = "CRONUS_SETTINGS";
 export const VOLUME_SETTINGS_LIST = "";
+
 export const FILE_EXTENSION_MAP = {
   icons: {
     ".png": "/img/files/png.svg",

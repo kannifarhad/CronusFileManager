@@ -4,7 +4,7 @@ import TopBarButtonGroups from "./TopBarButtonGroups";
 import TopBarRightMenus from "./TopBarRightMenus";
 import { SettingsMenuEnum } from "./Settings/constants";
 import { TopBarWrapper } from "./styled";
-import { Button } from "../../types";
+import type { Button } from "../../types";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import useGenerateActionButtons from "../../Hooks/useGenerateActionButtons";
 

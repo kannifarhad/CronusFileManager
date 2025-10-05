@@ -1,7 +1,7 @@
-import React, { memo, useCallback } from "react";
+import { memo, useCallback } from "react";
 import { StyledSelectCheckbox, StyledPrivateIcon } from "../styled";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
-import { Items } from "../../../types";
+import { type Items } from "../../../types";
 import { wasMultiSelectKeyUsed } from "../../../helpers";
 
 function ItemSelectButton({ item }: { item: Items }) {
@@ -27,14 +27,7 @@ function ItemSelectButton({ item }: { item: Items }) {
 
   if (item.private) return <StyledPrivateIcon className="icon-lock" />;
 
-  return (
-    <StyledSelectCheckbox
-      checked={isSelected}
-      onChange={handleClick}
-      onClick={handleClick}
-      value={item.id}
-    />
-  );
+  return <StyledSelectCheckbox checked={isSelected} onChange={handleClick} onClick={handleClick} value={item.id} />;
 }
 
 export default memo(ItemSelectButton);

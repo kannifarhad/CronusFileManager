@@ -1,22 +1,11 @@
-import React, { memo } from "react";
-import {
-  AutoSizer,
-  Grid,
-  GridCellRenderer,
-  GridProps,
-} from "react-virtualized";
-import { ItemsList } from "../../../types";
+import { memo } from "react";
+import { AutoSizer, Grid, type GridCellRenderer, type GridProps } from "react-virtualized";
+import { type ItemsList } from "../../../types";
 import GridItemRender from "./GridItemRender";
 import { ITEM_SIZE } from "./GridView";
 
 const VirtualizedGrid = ({ items }: { items: ItemsList }) => {
-  const cellRenderer: GridCellRenderer = ({
-    columnIndex,
-    key,
-    rowIndex,
-    style,
-    parent,
-  }) => {
+  const cellRenderer: GridCellRenderer = ({ columnIndex, key, rowIndex, style, parent }) => {
     // Type assertion for parent to include columnCount
     const { columnCount } = parent.props as GridProps;
 

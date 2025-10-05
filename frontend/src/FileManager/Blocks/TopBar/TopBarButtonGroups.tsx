@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Tooltip, ButtonGroup, useTheme } from "@mui/material";
 import { StyledButton, StyledButtonGroupWrapper } from "../../Elements/styled";
-import { Button } from "../../types";
+import { type Button } from "../../types";
 import Icon from "../../Elements/Icon";
 
 interface ButtonGroupSimpleProps {

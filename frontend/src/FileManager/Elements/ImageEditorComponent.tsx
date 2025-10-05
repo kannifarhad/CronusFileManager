@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/sort-comp */
-import React, { Component, createRef, RefObject } from "react";
+import React, { Component, createRef, type RefObject } from "react";
 import TuiImageEditor from "tui-image-editor";
 
 interface ImageEditorProps {
@@ -10,7 +10,7 @@ interface TuiImageEditorType extends TuiImageEditor {
   off(eventName: string): void;
 }
 export default class ImageEditor extends Component<ImageEditorProps> {
-  rootEl: RefObject<HTMLDivElement>;
+  rootEl: RefObject<HTMLDivElement | null>;
 
   imageEditorInst: TuiImageEditorType | null = null;
 

@@ -1,22 +1,16 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import {
   S3Client,
   PutObjectCommand,
   CopyObjectCommand,
-  GetObjectCommand,
   ListObjectsCommand,
   ListObjectsV2Command,
   DeleteObjectCommand,
   DeleteObjectsCommand,
-  CommonPrefix,
-  _Object as ContentsType,
+  type CommonPrefix,
+  type _Object as ContentsType,
 } from "@aws-sdk/client-s3";
-import {
+import type {
   PathParam,
-  RenameFilesParams,
-  CreateNewFileParams,
   CreateNewFolderParams,
   PasteFilesParams,
   DeleteItemsParams,
@@ -25,14 +19,12 @@ import {
   SaveFileParams,
   GetFoldersListResponse,
   GetFilesListResponse,
-  IServerConnection,
   SearchParams,
 } from "./types";
-import { FolderList, ItemType, S3BucketInstance, FileType } from "../types";
+import { IServerConnection } from "./types";
+import { ItemType, type FolderList, type S3BucketInstance, type FileType } from "../types";
 
-const convertCommonPrefixes = (
-  commonPrefixes?: CommonPrefix[]
-): FolderList[] => {
+const convertCommonPrefixes = (commonPrefixes?: CommonPrefix[]): FolderList[] => {
   if (!Array.isArray(commonPrefixes)) {
     return [];
   }
@@ -152,9 +144,7 @@ class S3Connection extends IServerConnection {
       const listResponse = await this.s3Client.send(listCommand);
 
       if (!listResponse.Contents || listResponse.Contents.length === 0) {
-        console.warn(
-          `Directory '${path}' is already empty or there are no more items to delete.`
-        );
+        console.warn(`Directory '${path}' is already empty or there are no more items to delete.`);
         return;
       }
 
@@ -191,10 +181,7 @@ class S3Connection extends IServerConnection {
         });
       }
     } catch (error) {
-      console.error(
-        `Error deleting objects from path '${path}', retrying...`,
-        error
-      );
+      console.error(`Error deleting objects from path '${path}', retrying...`, error);
       // Retry the operation if there's an error, up to MAX_RETRIES
       await this.deleteObjectsRecursively({
         path,
@@ -251,10 +238,7 @@ class S3Connection extends IServerConnection {
     });
 
     const response = await this.s3Client.send(command);
-    const result = [
-      ...convertCommonPrefixes(response?.CommonPrefixes),
-      ...convertContents(response?.Contents),
-    ];
+    const result = [...convertCommonPrefixes(response?.CommonPrefixes), ...convertContents(response?.Contents)];
     return result;
   }
 
@@ -324,18 +308,13 @@ class S3Connection extends IServerConnection {
   // Method to delete objects from S3
   async deleteItems({ items }: DeleteItemsParams): Promise<any> {
     const deletePromises = items.map((item) =>
-      this.s3Client.send(
-        new DeleteObjectCommand({ Bucket: this.bucketName, Key: item })
-      )
+      this.s3Client.send(new DeleteObjectCommand({ Bucket: this.bucketName, Key: item }))
     );
     return Promise.all(deletePromises);
   }
 
   // Method to copy files within S3
-  async copyFilesToFolder({
-    items,
-    destination,
-  }: PasteFilesParams): Promise<any> {
+  async copyFilesToFolder({ items, destination }: PasteFilesParams): Promise<any> {
     const copyPromises = items.map((item) => {
       const fileName = item.match(/[^/]+\/?$/)?.[0] || item;
       return this.s3Client.send(
@@ -350,21 +329,12 @@ class S3Connection extends IServerConnection {
   }
 
   // Method to move (cut) files within S3 (copy + delete)
-  async cutFilesToFolder({
-    items,
-    destination,
-  }: PasteFilesParams): Promise<any> {
+  async cutFilesToFolder({ items, destination }: PasteFilesParams): Promise<any> {
     await this.copyFilesToFolder({ items, destination });
     return this.deleteItems({ items });
   }
 
-  async renameFiles({
-    path,
-    newname,
-  }: {
-    path: string;
-    newname: string;
-  }): Promise<void> {
+  async renameFiles({ path, newname }: { path: string; newname: string }): Promise<void> {
     // Step 1: Get the root/base path without the last segment
     const rootPath = removeLastSegment(path); // Base path, minus the last segment
 
@@ -400,9 +370,7 @@ class S3Connection extends IServerConnection {
       const remainingPath = oldKey.slice(path.length); // Get the part of the path after the original path
 
       // If renaming a file, there should be no trailing slash in the new name
-      const newKey = isFolder
-        ? `${rootPath}${newname}/${remainingPath}`
-        : `${rootPath}${newname}${remainingPath}`;
+      const newKey = isFolder ? `${rootPath}${newname}/${remainingPath}` : `${rootPath}${newname}${remainingPath}`;
 
       // Copy each object to the new location (with new name in the path)
       await this.s3Client.send(
@@ -418,11 +386,7 @@ class S3Connection extends IServerConnection {
     await Promise.all(copyPromises);
 
     // Step 4: Only create a new "empty" folder if it's a folder and it's empty
-    if (
-      isFolder &&
-      listResponse.Contents.length === 1 &&
-      listResponse.Contents[0].Key === path
-    ) {
+    if (isFolder && listResponse.Contents.length === 1 && listResponse.Contents[0].Key === path) {
       // If it's an empty folder, create a new "empty" folder at the new location
       await this.s3Client.send(
         new PutObjectCommand({
@@ -447,9 +411,7 @@ class S3Connection extends IServerConnection {
   async emptyDir({ path }: { path: string }): Promise<void> {
     // Step 1: Ensure the path is a folder (folders end with a '/')
     if (!path.endsWith("/")) {
-      console.error(
-        "The provided path is not a folder. Path must end with a trailing slash."
-      );
+      console.error("The provided path is not a folder. Path must end with a trailing slash.");
       return;
     }
 
@@ -479,9 +441,7 @@ class S3Connection extends IServerConnection {
     const newName = generateCopyName(lastSegment); // Generate new name with _copy and timestamp
 
     const rootPath = path.replace(lastSegment, ""); // Get the root path (parent directory)
-    const newRootPath = isFolder
-      ? `${rootPath}${newName}/`
-      : `${rootPath}${newName}`; // New folder or file path
+    const newRootPath = isFolder ? `${rootPath}${newName}/` : `${rootPath}${newName}`; // New folder or file path
 
     // Step 3: Copy all items under the original path to the new location
     const copyPromises = listResponse.Contents.map(async (object) => {
@@ -507,35 +467,27 @@ class S3Connection extends IServerConnection {
     await Promise.all(copyPromises);
   }
 
-  async search({ path, text }: SearchParams): Promise<any> {
-    throw new Error(
-      `search files is not supported directly by S3. ${this.bucketName}`
-    );
+  async search(_: SearchParams): Promise<any> {
+    throw new Error(`search files is not supported directly by S3. ${this.bucketName}`);
   }
 
   // Method to unzip a file (you'd likely need a third-party library to handle actual unzipping)
-  async unzip({ file, destination }: UnzipParams): Promise<any> {
+  async unzip(_: UnzipParams): Promise<any> {
     // Logic to unzip the file using a library and re-upload extracted files to S3
-    throw new Error(
-      `Archiving files is not supported directly by S3. ${this.bucketName}`
-    );
+    throw new Error(`Archiving files is not supported directly by S3. ${this.bucketName}`);
   }
 
   // Method to archive files (you'd likely need to handle zipping and uploading)
-  async archive({ files, destination, name }: ArchiveParams): Promise<any> {
+  async archive(_: ArchiveParams): Promise<any> {
     // Logic to zip files and upload the archive
-    throw new Error(
-      `Archiving files is not supported directly by S3. ${this.bucketName}`
-    );
+    throw new Error(`Archiving files is not supported directly by S3. ${this.bucketName}`);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getThumb(filePath: string): string {
     return `${filePath}`;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  async downloadFile({ path }: PathParam) {
+  async downloadFile(_: PathParam) {
     throw new Error("Can't generate downlaod file path in front connection");
   }
 }

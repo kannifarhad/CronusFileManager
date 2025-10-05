@@ -1,8 +1,4 @@
-import {
-  ImagesThumbTypeEnum,
-  OrderByFieldEnum,
-  SortByFieldEnum,
-} from "../../../types";
+import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum } from "../../../types";
 
 // eslint-disable-next-line no-shadow
 export enum SettingsMenuEnum {

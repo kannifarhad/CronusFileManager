@@ -1,6 +1,6 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { Box } from "@mui/material";
-import { Items, ItemsList } from "../../../types";
+import type { Items, ItemsList } from "../../../types";
 import GridItemRender from "./GridItemRender";
 import { ITEM_SIZE } from "./GridView";
 

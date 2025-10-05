@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import ButtonList, { ButtonItemType } from "./ButtonGroup";
-import { DroppedFile, organizeFiles } from "../helpers";
+import ButtonList, { type ButtonItemType } from "./ButtonGroup";
+import { type DroppedFile, organizeFiles } from "../helpers";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
 import { useFileManagerState } from "../ContextStore/FileManagerContext";
 import DropzoneFileList from "./DropzoneFileList";
@@ -19,8 +19,7 @@ export default function UploadFiles() {
       "text/*": [],
       "application/pdf": [],
       "application/msword": [],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
     },
     onDrop: (acceptedFiles: File[]) => {
       setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
@@ -49,19 +48,13 @@ export default function UploadFiles() {
 
   const acceptedFiles = useMemo(() => {
     const fileTree = organizeFiles(files as unknown as DroppedFile[]);
-    return (
-      <DropzoneFileList
-        tree={fileTree}
-        onRemove={removeFile}
-        onRemoveFolder={removeFolder}
-      />
-    );
+    return <DropzoneFileList tree={fileTree} onRemove={removeFile} onRemoveFolder={removeFolder} />;
   }, [files, removeFile, removeFolder]);
 
   const buttons: ButtonItemType[] = useMemo(
     () => [
       {
-        icon: "icon-save",
+        icon: "Save",
         label: "Upload Files To Server",
         onClick: () => handleUploadFiles(files, selectedFolder!),
         disabled: !(files.length > 0),
@@ -83,9 +76,7 @@ export default function UploadFiles() {
     <StyledDropZoneSection>
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} />
-        <p>
-          Drag `&apos;n`&apos; drop some files here, or click to select files
-        </p>
+        <p>Drag `&apos;n`&apos; drop some files here, or click to select files</p>
       </div>
       <StyledAcceptedFilesList>{acceptedFiles}</StyledAcceptedFilesList>
       <ButtonList buttons={buttons} />

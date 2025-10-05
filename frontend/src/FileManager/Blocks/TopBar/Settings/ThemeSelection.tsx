@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { Grid2 as Grid, FormLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { themeList } from "../../../Hooks/useCurrentTheme";

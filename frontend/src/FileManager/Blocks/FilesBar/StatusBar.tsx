@@ -1,4 +1,4 @@
-import React, { memo, FC, MouseEvent } from "react";
+import { memo, type FC, type MouseEvent } from "react";
 import { Box, Button, Collapse } from "@mui/material";
 import { useFileManagerState } from "../../ContextStore/FileManagerContext";
 import { ItemMoveActionTypeEnum } from "../../types";
@@ -22,10 +22,7 @@ const StatusBar: FC = () => {
         {bufferedItems.files.size > 0 && (
           <Box className="text">
             <b>{bufferedItems.files.size}</b>
-            {bufferedItems.type === ItemMoveActionTypeEnum.CUT
-              ? "cut"
-              : "copied"}{" "}
-            items in buffer (
+            {bufferedItems.type === ItemMoveActionTypeEnum.CUT ? "cut" : "copied"} items in buffer (
             <Button
               href="#"
               onClick={(e: MouseEvent<HTMLAnchorElement>) => {

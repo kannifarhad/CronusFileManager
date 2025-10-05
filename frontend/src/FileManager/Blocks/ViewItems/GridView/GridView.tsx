@@ -1,14 +1,8 @@
-import React, { memo, useCallback, useState } from "react";
-import {
-  DndContext,
-  DragOverlay,
-  useSensors,
-  useSensor,
-  PointerSensor,
-} from "@dnd-kit/core";
+import { memo, useCallback, useState } from "react";
+import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from "@dnd-kit/core";
 import { StyledGridViewContainer, StyledEmptyFolderContainer } from "../styled";
 import { useFileManagerState } from "../../../ContextStore/FileManagerContext";
-import { Items } from "../../../types";
+import { type Items } from "../../../types";
 import DraggedElementsStack from "./DraggedElementsStack";
 import VirtualizedGrid from "./VirtualizedGrid";
 import useText from "../../../Hooks/useTexts";
@@ -37,10 +31,7 @@ const GridView = () => {
   const onDragEnd = useCallback(
     (event: any) => {
       const folderItem = event.over?.data?.current;
-      const droppedItems: Items[] =
-        selectedFiles.size > 0
-          ? Array.from(selectedFiles)
-          : ([activeItem] as Items[]);
+      const droppedItems: Items[] = selectedFiles.size > 0 ? Array.from(selectedFiles) : ([activeItem] as Items[]);
       if (folderItem && droppedItems.length > 0) {
         handleDragEnd(droppedItems, folderItem);
       }
@@ -65,21 +56,11 @@ const GridView = () => {
 
   return (
     <StyledGridViewContainer>
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragEnd={onDragEnd}
-        sensors={sensors}
-      >
+      <DndContext onDragStart={handleDragStart} onDragEnd={onDragEnd} sensors={sensors}>
         <VirtualizedGrid items={filesList} />
         <DragOverlay>
           {activeItem ? (
-            <DraggedElementsStack
-              filesList={
-                selectedFiles.size > 0
-                  ? Array.from(selectedFiles)
-                  : [activeItem]
-              }
-            />
+            <DraggedElementsStack filesList={selectedFiles.size > 0 ? Array.from(selectedFiles) : [activeItem]} />
           ) : null}
         </DragOverlay>
       </DndContext>

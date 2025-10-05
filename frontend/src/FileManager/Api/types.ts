@@ -1,4 +1,4 @@
-import { FileType, FolderList, ItemsList } from "../types";
+import type { FileType, FolderList, ItemsList } from "../types";
 
 export interface PathParam {
   path: string;
