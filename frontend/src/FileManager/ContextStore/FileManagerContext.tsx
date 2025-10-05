@@ -40,6 +40,10 @@ export const initialState: FileManagerState = {
     text: null,
     prevSelectedFolder: null,
   },
+  search: {
+    text: null,
+    prevSelectedFolder: null,
+  },
 };
 
 const FileManagerStateContext = createContext<CreateContextType | undefined>(undefined);
