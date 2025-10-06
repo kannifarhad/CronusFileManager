@@ -1,6 +1,6 @@
 const config = {
   region: "us-east-1",
-  endpoint: "http://192.168.1.6:9001",
+  endpoint: process.env.S3_ENDPOINT,
   bucket: "cronusfilemanager",
   credentials: {
     accessKeyId: process.env.S3_ACCESS_KEY,

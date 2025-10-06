@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-/* eslint-disable react/prop-types */
 import React, { memo, forwardRef, useImperativeHandle } from "react";
-import { FileManagerProps } from "./types";
-import { FileManagerProvider } from "./ContextStore/FileManagerContext";
+import type { FileManagerProps } from "./types";
+import { FileManagerProvider } from "./store/FileManagerContext";
 import FileManager from "./FileManager";
 
 const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
@@ -15,10 +13,7 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
     console.log("FileManagerWithProvider rerender");
 
     return (
-      <FileManagerProvider
-        selectItemCallback={selectItemCallback}
-        volumesList={volumesList}
-      >
+      <FileManagerProvider selectItemCallback={selectItemCallback} volumesList={volumesList}>
         <FileManager height={height ?? 300} />
       </FileManagerProvider>
     );

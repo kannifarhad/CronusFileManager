@@ -1,11 +1,12 @@
-/* eslint-disable no-shadow, no-use-before-define */
-import { AlertColor } from "@mui/material/Alert";
-import React, { ReactNode } from "react";
-import { Theme } from "@mui/system";
-import { FileWithPath } from "react-dropzone";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { type ReactNode } from "react";
+import { type AlertColor } from "@mui/material";
+import { type Theme } from "@mui/system";
+import { type FileWithPath } from "react-dropzone";
 import { FILE_EXTENSION_MAP } from "./config";
-import { SaveFileParams } from "./Api/types";
-import { ButtonItemType } from "./Elements/ButtonGroup";
+import { type SaveFileParams } from "./apiSDKs/types";
+import { type ButtonItemType } from "./components/elements/ButtonGroup";
+import type { IconName } from "./components/elements/Icon";
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -208,7 +209,7 @@ export interface FileManagerProps {
 }
 
 export interface Button {
-  icon: string;
+  icon: IconName;
   title: string;
   onClick: (e: any) => void;
   disabled?: boolean;
@@ -223,19 +224,10 @@ export interface AvailableButtons {
 }
 
 export interface Operations {
-  handleSelectFolder: (
-    value: FolderType,
-    history?: boolean,
-    clearBuffer?: boolean,
-    showMessage?: boolean
-  ) => void;
-  handleAddSelected: (item: Items, multiSelect?: Boolean) => void;
+  handleSelectFolder: (value: FolderType, history?: boolean, clearBuffer?: boolean, showMessage?: boolean) => void;
+  handleAddSelected: (item: Items, multiSelect?: boolean) => void;
   handleReloadFolderTree: () => void;
-  handleContextClick: (args: {
-    item: Items | null;
-    event: React.MouseEvent;
-    menuType: ContextMenuTypeEnum;
-  }) => void;
+  handleContextClick: (args: { item: Items | null; event: React.MouseEvent; menuType: ContextMenuTypeEnum }) => void;
   handleClearBuffer: () => void;
   handleContextClose: () => void;
   handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => void;
@@ -250,28 +242,19 @@ export interface Operations {
   handleGotoParent: (folderList: FolderList) => void;
   handleCopy: () => void;
   handleCut: () => void;
-  handlePaste: (
-    bufferedItems: BufferedItemsType,
-    selectedFolder: FolderList
-  ) => void;
+  handlePaste: (bufferedItems: BufferedItemsType, selectedFolder: FolderList) => void;
   handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
   handleEmptyFolder: (selectedFolder: FolderList) => void;
   handleNewFile: (selectedFolder: FolderList) => void;
   handleNewFolder: (selectedFolder: FolderList) => void;
   handleRename: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => void;
-  handleCreateZip: (
-    selectedFiles: Set<Items>,
-    selectedFolder: FolderList
-  ) => void;
+  handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
   handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
   handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => void;
   handleToggleFullScreen: () => void;
   handleToggleUploadPopUp: (forceShow?: boolean) => void;
-  handleUploadFiles: (
-    files: FileWithPath[],
-    selectedFolder: FolderList
-  ) => void;
+  handleUploadFiles: (files: FileWithPath[], selectedFolder: FolderList) => void;
   handlingHistory: (historyInfo: HistoryStep, index: number) => void;
   handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
   handleSelectCallback: (path: string) => void;
@@ -357,10 +340,7 @@ export interface S3BucketInstanceV2 {
   id: string;
   name: string;
 }
-export type VolumeListItem =
-  | ServerInstance
-  | S3BucketInstance
-  | S3BucketInstanceV2;
+export type VolumeListItem = ServerInstance | S3BucketInstance | S3BucketInstanceV2;
 export type VolumeListType = VolumeListItem[];
 
 export interface ThemeItemConfig {
