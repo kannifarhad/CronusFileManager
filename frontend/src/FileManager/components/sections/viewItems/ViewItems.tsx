@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import GridView from "./gridView/GridView";
+import GridView from "./gridLayout/GridView";
 import ListView from "./listView/ListView";
 import { ViewTypeEnum } from "../../../types";
 import { useFileManagerState } from "../../../store/FileManagerContext";

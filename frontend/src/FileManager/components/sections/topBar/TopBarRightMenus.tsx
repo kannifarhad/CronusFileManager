@@ -1,7 +1,7 @@
 import React, { memo, useState, forwardRef, useImperativeHandle, useMemo } from "react";
 import { Box } from "@mui/material";
-import Settings from "./settings";
-import { SettingsMenuEnum } from "./settings/constants";
+import Settings from "./settingsMenu";
+import { SettingsMenuEnum } from "./settingsMenu/constants";
 import { SettingsPopover } from "./styled";
 import Searching from "./Searching";
 

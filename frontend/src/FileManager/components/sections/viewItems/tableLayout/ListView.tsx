@@ -3,7 +3,7 @@ import React, { memo, useCallback, useState } from "react";
 import { TableContainer, Box } from "@mui/material";
 import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from "@dnd-kit/core";
 import { List as VirtualizedList, AutoSizer } from "react-virtualized";
-import DraggedElementsStack from "../gridView/DraggedElementsStack";
+import DraggedElementsStack from "../gridLayout/DraggedElementsStack";
 import ListItemRender from "./ListItemRender";
 import { StyledListTable, StyledEmptyFolderContainer } from "../styled";
 import { useFileManagerState } from "../../../../store/FileManagerContext";

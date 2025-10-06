@@ -2,7 +2,7 @@ import React, { memo, useRef, useMemo, useCallback } from "react";
 import { Grid2 as Grid } from "@mui/material";
 import TopBarButtonGroups from "./TopBarButtonGroups";
 import TopBarRightMenus from "./TopBarRightMenus";
-import { SettingsMenuEnum } from "./settings/constants";
+import { SettingsMenuEnum } from "./settingsMenu/constants";
 import { TopBarWrapper } from "./styled";
 import type { Button } from "../../../types";
 import { useFileManagerState } from "../../../store/FileManagerContext";
