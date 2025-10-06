@@ -3,9 +3,9 @@ import { type AlertColor } from "@mui/material";
 import { type Theme } from "@mui/system";
 import { type FileWithPath } from "react-dropzone";
 import { FILE_EXTENSION_MAP } from "./config";
-import { type SaveFileParams } from "./Api/types";
-import { type ButtonItemType } from "./Elements/ButtonGroup";
-import type { IconName } from "./Elements/Icon";
+import { type SaveFileParams } from "./api/types";
+import { type ButtonItemType } from "./components/elements/ButtonGroup";
+import type { IconName } from "./components/elements/Icon";
 
 declare module "@mui/material/styles" {
   interface Theme {

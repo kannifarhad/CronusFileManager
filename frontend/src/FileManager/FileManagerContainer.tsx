@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { Paper, Grid } from "@mui/material";
-import TopBar from "./Blocks/TopBar";
-import FolderBar from "./Blocks/FolderBar";
-import FilesBar from "./Blocks/FilesBar";
+import TopBar from "./components/sections/topBar";
+import FolderBar from "./components/sections/folderBar";
+import FilesBar from "./components/sections/filesBar";
 
 const FileManager: React.FC<{}> = () => (
   <Paper

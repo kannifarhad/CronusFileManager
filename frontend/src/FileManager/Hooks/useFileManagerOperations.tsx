@@ -24,7 +24,7 @@ import {
   ItemMoveActionTypeEnum,
   ItemExtensionCategoryFilter,
 } from "../types";
-import { type SaveFileParams } from "../Api/types";
+import { type SaveFileParams } from "../api/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
 import useApiController from "./useApiController";
 
@@ -587,7 +587,11 @@ export const useFileManagerOperations = ({
         dispatch({
           type: ActionTypes.SET_POPUP_DATA,
           payload: {
-            title: `Renaming ${selectedFile.name}`,
+            title: (
+              <>
+                Renaming item - <i>{selectedFile.name}</i>
+              </>
+            ),
             description: "Dont use spaces, localised symbols or emojies. This can affect problems",
             actionButtons: [
               {

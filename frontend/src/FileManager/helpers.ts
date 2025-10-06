@@ -1,5 +1,5 @@
 import { FILE_EXTENSION_MAP } from "./config";
-import type { ContentIconType } from "./Elements/ContentIcons";
+import type { ContentIconType } from "./components/elements/ContentIcons";
 import { OrderByFieldEnum, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "./types";
 import type { FileType, ItemsList, OrderByType, FolderType, FolderList } from "./types";
 

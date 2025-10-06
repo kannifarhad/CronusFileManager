@@ -11,7 +11,7 @@ export const FILE_EXTENSION_MAP = {
     ".xls": "xls",
     ".pdf": "pdf",
     ".ppt": "ppt",
-    "": "svg",
+    ".svg": "svg",
     ".xml": "xml",
     ".psd": "psd",
     ".ai": "ai",

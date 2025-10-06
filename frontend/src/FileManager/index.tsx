@@ -1,6 +1,6 @@
 import React, { memo, forwardRef, useImperativeHandle } from "react";
 import type { FileManagerProps } from "./types";
-import { FileManagerProvider } from "./ContextStore/FileManagerContext";
+import { FileManagerProvider } from "./store/FileManagerContext";
 import FileManager from "./FileManager";
 
 const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(

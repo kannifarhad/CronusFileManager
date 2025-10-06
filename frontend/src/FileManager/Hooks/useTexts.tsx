@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import en from "../Assets/Translations/en";
+import en from "../assets/translations/en";
 
 const lang = "en";
 export const useText = () => {

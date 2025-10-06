@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { type FileManagerState, VolumeTypes } from "../types";
-import Ec2ServerConnection from "../Api/Ec2ServerConnection";
-import S3FrontConnection from "../Api/S3FrontConnection";
-import S3ServerConnection from "../Api/S3ServerConnection";
+import Ec2ServerConnection from "../api/Ec2ServerConnection";
+import S3FrontConnection from "../api/S3FrontConnection";
+import S3ServerConnection from "../api/S3ServerConnection";
 
 export const useApiController = (
   selectedVolume: FileManagerState["selectedVolume"]
