@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import type { ButtonObject, CreateContextType, FileManagerState } from "../types";
-import { ViewTypeEnum, ItemType, ItemExtensionCategoryFilter } from "../types";
+import type { ButtonObject, CreateContextType, FileManagerState } from "../../types";
+import { ViewTypeEnum, ItemType, ItemExtensionCategoryFilter } from "../../types";
 
 import { checkSelectedFileType } from "../helpers";
 

@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo } from "react";
 import { Box, Tooltip } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
-import { classNames, getFileIcon } from "../../../../helpers";
+import { classNames, getFileIcon } from "../../../../utils/helpers";
 import ItemSelectButton from "./ItemSelectButton";
 import { StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox } from "../styled";
 import { useFileManagerState } from "../../../../store/FileManagerContext";
@@ -54,6 +54,7 @@ const FileItem: React.FC<{
         return <ContentIcons name={getFileIcon(fileItem.extension)} />;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [handleGetThumb, settings.showImages]
   );
 

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FILE_EXTENSION_MAP } from "./config";
-import type { ContentIconType } from "./components/elements/ContentIcons";
-import { OrderByFieldEnum, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "./types";
-import type { FileType, ItemsList, OrderByType, FolderType, FolderList } from "./types";
+import { FILE_EXTENSION_MAP } from "../config";
+import type { ContentIconType } from "../components/elements/ContentIcons";
+import { OrderByFieldEnum, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "../types";
+import type { FileType, ItemsList, OrderByType, FolderType, FolderList } from "../types";
 
 export const sortFilter = (filesList: ItemsList, order: OrderByType): ItemsList => {
   // Helper function to sort items based on the field and order
@@ -232,7 +232,6 @@ function parseValue(arg: ClassValue): string {
 
   let classes = "";
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const key in arg as ClassDictionary) {
     if (hasOwn.call(arg, key) && (arg as ClassDictionary)[key]) {
       classes = appendClass(classes, key);
@@ -335,7 +334,6 @@ export function writeJsonToLocalStorage(key: string, data: any): void {
     const jsonData = JSON.stringify(data);
     localStorage.setItem(key, jsonData);
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Error writing JSON to localStorage:", error);
   }
 }
@@ -348,7 +346,6 @@ export function readJsonFromLocalStorage<T>(key: string): T | null {
     }
     return null;
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Error reading JSON from localStorage:", error);
     return null;
   }

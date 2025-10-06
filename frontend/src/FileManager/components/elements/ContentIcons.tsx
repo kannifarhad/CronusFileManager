@@ -1,5 +1,5 @@
 import React from "react";
-import { imagesMap } from "../../assets/icons/files";
+import { imagesMap } from "../../utils/assets/icons/files";
 
 export type ContentIconType = keyof typeof imagesMap;
 

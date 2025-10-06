@@ -3,7 +3,7 @@ import { memo, useCallback } from "react";
 import { StyledSelectCheckbox, StyledPrivateIcon } from "../styled";
 import { useFileManagerState } from "../../../../store/FileManagerContext";
 import { type Items } from "../../../../types";
-import { wasMultiSelectKeyUsed } from "../../../../helpers";
+import { wasMultiSelectKeyUsed } from "../../../../utils/helpers";
 
 function ItemSelectButton({ item }: { item: Items }) {
   const {

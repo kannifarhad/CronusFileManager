@@ -6,7 +6,7 @@ import { useFileManagerState } from "../../../../store/FileManagerContext";
 import { type Items } from "../../../../types";
 import DraggedElementsStack from "./DraggedElementsStack";
 import VirtualizedGrid from "./VirtualizedGrid";
-import useText from "../../../../hooks/useTexts";
+import useText from "../../../../utils/hooks/useTexts";
 
 export const ITEM_SIZE = 100;
 

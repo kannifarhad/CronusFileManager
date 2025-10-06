@@ -13,7 +13,7 @@ import {
 import Icon from "../../elements/Icon";
 import { StyledTopBarMenuItem } from "./styled";
 import { useFileManagerState } from "../../../store/FileManagerContext";
-import useText from "../../../hooks/useTexts";
+import useText from "../../../utils/hooks/useTexts";
 
 const Searching = () => {
   const [name, setName] = React.useState("");

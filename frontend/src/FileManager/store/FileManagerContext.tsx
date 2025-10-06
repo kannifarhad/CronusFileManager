@@ -1,10 +1,10 @@
 import React, { createContext, useReducer, type ReactNode, useMemo } from "react";
-import useFileManagerOperations from "../hooks/useFileManagerOperations";
+import useFileManagerOperations from "../utils/hooks/useFileManagerOperations";
 import type { FileManagerAction, CreateContextType, FileManagerState, VolumeListType } from "../types";
 import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum, ViewTypeEnum } from "../types";
 
 import fileManagerReducer from "./FileManagerReducer";
-import { readJsonFromLocalStorage } from "../helpers";
+import { readJsonFromLocalStorage } from "../utils/helpers";
 import { LOCASTORAGE_SETTINGS_KEY } from "../config";
 
 const settingsInitalState = {

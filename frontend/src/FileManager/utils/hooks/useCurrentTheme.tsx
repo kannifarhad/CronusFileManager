@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import dark from "../themes/dark";
 import light from "../themes/light";
-import { useFileManagerState } from "../store/FileManagerContext";
-import { type ThemeItemList } from "../types";
+import { useFileManagerState } from "../../store/FileManagerContext";
+import { type ThemeItemList } from "../../types";
 
 export const themeList: ThemeItemList = [
   {

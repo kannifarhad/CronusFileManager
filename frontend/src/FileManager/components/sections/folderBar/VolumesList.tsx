@@ -4,7 +4,7 @@ import { useFileManagerState } from "../../../store/FileManagerContext";
 import Icon from "../../elements/Icon";
 import { StyledVolumeMenuItem } from "./styled";
 import MenuItem from "./MenuItem";
-import { classNames } from "../../../helpers";
+import { classNames } from "../../../utils/helpers";
 
 const FolderTree = () => {
   const {

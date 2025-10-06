@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList, { type ButtonItemType } from "./ButtonGroup";
-import { type DroppedFile, organizeFiles } from "../../helpers";
+import { type DroppedFile, organizeFiles } from "../../utils/helpers";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
 import { useFileManagerState } from "../../store/FileManagerContext";
 import DropzoneFileList from "./DropzoneFileList";

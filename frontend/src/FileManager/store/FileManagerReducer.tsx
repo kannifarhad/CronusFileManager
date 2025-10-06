@@ -1,5 +1,5 @@
 import { LOCASTORAGE_SETTINGS_KEY } from "../config";
-import { sortFilter, addFoldersToTree, writeJsonToLocalStorage } from "../helpers";
+import { sortFilter, addFoldersToTree, writeJsonToLocalStorage } from "../utils/helpers";
 import { ItemMoveActionTypeEnum, HistoryStepTypeEnum, ActionTypes, VolumeTypes, ItemType } from "../types";
 import type { FileManagerAction, FileManagerState, FolderType } from "../types";
 

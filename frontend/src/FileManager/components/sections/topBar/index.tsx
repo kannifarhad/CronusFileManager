@@ -6,7 +6,7 @@ import { SettingsMenuEnum } from "./settings/constants";
 import { TopBarWrapper } from "./styled";
 import type { Button } from "../../../types";
 import { useFileManagerState } from "../../../store/FileManagerContext";
-import useGenerateActionButtons from "../../../hooks/useGenerateActionButtons";
+import useGenerateActionButtons from "../../../utils/hooks/useGenerateActionButtons";
 
 interface MenuRef {
   handleOpenMenu: (

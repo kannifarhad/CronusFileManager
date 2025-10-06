@@ -1,5 +1,5 @@
 import React from "react";
-import { iconMap } from "../../assets/icons/line";
+import { iconMap } from "../../utils/assets/icons/line";
 
 export type IconName = keyof typeof iconMap;
 

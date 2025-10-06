@@ -1,7 +1,7 @@
 import { memo, type FC } from "react";
 import { StyledFilesLoadingOverlay } from "./styled";
 import { useFileManagerState } from "../../../store/FileManagerContext";
-import useText from "../../../hooks/useTexts";
+import useText from "../../../utils/hooks/useTexts";
 
 const FilesLoadingOverlay: FC = () => {
   const { loading } = useFileManagerState();
