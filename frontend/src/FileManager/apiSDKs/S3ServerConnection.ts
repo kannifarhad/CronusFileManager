@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { type AxiosInstance } from "axios";
 import type {
   PathParam,
@@ -13,26 +14,26 @@ import type {
   GetFilesListResponse,
   SearchParams,
 } from "./types";
-
 import { IServerConnection } from "./types";
 
-class Ec2ServerConnection extends IServerConnection {
+class S3ServerConnection extends IServerConnection {
   private axiosInstance: AxiosInstance;
 
   private baseURL: string;
 
-  constructor(baseURL: string) {
+  constructor(baseURL: string, bucketName: string) {
     super();
     if (!baseURL) {
       throw new Error("Base URL is not defined.");
     }
-    this.baseURL = baseURL;
+    this.baseURL = `${baseURL}/s3`;
 
     this.axiosInstance = axios.create({
-      baseURL: `${baseURL}/fm`,
+      baseURL: this.baseURL,
       timeout: 2000,
       headers: {
         "Content-Type": "application/json",
+        "Bucket-Name": bucketName,
       },
     });
 
@@ -59,22 +60,12 @@ class Ec2ServerConnection extends IServerConnection {
     return this.axiosInstance.post("folder", { path }).then((response) => response.data?.children);
   }
 
-  getThumb(filePath: string): string {
-    return `${this.baseURL}${filePath}`;
-  }
-
-  async downloadFile({ path }: PathParam) {
-    setTimeout(() => {
-      window.open(`${this.baseURL}${path}`);
-    }, 100);
+  async search({ path, text }: SearchParams): Promise<any> {
+    return this.axiosInstance.post("search", { path, text }).then((response) => response.data);
   }
 
   async copyFilesToFolder({ items, destination }: PasteFilesParams): Promise<any> {
     return this.axiosInstance.post("copy", { items, destination }).then((response) => response.data);
-  }
-
-  async search({ path, text }: SearchParams): Promise<any> {
-    return this.axiosInstance.post("search", { path, text }).then((response) => response.data);
   }
 
   async cutFilesToFolder({ items, destination }: PasteFilesParams): Promise<any> {
@@ -128,6 +119,20 @@ class Ec2ServerConnection extends IServerConnection {
       })
       .then((response) => response.data);
   }
+
+  getThumb(filePath: string): string {
+    return `${this.baseURL}/thumb/${filePath}`;
+  }
+
+  async downloadFile({ path }: PathParam) {
+    const link = await this.axiosInstance.post("getlink", { path }).then((response) => response.data?.path);
+
+    if (link) {
+      setTimeout(() => {
+        window.open(link);
+      }, 100);
+    }
+  }
 }
 
-export default Ec2ServerConnection;
+export default S3ServerConnection;

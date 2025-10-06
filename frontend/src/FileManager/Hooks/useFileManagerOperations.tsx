@@ -24,7 +24,7 @@ import {
   ItemMoveActionTypeEnum,
   ItemExtensionCategoryFilter,
 } from "../types";
-import { type SaveFileParams } from "../api/types";
+import { type SaveFileParams } from "../apiSDKs/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
 import useApiController from "./useApiController";
 

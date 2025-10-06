@@ -4,7 +4,7 @@ import TopBar from "./components/sections/topBar";
 import FolderBar from "./components/sections/folderBar";
 import FilesBar from "./components/sections/filesBar";
 
-const FileManager: React.FC<{}> = () => (
+const FileManager: React.FC = () => (
   <Paper
     style={{
       height: "100%",

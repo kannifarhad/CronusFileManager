@@ -1,6 +1,6 @@
+/* eslint-disable no-empty-pattern */
 import { styled } from "@mui/material/styles";
 import { Box, Button, Dialog, Alert, MenuItem, List, ListItem, type ButtonProps, Popover } from "@mui/material";
-import { fontSize } from "@mui/system";
 
 export const StyledButtonGroupWrapper = styled(Box, {
   shouldForwardProp: (prop: string) => !["expanded"].includes(prop),
@@ -13,8 +13,9 @@ export const StyledButtonGroupWrapper = styled(Box, {
   },
 }));
 
-// Define a new interface extending MUI ButtonProps with 'isActive'
-interface StyledButtonProps extends ButtonProps {}
+interface StyledButtonProps extends ButtonProps {
+  isActive?: boolean;
+}
 
 export const StyledButton = styled(Button)<StyledButtonProps>(({ style, theme, disabled }) => ({
   fontSize: "14px",
@@ -30,6 +31,7 @@ export const StyledButton = styled(Button)<StyledButtonProps>(({ style, theme, d
   },
   ...style,
 }));
+
 export const StyledActionButton = styled(Button)(({}) => ({
   fontSize: "14px",
   padding: "10px 15px",

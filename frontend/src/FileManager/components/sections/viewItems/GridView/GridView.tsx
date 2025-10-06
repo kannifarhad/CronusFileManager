@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useCallback, useState } from "react";
 import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from "@dnd-kit/core";
 import { StyledGridViewContainer, StyledEmptyFolderContainer } from "../styled";

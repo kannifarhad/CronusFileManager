@@ -20,7 +20,6 @@ const isMenuItemIsActive = (item: FolderList, currentFolder: string = ""): boole
     }
     // Recursively check children
     if (Array.isArray(curremtItem.children)) {
-      // eslint-disable-next-line no-restricted-syntax
       for (const subItem of curremtItem.children) {
         if (isMenuItemIsActive(subItem, currentFolder)) {
           return true;

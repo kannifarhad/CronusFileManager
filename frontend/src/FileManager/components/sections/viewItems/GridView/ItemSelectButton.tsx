@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useCallback } from "react";
 import { StyledSelectCheckbox, StyledPrivateIcon } from "../styled";
 import { useFileManagerState } from "../../../../store/FileManagerContext";

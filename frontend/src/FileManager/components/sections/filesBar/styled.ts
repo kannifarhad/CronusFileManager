@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import { styled } from "@mui/material/styles";
 import { Grid, Box } from "@mui/material";
 

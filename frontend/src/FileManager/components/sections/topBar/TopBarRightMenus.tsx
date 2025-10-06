@@ -9,7 +9,7 @@ interface MenuRef {
   handleOpenMenu: (event: React.MouseEvent<HTMLElement>, name: SettingsMenuEnum) => void;
 }
 
-const TopBarRightMenus = forwardRef<MenuRef, any>((_, ref) => {
+const TopBarRightMenus = forwardRef<MenuRef>((_, ref) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [open, setOpen] = useState<SettingsMenuEnum | null>(null);
 

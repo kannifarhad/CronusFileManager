@@ -50,7 +50,7 @@ const FileItem: React.FC<{
           return <img alt={item.name} src={handleGetThumb(fileItem) as unknown as string} />;
         }
         return <ContentIcons name={getFileIcon(fileItem.extension)} />;
-      } catch (error) {
+      } catch {
         return <ContentIcons name={getFileIcon(fileItem.extension)} />;
       }
     },

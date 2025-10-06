@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { type ReactNode } from "react";
 import { type AlertColor } from "@mui/material";
 import { type Theme } from "@mui/system";
 import { type FileWithPath } from "react-dropzone";
 import { FILE_EXTENSION_MAP } from "./config";
-import { type SaveFileParams } from "./api/types";
+import { type SaveFileParams } from "./apiSDKs/types";
 import { type ButtonItemType } from "./components/elements/ButtonGroup";
 import type { IconName } from "./components/elements/Icon";
 
@@ -224,7 +225,7 @@ export interface AvailableButtons {
 
 export interface Operations {
   handleSelectFolder: (value: FolderType, history?: boolean, clearBuffer?: boolean, showMessage?: boolean) => void;
-  handleAddSelected: (item: Items, multiSelect?: Boolean) => void;
+  handleAddSelected: (item: Items, multiSelect?: boolean) => void;
   handleReloadFolderTree: () => void;
   handleContextClick: (args: { item: Items | null; event: React.MouseEvent; menuType: ContextMenuTypeEnum }) => void;
   handleClearBuffer: () => void;

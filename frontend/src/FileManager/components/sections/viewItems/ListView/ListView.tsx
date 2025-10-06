@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { memo, useCallback, useState } from "react";
 import { TableContainer, Box } from "@mui/material";
 import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from "@dnd-kit/core";
@@ -11,7 +12,7 @@ import useText from "../../../../hooks/useTexts";
 
 export const ROW_HEIGHT = 50;
 
-const ListView: React.FC<{}> = () => {
+const ListView: React.FC = () => {
   const {
     filesList,
     selectedFiles,

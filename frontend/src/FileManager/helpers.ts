@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FILE_EXTENSION_MAP } from "./config";
 import type { ContentIconType } from "./components/elements/ContentIcons";
 import { OrderByFieldEnum, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "./types";
@@ -137,7 +139,7 @@ export const checkSelectedFileType = (type: ItemExtensionCategoryFilter, selecte
       default:
         return false;
     }
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -146,7 +148,7 @@ export const getFileIcon = (extension: string): ContentIconType => {
   try {
     const fileextension = extension as keyof typeof FILE_EXTENSION_MAP.icons;
     return (FILE_EXTENSION_MAP.icons[fileextension] || FILE_EXTENSION_MAP.icons.broken) as ContentIconType;
-  } catch (error) {
+  } catch {
     return FILE_EXTENSION_MAP.icons.broken as ContentIconType;
   }
 };

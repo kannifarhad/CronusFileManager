@@ -15,7 +15,7 @@ interface MenuRef {
   ) => void;
 }
 
-const TopBar: React.FC<{}> = () => {
+const TopBar: React.FC = () => {
   const menuListRef = useRef<MenuRef>(null);
   const state = useFileManagerState();
   const { topbar } = useGenerateActionButtons({ state });
@@ -50,7 +50,6 @@ const TopBar: React.FC<{}> = () => {
   return (
     <TopBarWrapper container>
       {topbar.map((groups, index) => (
-        // eslint-disable-next-line react/no-array-index-key
         <Grid key={index}>
           <TopBarButtonGroups buttons={groups} />
         </Grid>

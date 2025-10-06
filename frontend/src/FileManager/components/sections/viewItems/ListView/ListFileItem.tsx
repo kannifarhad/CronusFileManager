@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from "react";
+import React, { memo, useCallback, useMemo, type CSSProperties } from "react";
 import { Checkbox } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
 import { StyledListTableCell, StyledListTableRow } from "../styled";
@@ -9,7 +9,7 @@ import ContentIcons from "../../../elements/ContentIcons";
 
 const ListFileItem: React.FC<{
   item: FileType;
-  style: any;
+  style: CSSProperties;
 }> = ({ item, style }) => {
   const {
     operations: { handleContextClick, handleAddSelected },

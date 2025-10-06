@@ -32,7 +32,6 @@ const volumesList: VolumeListType = [
 
 const App: React.FC = () => {
   const handleCallBack = (filePath: string) => {
-    // eslint-disable-next-line no-console
     console.log("Image Path Returned", filePath);
   };
 

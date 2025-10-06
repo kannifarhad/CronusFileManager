@@ -19,7 +19,8 @@ const FolderTree = () => {
   return <MenuItem item={foldersList} />;
 };
 
-interface VolumesListProps {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type VolumesListProps = {};
 
 const VolumesList: FC<VolumesListProps> = () => {
   const {

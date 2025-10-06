@@ -1,4 +1,4 @@
-/* eslint-disable react/no-array-index-key */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { memo } from "react";
 import { Divider } from "@mui/material";
 import {

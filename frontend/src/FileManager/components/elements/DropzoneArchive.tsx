@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList from "./ButtonGroupSimple";
 import { formatBytes } from "../../helpers";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
-import { useFileManagerState } from "../store/FileManagerContext";
+import { useFileManagerState } from "../../store/FileManagerContext";
 
 interface FileWithPreview extends File {
   preview: string;
@@ -13,7 +14,7 @@ interface FileWithPreview extends File {
 export default function UploadFiles() {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const {
-    operations: {},
+    // operations: {},
     selectedFolder,
   } = useFileManagerState();
   const handleCancel = () => {};
@@ -89,7 +90,7 @@ export default function UploadFiles() {
 
   const handleSubmitUpload = () => {
     const formData = new FormData();
-    formData.append("path", selectedFolder?.path!);
+    formData.append("path", selectedFolder?.path ?? "/");
 
     files.forEach((file) => {
       // Debugging: Log the file type

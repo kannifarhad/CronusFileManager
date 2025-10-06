@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { memo, useMemo, useCallback, type CSSProperties } from "react";
 import { Checkbox } from "@mui/material";
 import { useDroppable, useDraggable } from "@dnd-kit/core";
 import { convertDate, formatBytes, classNames } from "../../../../helpers";
@@ -9,7 +9,7 @@ import ContentIcons from "../../../elements/ContentIcons";
 
 const ListFolderItem: React.FC<{
   item: FolderType;
-  style: any;
+  style: CSSProperties;
 }> = ({ item, style }) => {
   const {
     operations: { handleContextClick, handleSelectFolder, handleAddSelected },
