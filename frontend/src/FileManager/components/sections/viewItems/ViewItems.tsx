@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import GridView from "./gridLayout/GridView";
-import ListView from "./listView/ListView";
+import ListView from "./tableLayout/ListView";
 import { ViewTypeEnum } from "../../../types";
 import { useFileManagerState } from "../../../store/FileManagerContext";
 import { Box } from "@mui/system";
