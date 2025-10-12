@@ -1,0 +1,426 @@
+/**
+ * @package     Cronus File Manager
+ * @author      Farhad Aliyev Kanni
+ * @copyright   Copyright (c) 2011 - 2024, Kannifarhad, Ltd.
+ * @license     https://opensource.org/licenses/GPL-3.0
+ * @link        http://filemanager.kanni.pro
+ */
+
+import unzipper from "unzipper";
+import archiver from "archiver";
+import nodePath from "path";
+import fs from "graceful-fs";
+import fsExtra from "fs-extra";
+import { Request, Response, NextFunction } from "express";
+import { directoryTree, searchDirectoryTree } from "../utilits/directory-tree";
+import { checkExtension, escapePathWithErrors, checkVariables, normaLisedPath, getDirname } from "../utilits/filemanager";
+import AppError from "../utilits/appError";
+
+const __dirname = getDirname(import.meta.url);
+
+const coreFolder = nodePath.resolve(`${__dirname}/../`);
+
+export const fileManagerController = {
+  async folderTree(req: Request, res: Response, next: NextFunction) {
+    try {
+      // const { path } = req.body;
+      const normalisedPath = normaLisedPath('');
+      const paths = await directoryTree(normalisedPath, {
+        normalizePath: true,
+        removePath: coreFolder,
+        withChildren: true,
+      });
+      res.status(200).json(paths);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async folderInfo(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { path } = req.body;
+      const paths = await directoryTree(normaLisedPath(path), {
+        normalizePath: true,
+        removePath: coreFolder,
+        includeFiles: true,
+      });
+      res.status(200).json(paths);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async all(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { path } = req.body;
+      const paths = await directoryTree(normaLisedPath(path), {
+        normalizePath: true,
+        removePath: coreFolder,
+        includeFiles: true,
+        withChildren: true,
+      });
+      res.status(200).json(paths);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async search(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { text } = req.body;
+      const results = await searchDirectoryTree(normaLisedPath(""), text, {
+        normalizePath: true,
+        removePath: coreFolder,
+        includeFiles: true,
+        withChildren: true,
+      });
+      res.status(200).json(results);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async rename(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { path, newname } = req.body;
+      path = normaLisedPath(path);
+
+      if (!checkExtension(nodePath.extname(newname))) {
+        return next(new AppError(`Wrong File Format ${newname}`, 400));
+      }
+      if (!checkVariables([path, newname])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+
+      const editPath = [...path.split("/")];
+      editPath.pop();
+      editPath.push(newname);
+      const renamePath = editPath.join("/");
+
+      await fs.promises.rename(`${coreFolder}/${path}`, `${coreFolder}/${renamePath}`);
+
+      res.status(200).json({
+        status: "success",
+        message: "File or Folder successfully renamed!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async createfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { path, file } = req.body;
+      path = escapePathWithErrors(path);
+      file = escapePathWithErrors(file);
+
+      if (!checkExtension(nodePath.extname(file))) {
+        return next(new AppError(`Wrong File Format ${file}`, 400));
+      }
+      if (!checkVariables([path, file])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+
+      const filePath = nodePath.join(coreFolder, path, file);
+      const fd = await fs.promises.open(filePath, "wx");
+      await fd.close();
+
+      res.status(200).json({
+        status: "success",
+        message: "File successfully created!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async createfolder(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { path, folder, mask } = req.body;
+      path = escapePathWithErrors(path);
+      folder = escapePathWithErrors(folder);
+      mask = typeof mask === "undefined" ? 0o777 : mask;
+
+      const folderPath = nodePath.join(coreFolder, path, folder);
+      await fs.promises.mkdir(folderPath, { mode: mask });
+
+      res.status(200).json({
+        status: "success",
+        message: "Folder successfully created!",
+      });
+    } catch (err: any) {
+      if (err.code === "EEXIST") {
+        return next(new AppError("Folder already exists", 400));
+      }
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { items } = req.body;
+      if (!checkVariables([items])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+
+      const errorDeleted: any[] = [];
+      await Promise.all(
+        items.map(async (item: string) => {
+          try {
+            await fsExtra.remove(nodePath.join(coreFolder, escapePathWithErrors(item)));
+          } catch (err) {
+            errorDeleted.push({ item, err });
+          }
+        })
+      );
+
+      if (errorDeleted.length > 0) {
+        return next(new AppError(`Couldnt delete files: ${errorDeleted.length}`, 400));
+      }
+
+      res.status(200).json({
+        status: "success",
+        message: "File or folder successfully deleted!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async emptydir(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { path } = req.body;
+      path = escapePathWithErrors(path);
+      await fsExtra.emptyDir(nodePath.join(coreFolder, path));
+      res.status(200).json({
+        status: "success",
+        message: "All files and folders inside folder removed!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async duplicate(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { path } = req.body;
+      path = escapePathWithErrors(path);
+      if (!checkVariables([path])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+
+      const nameParts = path.split(".");
+      const timestamp = Date.now();
+      const nameNew =
+        nameParts.length > 1 ? `${nameParts[0]}_${timestamp}.${nameParts[1]}` : `${nameParts[0]}_${timestamp}`;
+
+      await fsExtra.copy(nodePath.join(coreFolder, path), nodePath.join(coreFolder, nameNew));
+
+      res.status(200).json({
+        status: "success",
+        message: "Files or folders successfully duplicated!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async copy(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { items, destination } = req.body;
+      destination = escapePathWithErrors(destination);
+
+      if (!checkVariables([items, destination])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+
+      const errorCopy: any[] = [];
+      await Promise.all(
+        items.map(async (item: string) => {
+          const newItem = escapePathWithErrors(item);
+          const newDest = nodePath.join(coreFolder, destination, nodePath.basename(item));
+          try {
+            await fsExtra.copy(nodePath.join(coreFolder, newItem), newDest);
+          } catch (err) {
+            errorCopy.push({ newItem, err });
+          }
+        })
+      );
+
+      if (errorCopy.length > 0) {
+        return next(new AppError("Failed to copy files", 400));
+      }
+
+      res.status(200).json({
+        status: "success",
+        message: "Files or folders successfully copied!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async move(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { items, destination } = req.body;
+      destination = escapePathWithErrors(destination);
+
+      if (!checkVariables([items, destination])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+
+      await Promise.all(
+        items.map(async (item: string) => {
+          const newItem = escapePathWithErrors(item);
+          const newDest = nodePath.join(coreFolder, destination, nodePath.basename(item));
+          await fsExtra.move(newItem, newDest, { overwrite: true });
+        })
+      );
+
+      res.status(200).json({
+        status: "success",
+        message: "Files or folders successfully moved!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async unzip(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { file, destination } = req.body;
+
+      if (!checkVariables([file, destination])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+
+      file = escapePathWithErrors(file);
+      destination = !destination || destination === "" ? file.split(".").shift()! : escapePathWithErrors(destination);
+
+      const zip = fs.createReadStream(nodePath.join(coreFolder, file)).pipe(unzipper.Parse({ forceStream: true }));
+
+      for await (const entry of zip) {
+        if (checkExtension(nodePath.extname(entry.path))) {
+          const outPath = nodePath.join(coreFolder, destination, entry.path);
+          await fs.promises.mkdir(nodePath.dirname(outPath), { recursive: true });
+          entry.pipe(fs.createWriteStream(outPath));
+        } else {
+          entry.autodrain();
+        }
+      }
+
+      res.status(200).json({
+        status: "success",
+        message: "Archive successfully extracted!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async archive(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { files, destination, name } = req.body;
+      destination = escapePathWithErrors(destination);
+      name = escapePathWithErrors(name);
+
+      const output = fs.createWriteStream(nodePath.join(coreFolder, destination, `${name}.zip`));
+      const archive = archiver("zip", { zlib: { level: 9 } });
+
+      archive.pipe(output);
+      archive.on("error", (err) => {
+        throw new AppError(err.message, 400);
+      });
+
+      for (const item of files) {
+        const newItem = nodePath.join(coreFolder, escapePathWithErrors(item));
+        const fileName = nodePath.basename(newItem);
+        if ((await fs.promises.lstat(newItem)).isDirectory()) {
+          archive.directory(newItem, fileName);
+        } else {
+          archive.file(newItem, { name: fileName });
+        }
+      }
+
+      await archive.finalize();
+
+      output.on("close", () => {
+        res.status(200).json({
+          status: "success",
+          message: "Archive successfully created!",
+        });
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async saveImage(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { path, file, isnew } = req.body;
+      path = escapePathWithErrors(path);
+      file = file.split(";base64,").pop()!;
+      if (!checkExtension(nodePath.extname(path))) {
+        return next(new AppError(`Wrong File Format ${path}`, 400));
+      }
+      if (!checkVariables([path, file])) {
+        return next(new AppError("Variables not set!", 400));
+      }
+      if (isnew) {
+        const nameParts = path.split(".");
+        const timestamp = Date.now();
+        path = `${nameParts[0]}_${timestamp}.${nameParts[1]}`;
+      }
+
+      const filePath = nodePath.join(coreFolder, path);
+      await fs.promises.mkdir(nodePath.dirname(filePath), { recursive: true });
+      await fs.promises.writeFile(filePath, file, { encoding: "base64" });
+
+      res.status(200).json({
+        status: "success",
+        message: "File successfully saved!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+
+  async uploadFiles(req: Request & { files?: Express.Multer.File[] }, res: Response, next: NextFunction) {
+    try {
+      let { path, fileMaps } = req.body;
+      path = escapePathWithErrors(path);
+
+      let pathMappings: Array<{ name: string; path: string }> = [];
+      if (fileMaps) {
+        pathMappings = JSON.parse(fileMaps) ?? [];
+      }
+
+      if (!req.files || req.files.length === 0) {
+        return next(new AppError("No files have been sent or files list is empty", 400));
+      }
+
+      await Promise.all(
+        req.files.map(async (file) => {
+          if (!checkExtension(nodePath.extname(file.originalname))) return;
+
+          const data = await fs.promises.readFile(file.path);
+
+          const relativePath =
+            pathMappings.find((map) => map.name === file.originalname)?.path ?? `/${file.originalname}`;
+
+          const fullPath = nodePath.join(coreFolder, path, relativePath);
+
+          await fs.promises.mkdir(nodePath.dirname(fullPath), { recursive: true });
+          await fs.promises.writeFile(fullPath, data);
+        })
+      );
+
+      res.status(200).json({
+        status: "success",
+        message: "Files are successfully uploaded!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  },
+};
