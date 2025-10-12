@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 3131
 const AppError = require('./utilits/appError');
-const globalErrorHandler = require('./controllers/errorController');
+const globalErrorHandler = require('./src/controllers/errorController');
 const { FILE_STORAGE_MAIN_FOLDER } = require("./config/fileStorage");
 
 //Gathering Routes that used
