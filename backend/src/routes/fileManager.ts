@@ -40,7 +40,7 @@ const fileManagerController = new _fileManagerController(localFileMangerService)
 // Routes
 router.get("/foldertree", catchAsync(fileManagerController.folderTree));
 router.post("/folder", catchAsync(fileManagerController.folderInfo));
-router.post("/all", catchAsync(fileManagerController.all));
+router.post("/search", catchAsync(fileManagerController.search));
 router.post("/rename", catchAsync(fileManagerController.rename));
 router.post("/createfile", catchAsync(fileManagerController.createFile));
 router.post("/createfolder", catchAsync(fileManagerController.createFolder));
@@ -52,7 +52,6 @@ router.post("/unzip", catchAsync(fileManagerController.unzip));
 router.post("/archive", catchAsync(fileManagerController.archive));
 router.post("/duplicate", catchAsync(fileManagerController.duplicate));
 router.post("/saveimage", catchAsync(fileManagerController.saveImage));
-router.post("/search", catchAsync(fileManagerController.search));
 // router.post("/upload", upload.any(), catchAsync(fileManagerController.uploadFiles));
 
 export default router;

@@ -26,6 +26,7 @@ export interface DirectoryTreeOptions {
   removePath?: string;
   attributes?: string[];
   withChildren?: boolean;
+  childrenDepth?: number
 }
 
 export interface FSPermissions {

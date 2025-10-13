@@ -44,48 +44,22 @@ export class FileManagerController {
   folderInfo = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { path } = req.body;
-      // const paths = await directoryTree(normaLisedPath(path), {
-      //   normalizePath: true,
-      //   removePath: coreFolder,
-      //   includeFiles: true,
-      // });
       const paths = await this.filemanagerService.getFolderInfo(path);
-
       res.status(200).json(paths);
     } catch (err) {
       next(err);
     }
   };
 
-  async all(req: Request, res: Response, next: NextFunction) {
+  search = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { path } = req.body;
-      const paths = await directoryTree(normaLisedPath(path), {
-        normalizePath: true,
-        removePath: coreFolder,
-        includeFiles: true,
-        withChildren: true,
-      });
-      res.status(200).json(paths);
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async search(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { text } = req.body;
-      const results = await searchDirectoryTree(normaLisedPath(""), text, {
-        normalizePath: true,
-        removePath: coreFolder,
-        includeFiles: true,
-        withChildren: true,
-      });
+      const { text, path } = req.body;
+      const results = await this.filemanagerService.search({ text, path });
       res.status(200).json(results);
     } catch (err) {
       next(err);
     }
-  }
+  };
 
   async rename(req: Request, res: Response, next: NextFunction) {
     try {

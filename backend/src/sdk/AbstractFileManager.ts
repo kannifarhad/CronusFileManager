@@ -148,11 +148,6 @@ export abstract class AbstractFileManager {
   abstract getFolderInfo(path: string): Promise<FSItem | null>;
 
   /**
-   * Get all files and folders recursively from a path
-   */
-  abstract getAll(path: string): Promise<FSItem>;
-
-  /**
    * Search for files and folders by name
    */
   abstract search(params: SearchParams): Promise<FSItem[]>;
