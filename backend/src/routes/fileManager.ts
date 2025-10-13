@@ -9,10 +9,11 @@
 import express, { Router } from "express";
 import multer from "multer";
 import catchAsync from "../utilits/catchAsync";
-import { fileManagerController } from "../controllers";
+import _fileManagerController from "../controllers/fileManagerController";
 import { FILE_STORAGE_TMP_FOLDER } from "../config/fileStorage";
 import { MAX_UPLOAD_FILE_AMOUNT, MAX_UPLOAD_FILE_SIZE } from "../config/common";
 import AppError from "../utilits/appError";
+import LocalFileManagerSDK from "../sdk/LocalFileManagerSDK";
 
 const router: Router = express.Router();
 
@@ -29,17 +30,24 @@ const upload = multer({
   },
 });
 
+const localFileMangerService = new LocalFileManagerSDK({
+  tempFolder: "tmp",
+  rootFolder: "uploads",
+});
+
+const fileManagerController = new _fileManagerController(localFileMangerService);
+
 // Routes
 router.get("/foldertree", catchAsync(fileManagerController.folderTree));
 router.post("/folder", catchAsync(fileManagerController.folderInfo));
 router.post("/all", catchAsync(fileManagerController.all));
 router.post("/rename", catchAsync(fileManagerController.rename));
-router.post("/createfile", catchAsync(fileManagerController.createfile));
-router.post("/createfolder", catchAsync(fileManagerController.createfolder));
+router.post("/createfile", catchAsync(fileManagerController.createFile));
+router.post("/createfolder", catchAsync(fileManagerController.createFolder));
 router.post("/delete", catchAsync(fileManagerController.delete));
 router.post("/copy", catchAsync(fileManagerController.copy));
 router.post("/move", catchAsync(fileManagerController.move));
-router.post("/emptydir", catchAsync(fileManagerController.emptydir));
+router.post("/emptydir", catchAsync(fileManagerController.emptyDir));
 router.post("/unzip", catchAsync(fileManagerController.unzip));
 router.post("/archive", catchAsync(fileManagerController.archive));
 router.post("/duplicate", catchAsync(fileManagerController.duplicate));

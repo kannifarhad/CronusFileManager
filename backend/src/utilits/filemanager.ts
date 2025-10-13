@@ -9,18 +9,17 @@
 import nodePath from "path";
 import { FILE_STORAGE_MAIN_FOLDER } from "../config/fileStorage";
 import { fileURLToPath } from "url";
-import path from "path";
 
 // Recreate CommonJS globals for ESM
 export const __filename = fileURLToPath(import.meta.url);
-export const __dirname = path.dirname(__filename);
+export const __dirname = nodePath.dirname(__filename);
 
 /**
  * Helper to get __dirname of the caller module dynamically.
  * Usage: getDirname(import.meta.url)
  */
 export function getDirname(metaUrl: string): string {
-  return path.dirname(fileURLToPath(metaUrl));
+  return nodePath.dirname(fileURLToPath(metaUrl));
 }
 
 const coreFolder = nodePath.resolve(`${__dirname}/../`);

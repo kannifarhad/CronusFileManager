@@ -1,0 +1,439 @@
+/**
+ * @package     Cronus File Manager
+ * @author      Farhad Aliyev Kanni
+ * @copyright   Copyright (c) 2011 - 2024, Kannifarhad, Ltd.
+ * @license     https://opensource.org/licenses/GPL-3.0
+ * @link        http://filemanager.kanni.pro
+ */
+
+// ============================================================================
+// COMMON INTERFACES
+// ============================================================================
+
+export interface FileItem {
+  path: string;
+  name: string;
+  created: string;
+  modified: string;
+  id: string;
+  type: "file" | "folder";
+  size: number;
+  private: boolean;
+  extension?: string;
+  children?: FileItem[];
+}
+
+export interface FolderTreeOptions {
+  prefix?: string;
+  withChildren?: boolean;
+  includeFiles?: boolean;
+}
+
+export interface RenameParams {
+  path: string;
+  newname: string;
+}
+
+export interface CreateFileParams {
+  path: string;
+  file: string;
+  contentType?: string;
+  fileContent?: string | Buffer;
+}
+
+export interface CreateFolderParams {
+  path: string;
+  folder: string;
+  mask?: number;
+}
+
+export interface DeleteParams {
+  items: string[];
+}
+
+export interface CopyParams {
+  items: string[];
+  destination: string;
+}
+
+export interface MoveParams {
+  items: string[];
+  destination: string;
+}
+
+export interface DuplicateParams {
+  path: string;
+}
+
+export interface EmptyDirParams {
+  path: string;
+}
+
+export interface FileUpload {
+  originalname: string;
+  buffer: Buffer;
+  mimetype: string;
+  size: number;
+  path?: string; // For local file uploads
+}
+
+export interface UploadFilesParams {
+  path: string;
+  files: FileUpload[];
+  fileMaps?: Array<{ name: string; path: string }>;
+}
+
+export interface UnzipParams {
+  file: string;
+  destination: string;
+}
+
+export interface ArchiveParams {
+  files: string[];
+  destination: string;
+  name: string;
+}
+
+export interface GetLinkParams {
+  path: string;
+  expiresIn?: number; // seconds
+}
+
+export interface SaveImageParams {
+  path: string;
+  file: string; // base64 encoded
+  isnew?: boolean;
+}
+
+export interface SearchParams {
+  text: string;
+  path?: string;
+}
+
+export interface GetThumbParams {
+  path: string;
+}
+
+export interface FileManagerConfig {
+  basePath?: string; // For local file system
+  bucketName?: string; // For S3
+  tempFolder?: string; // Temporary folder for operations
+  uploadFolder?: string; // Default upload folder
+  allowedExtensions?: string[]; // Allowed file extensions
+  maxFileSize?: number; // Max file size in bytes
+}
+
+// ============================================================================
+// ABSTRACT FILE MANAGER CLASS
+// ============================================================================
+
+export abstract class AbstractFileManager {
+  protected config: FileManagerConfig;
+
+  constructor(config: FileManagerConfig) {
+    this.config = {
+      tempFolder: config.tempFolder || "/tmp",
+      uploadFolder: config.uploadFolder || "/uploads",
+      allowedExtensions: config.allowedExtensions || [],
+      maxFileSize: config.maxFileSize || 100 * 1024 * 1024, // 100MB default
+      ...config,
+    };
+  }
+
+  // ============================================================================
+  // ABSTRACT METHODS - Must be implemented by subclasses
+  // ============================================================================
+
+  /**
+   * Get the complete folder tree structure
+   */
+  abstract getFolderTree(options?: FolderTreeOptions): Promise<FileItem>;
+
+  /**
+   * Get folder information (files and subfolders) for a specific path
+   */
+  abstract getFolderInfo(path: string): Promise<{ children: FileItem[] }>;
+
+  /**
+   * Get all files and folders recursively from a path
+   */
+  abstract getAll(path: string): Promise<FileItem>;
+
+  /**
+   * Search for files and folders by name
+   */
+  abstract search(params: SearchParams): Promise<FileItem[]>;
+
+  /**
+   * Rename a file or folder
+   */
+  abstract rename(params: RenameParams): Promise<void>;
+
+  /**
+   * Create a new file
+   */
+  abstract createFile(params: CreateFileParams): Promise<void>;
+
+  /**
+   * Create a new folder
+   */
+  abstract createFolder(params: CreateFolderParams): Promise<void>;
+
+  /**
+   * Delete files or folders
+   */
+  abstract delete(params: DeleteParams): Promise<void>;
+
+  /**
+   * Copy files or folders to a destination
+   */
+  abstract copy(params: CopyParams): Promise<void>;
+
+  /**
+   * Move files or folders to a destination
+   */
+  abstract move(params: MoveParams): Promise<void>;
+
+  /**
+   * Duplicate a file or folder
+   */
+  abstract duplicate(params: DuplicateParams): Promise<void>;
+
+  /**
+   * Empty a directory (remove all contents but keep the directory)
+   */
+  abstract emptyDir(params: EmptyDirParams): Promise<void>;
+
+  /**
+   * Upload multiple files
+   */
+  abstract uploadFiles(params: UploadFilesParams): Promise<void>;
+
+  /**
+   * Extract/unzip an archive file
+   */
+  abstract unzip(params: UnzipParams): Promise<void>;
+
+  /**
+   * Create an archive (zip) from files/folders
+   */
+  abstract archive(params: ArchiveParams): Promise<string>;
+
+  /**
+   * Get a file stream or buffer for thumbnail/preview
+   */
+  abstract getThumb(params: GetThumbParams): Promise<Buffer | NodeJS.ReadableStream>;
+
+  /**
+   * Get a downloadable/shareable link for a file
+   */
+  abstract getLink(params: GetLinkParams): Promise<string>;
+
+  /**
+   * Save an image (typically from base64)
+   */
+  abstract saveImage(params: SaveImageParams): Promise<void>;
+
+  /**
+   * Get file/folder metadata
+   */
+  abstract getMetadata(path: string): Promise<FileItem>;
+
+  /**
+   * Check if file or folder exists
+   */
+  abstract exists(path: string): Promise<boolean>;
+
+  // ============================================================================
+  // HELPER METHODS - Default implementations (can be overridden)
+  // ============================================================================
+
+  /**
+   * Generate a copy name with timestamp
+   */
+  protected generateCopyName(originalName: string): string {
+    const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+    const nameParts = originalName.split(".");
+
+    if (nameParts.length > 1) {
+      const extension = nameParts.pop();
+      return `${nameParts.join(".")}_copy_${timestamp}.${extension}`;
+    }
+    return `${originalName}_copy_${timestamp}`;
+  }
+
+  /**
+   * Get content type by file extension
+   */
+  protected getContentType(fileName: string): string {
+    const extension = fileName.split(".").pop()?.toLowerCase();
+    const mimeTypes: Record<string, string> = {
+      // Images
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      png: "image/png",
+      gif: "image/gif",
+      webp: "image/webp",
+      svg: "image/svg+xml",
+      bmp: "image/bmp",
+      ico: "image/x-icon",
+      // Documents
+      txt: "text/plain",
+      pdf: "application/pdf",
+      doc: "application/msword",
+      docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      xls: "application/vnd.ms-excel",
+      xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ppt: "application/vnd.ms-powerpoint",
+      pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      // Web
+      html: "text/html",
+      css: "text/css",
+      js: "application/javascript",
+      json: "application/json",
+      xml: "application/xml",
+      // Archives
+      zip: "application/zip",
+      rar: "application/x-rar-compressed",
+      tar: "application/x-tar",
+      gz: "application/gzip",
+      "7z": "application/x-7z-compressed",
+      // Media
+      mp3: "audio/mpeg",
+      wav: "audio/wav",
+      ogg: "audio/ogg",
+      mp4: "video/mp4",
+      avi: "video/x-msvideo",
+      mov: "video/quicktime",
+      mkv: "video/x-matroska",
+      webm: "video/webm",
+    };
+    return mimeTypes[extension || ""] || "application/octet-stream";
+  }
+
+  /**
+   * Remove the last segment from a path
+   */
+  protected removeLastSegment(path: string): string {
+    const trimmedPath = path.replace(/\/+$/, "");
+    const segments = trimmedPath.split("/");
+    segments.pop();
+    return segments.length > 0 ? segments.join("/") + "/" : "";
+  }
+
+  /**
+   * Normalize path (remove leading/trailing slashes)
+   */
+  protected normalizePath(path: string): string {
+    return path.replace(/^\/+|\/+$/g, "");
+  }
+
+  /**
+   * Check if path is a folder (ends with /)
+   */
+  protected isFolder(path: string): boolean {
+    return path.endsWith("/");
+  }
+
+  /**
+   * Extract filename from path
+   */
+  protected getFileName(path: string): string {
+    return path.split("/").pop() || "";
+  }
+
+  /**
+   * Mock metadata for systems that don't provide it
+   */
+  protected mockMetadata(): { created: string; modified: string } {
+    const now = new Date().toISOString();
+    return {
+      created: now,
+      modified: now,
+    };
+  }
+
+  /**
+   * Validate file extension against allowed extensions
+   */
+  protected isExtensionAllowed(filename: string): boolean {
+    if (!this.config.allowedExtensions || this.config.allowedExtensions.length === 0) {
+      return true; // No restrictions
+    }
+
+    const extension = filename.split(".").pop()?.toLowerCase();
+    if (!extension) return false;
+
+    return this.config.allowedExtensions.some((allowed) => allowed.toLowerCase() === extension);
+  }
+
+  /**
+   * Validate file size
+   */
+  protected isFileSizeValid(size: number): boolean {
+    return size <= (this.config.maxFileSize || Infinity);
+  }
+
+  /**
+   * Generate unique ID for file/folder
+   */
+  protected generateId(path: string): string {
+    return `${path}_${Date.now()}`;
+  }
+
+  /**
+   * Join paths safely
+   */
+  protected joinPaths(...paths: string[]): string {
+    return paths
+      .filter((p) => p && p !== "")
+      .join("/")
+      .replace(/\/+/g, "/");
+  }
+
+  /**
+   * Get base name without extension
+   */
+  protected getBaseName(filename: string): string {
+    const parts = filename.split(".");
+    if (parts.length > 1) {
+      parts.pop();
+    }
+    return parts.join(".");
+  }
+
+  /**
+   * Get file extension
+   */
+  protected getExtension(filename: string): string {
+    const parts = filename.split(".");
+    return parts.length > 1 ? `.${parts.pop()}` : "";
+  }
+
+  /**
+   * Validate path (basic security check)
+   */
+  protected validatePath(path: string): boolean {
+    // Check for directory traversal attempts
+    if (path.includes("..") || path.includes("~")) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Get configuration
+   */
+  public getConfig(): Readonly<FileManagerConfig> {
+    return { ...this.config };
+  }
+
+  /**
+   * Update configuration
+   */
+  public updateConfig(config: Partial<FileManagerConfig>): void {
+    this.config = { ...this.config, ...config };
+  }
+}
+
+export default AbstractFileManager;

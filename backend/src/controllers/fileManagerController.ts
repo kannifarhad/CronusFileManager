@@ -12,29 +12,41 @@ import nodePath from "path";
 import fs from "graceful-fs";
 import fsExtra from "fs-extra";
 import { Request, Response, NextFunction } from "express";
-import { directoryTree, searchDirectoryTree } from "../utilits/directory-tree";
-import { checkExtension, escapePathWithErrors, checkVariables, normaLisedPath, getDirname } from "../utilits/filemanager";
-import AppError from "../utilits/appError";
+import { directoryTree, searchDirectoryTree } from "../utilits/directory-tree.js";
+import {
+  checkExtension,
+  escapePathWithErrors,
+  checkVariables,
+  normaLisedPath,
+  getDirname,
+} from "../utilits/filemanager.js";
+import AppError from "../utilits/appError.js";
+import AbstractFileManager from "../sdk/LocalFileManagerSDK.js";
 
 const __dirname = getDirname(import.meta.url);
-
 const coreFolder = nodePath.resolve(`${__dirname}/../`);
 
-export const fileManagerController = {
-  async folderTree(req: Request, res: Response, next: NextFunction) {
+export class FileManagerController {
+  protected filemanagerService: AbstractFileManager;
+  constructor(filemanagerService: AbstractFileManager) {
+    this.filemanagerService = filemanagerService;
+  }
+
+  folderTree = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // const { path } = req.body;
-      const normalisedPath = normaLisedPath('');
-      const paths = await directoryTree(normalisedPath, {
-        normalizePath: true,
-        removePath: coreFolder,
-        withChildren: true,
-      });
+      console.log("this.filemanagerService.getFolderTree", coreFolder);
+      const paths = await this.filemanagerService.getFolderTree({ prefix: "", withChildren: true });
+      // const normalisedPath = normaLisedPath("");
+      // const paths = await directoryTree(normalisedPath, {
+      //   normalizePath: true,
+      //   removePath: coreFolder,
+      //   withChildren: true,
+      // });
       res.status(200).json(paths);
     } catch (err) {
       next(err);
     }
-  },
+  };
 
   async folderInfo(req: Request, res: Response, next: NextFunction) {
     try {
@@ -48,7 +60,7 @@ export const fileManagerController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async all(req: Request, res: Response, next: NextFunction) {
     try {
@@ -63,7 +75,7 @@ export const fileManagerController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async search(req: Request, res: Response, next: NextFunction) {
     try {
@@ -78,7 +90,7 @@ export const fileManagerController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async rename(req: Request, res: Response, next: NextFunction) {
     try {
@@ -106,9 +118,9 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
-  async createfile(req: Request, res: Response, next: NextFunction) {
+  async createFile(req: Request, res: Response, next: NextFunction) {
     try {
       let { path, file } = req.body;
       path = escapePathWithErrors(path);
@@ -132,9 +144,9 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
-  async createfolder(req: Request, res: Response, next: NextFunction) {
+  async createFolder(req: Request, res: Response, next: NextFunction) {
     try {
       let { path, folder, mask } = req.body;
       path = escapePathWithErrors(path);
@@ -154,7 +166,7 @@ export const fileManagerController = {
       }
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
@@ -175,7 +187,7 @@ export const fileManagerController = {
       );
 
       if (errorDeleted.length > 0) {
-        return next(new AppError(`Couldnt delete files: ${errorDeleted.length}`, 400));
+        return next(new AppError(`Could not delete files: ${errorDeleted.length}`, 400));
       }
 
       res.status(200).json({
@@ -185,9 +197,9 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
-  async emptydir(req: Request, res: Response, next: NextFunction) {
+  async emptyDir(req: Request, res: Response, next: NextFunction) {
     try {
       let { path } = req.body;
       path = escapePathWithErrors(path);
@@ -199,7 +211,7 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async duplicate(req: Request, res: Response, next: NextFunction) {
     try {
@@ -223,7 +235,7 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async copy(req: Request, res: Response, next: NextFunction) {
     try {
@@ -258,7 +270,7 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async move(req: Request, res: Response, next: NextFunction) {
     try {
@@ -284,7 +296,7 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async unzip(req: Request, res: Response, next: NextFunction) {
     try {
@@ -316,7 +328,7 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async archive(req: Request, res: Response, next: NextFunction) {
     try {
@@ -353,7 +365,7 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async saveImage(req: Request, res: Response, next: NextFunction) {
     try {
@@ -383,7 +395,7 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
+  }
 
   async uploadFiles(req: Request & { files?: Express.Multer.File[] }, res: Response, next: NextFunction) {
     try {
@@ -422,5 +434,8 @@ export const fileManagerController = {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  },
-};
+  }
+}
+
+// ✅ Export default instance for routers
+export default FileManagerController;

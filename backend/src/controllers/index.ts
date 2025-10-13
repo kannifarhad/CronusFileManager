@@ -6,7 +6,7 @@
  * @link        http://filemanager.kanni.pro
  */
 
-import { fileManagerController } from "./fileManagerController";
+import fileManagerController from "./fileManagerController";
 import bucketManagerController from "./bucketManagerController";
 
 // const bucketManagerController = new S3Controller()
