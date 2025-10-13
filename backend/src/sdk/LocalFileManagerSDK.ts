@@ -51,8 +51,8 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     return this.directoryTree(prefix, { withChildren, includeFiles, normalizePath: true, removePath: this.coreFolder });
   }
 
-  async getFolderInfo(path: string): Promise<{ children: FSItem[] }> {
-    throw new Error("Method not implemented.");
+  async getFolderInfo(path: string) {
+    return this.directoryTree(path, { withChildren: false, includeFiles: true, normalizePath: true, removePath: this.coreFolder });
   }
 
   async getAll(path: string): Promise<FSItem> {
@@ -128,26 +128,55 @@ export class LocalFileManagerSDK extends AbstractFileManager {
   }
 
   /**
+   * Escapes a path, but throws errors if invalid.
+   * Use when you want strict validation.
+   */
+  protected escapePath(path: string, throwError: boolean = false): string {
+    const basePath = `/${this.config.rootFolder}`;
+
+    if (typeof path !== "string" || path.trim() === "") {
+      return basePath;
+    }
+
+    const invalidPattern = /(\.\.\/|\.\/|^\/$)/;
+    if (invalidPattern.test(path)) {
+      if (throwError) throw new Error("Invalid path: Path cannot contain '../' or './'.");
+      return basePath;
+    }
+
+    if (!path.startsWith(basePath)) {
+      if (throwError) throw new Error(`Invalid path: Path must start with "${basePath}".`);
+      return basePath;
+    }
+
+    return path;
+  }
+
+  /**
    * Returns a fully resolved and validated normalized path.
    */
-  protected normalizePath = (path: string): string => {
-    return nodePath.join(this.coreFolder, this.escapePath(path, true));
+  protected normalizePath = (path: string, throwError: boolean = true): string => {
+    return nodePath.join(this.coreFolder, this.escapePath(path, throwError));
   };
 
   /**
    * Recursively collects files/folders for a directory path.
+   * Modified to handle already-normalized paths in recursion
    */
   protected directoryTree = async (
     path: string,
     options: DirectoryTreeOptions,
     onEachFile?: (item: FSItem, path: typeof nodePath, stats: fs.Stats) => void,
     onEachDirectory?: (item: FSItem, path: typeof nodePath, stats: fs.Stats) => void,
-    depth?: boolean
+    isRecursiveCall: boolean = false
   ): Promise<FSItem | null> => {
     let item: FSItem;
-    const escapePath = this.normalizePath(path);
+
+    // Only normalize on the first call, not in recursive calls
+    const escapePath = isRecursiveCall ? path : this.normalizePath(path, true);
+
     try {
-      item = await this.getItemInfo(escapePath, options);
+      item = this.getItemInfo(escapePath, options);
     } catch (e: any) {
       console.error(`Error retrieving info for ${escapePath}: ${e.message}`);
       return null;
@@ -194,7 +223,14 @@ export class LocalFileManagerSDK extends AbstractFileManager {
 
       const children = await Promise.all(
         dirData.map(async (child) =>
-          this.directoryTree(nodePath.join(escapePath, child), options, onEachFile, onEachDirectory, true)
+          // Pass the full path and set isRecursiveCall to true
+          this.directoryTree(
+            nodePath.join(escapePath, child),
+            options,
+            onEachFile,
+            onEachDirectory,
+            true // Mark as recursive call
+          )
         )
       );
 
@@ -212,17 +248,19 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     return null;
   };
 
-  protected getItemInfo = async (fullPath: string, options: DirectoryTreeOptions): Promise<FSItem> => {
+  protected getItemInfo = (fullPath: string, options: DirectoryTreeOptions): FSItem => {
     try {
       const stats = fs.statSync(fullPath);
       const name = nodePath.basename(fullPath);
       const isDirectory = stats.isDirectory();
       const type: EntityType = isDirectory ? ENTITY_CONST.DIRECTORY : ENTITY_CONST.FILE;
-
+      const trimPath = (path: string): string => {
+        return path.replace(/\\/g, "/");
+      };
       const itemPath = options?.normalizePath
         ? options.removePath
-          ? this.normalizePath(fullPath).replace(this.normalizePath(options.removePath), "")
-          : this.normalizePath(fullPath)
+          ? trimPath(fullPath).replace(trimPath(options.removePath), "")
+          : trimPath(fullPath)
         : options?.removePath
         ? fullPath.replace(options.removePath, "")
         : fullPath;

@@ -34,33 +34,28 @@ export class FileManagerController {
 
   folderTree = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log("this.filemanagerService.getFolderTree", coreFolder);
       const paths = await this.filemanagerService.getFolderTree({ prefix: "", withChildren: true });
-      // const normalisedPath = normaLisedPath("");
-      // const paths = await directoryTree(normalisedPath, {
-      //   normalizePath: true,
-      //   removePath: coreFolder,
-      //   withChildren: true,
-      // });
       res.status(200).json(paths);
     } catch (err) {
       next(err);
     }
   };
 
-  async folderInfo(req: Request, res: Response, next: NextFunction) {
+  folderInfo = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { path } = req.body;
-      const paths = await directoryTree(normaLisedPath(path), {
-        normalizePath: true,
-        removePath: coreFolder,
-        includeFiles: true,
-      });
+      // const paths = await directoryTree(normaLisedPath(path), {
+      //   normalizePath: true,
+      //   removePath: coreFolder,
+      //   includeFiles: true,
+      // });
+      const paths = await this.filemanagerService.getFolderInfo(path);
+
       res.status(200).json(paths);
     } catch (err) {
       next(err);
     }
-  }
+  };
 
   async all(req: Request, res: Response, next: NextFunction) {
     try {

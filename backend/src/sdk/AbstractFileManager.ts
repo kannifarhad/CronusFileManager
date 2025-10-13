@@ -145,7 +145,7 @@ export abstract class AbstractFileManager {
   /**
    * Get folder information (files and subfolders) for a specific path
    */
-  abstract getFolderInfo(path: string): Promise<{ children: FSItem[] }>;
+  abstract getFolderInfo(path: string): Promise<FSItem | null>;
 
   /**
    * Get all files and folders recursively from a path
