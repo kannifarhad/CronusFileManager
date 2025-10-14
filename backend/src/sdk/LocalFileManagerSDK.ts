@@ -82,36 +82,172 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     });
   }
 
-  async rename(params: RenameParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async rename({ path, newname }: RenameParams) {
+    const escapedPath = this.normalizePath(path);
+
+    if (!this.checkVariables([path, newname])) {
+      throw new Error(`Variables not set!`);
+    }
+
+    if (!this.checkExtension(nodePath.extname(newname))) {
+      throw new Error(`Wrong File Format ${newname}`);
+    }
+
+    if (this.isDangerousPath(newname)) {
+      throw new Error(`Newname contains traversal attempts. ${newname}`);
+    }
+
+    if (!(await this.isEntityExists(escapedPath))) {
+      throw new Error(`Target item dont exists. ${path}`);
+    }
+
+    const editPath = [...escapedPath.split("/")];
+    editPath.pop();
+    editPath.push(newname);
+    const renamePath = editPath.join("/");
+
+    if (await this.isEntityExists(renamePath)) {
+      throw new Error(`There is already existing file with new name. ${newname}`);
+    }
+
+    return fs.promises.rename(escapedPath, renamePath).catch((e) => {
+      console.error(e);
+      throw new Error(`Couldnt rename item.`);
+    });
   }
 
-  async createFile(params: CreateFileParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async delete({ items }: DeleteParams): Promise<void> {
+    if (!Array.isArray(items) || items.length === 0) {
+      throw new Error(`Items are empty. Nothing had been passed to be deleted!`);
+    }
+
+    const normalisedPaths = items.map((path) => this.normalizePath(path));
+    const errorDeleted: string[] = [];
+    await Promise.all(
+      normalisedPaths.map(async (item: string) => {
+        try {
+          await fsExtra.remove(item);
+        } catch (err) {
+          errorDeleted.push(item);
+        }
+      })
+    );
+
+    if (errorDeleted.length > 0) {
+      throw new Error(`Not all items removed! ${errorDeleted.length} items remained in place.`);
+    }
   }
 
-  async createFolder(params: CreateFolderParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async createFile({ path, file }: CreateFileParams): Promise<void> {
+    if (!this.checkVariables([path, file])) {
+      throw new Error(`Variables not set!`);
+    }
+
+    if (!this.checkExtension(nodePath.extname(file))) {
+      throw new Error(`Wrong or unaccepted file format ${file}`);
+    }
+
+    if (this.isDangerousPath(file)) {
+      throw new Error(`Newname contains traversal attempts. ${file}`);
+    }
+    const escapedPath = this.normalizePath(path);
+    const fullFilePath = nodePath.join(escapedPath, file);
+
+    if (await this.isEntityExists(fullFilePath)) {
+      throw new Error(`There is already existing file with new name. ${file}`);
+    }
+
+    const fd = await fsExtra.promises.open(fullFilePath, "wx");
+    return fd.close();
   }
 
-  async delete(params: DeleteParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async createFolder({ path, folder, mask = 0o777 }: CreateFolderParams): Promise<void> {
+    if (this.isDangerousPath(folder)) {
+      throw new Error(`New folder name contains traversal attempts. ${folder}`);
+    }
+    const newFolderPath = nodePath.join(path, folder);
+    const escapedPath = this.normalizePath(newFolderPath);
+
+    if (await this.isEntityExists(escapedPath)) {
+      throw new Error(`There is already existing folder with this name. ${newFolderPath}`);
+    }
+    await fs.promises.mkdir(escapedPath, { mode: mask });
   }
 
-  async copy(params: CopyParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async emptyDir({ path }: EmptyDirParams): Promise<void> {
+    const escapedPath = this.normalizePath(path);
+    return fsExtra.emptyDir(escapedPath);
   }
 
-  async move(params: MoveParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async duplicate({ path: targetPath }: DuplicateParams) {
+    if (!this.checkVariables([targetPath])) {
+      throw new Error("Variables not set!");
+    }
+
+    const escapedPath = this.normalizePath(targetPath);
+    const stats = await fsExtra.stat(escapedPath);
+    const isDirectory = stats.isDirectory();
+
+    const copyName = await this.generateUniqueCopyName(escapedPath, isDirectory);
+    const dir = nodePath.dirname(escapedPath);
+    const copyPath = nodePath.join(dir, copyName);
+
+    await fsExtra.copy(escapedPath, copyPath);
+    return copyName;
   }
 
-  async duplicate(params: DuplicateParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async copy({ items, destination }: CopyParams): Promise<void> {
+    if (!this.checkVariables([destination])) {
+      throw new Error("Variables not set!");
+    }
+
+    const escapedDestination = this.normalizePath(destination);
+    const normalisedPaths = items
+      .map((itemPath) => this.normalizePath(itemPath))
+      .filter((item) => this.isEntityExists(item));
+
+    const errorCopy: string[] = [];
+
+    await Promise.all(
+      normalisedPaths.map(async (item: string) => {
+        try {
+          const stats = await fsExtra.stat(item);
+          const isDirectory = stats.isDirectory();
+          const newName = await this.generateUniqueCopyName(item, isDirectory, escapedDestination);
+          const newDest = nodePath.join(escapedDestination, newName);
+
+          await fsExtra.copy(item, newDest, { overwrite: false });
+        } catch (err) {
+          errorCopy.push(item);
+        }
+      })
+    );
+
+    if (errorCopy.length > 0) {
+      throw new Error(`Not all items copied! ${errorCopy.length} of ${items.length} items failed to copy.`);
+    }
   }
 
-  async emptyDir(params: EmptyDirParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async move({ items, destination }: MoveParams): Promise<void> {
+    if (!this.checkVariables([destination])) {
+      throw new Error("Variables not set!");
+    }
+
+    const escapedDestination = this.normalizePath(destination);
+    const normalisedPaths = items
+      .map((itemPath) => this.normalizePath(itemPath))
+      .filter((item) => this.isEntityExists(item));
+
+    await Promise.all(
+      normalisedPaths.map(async (item: string) => {
+        const stats = await fsExtra.stat(item);
+        const isDirectory = stats.isDirectory();
+        const newName = await this.generateUniqueCopyName(item, isDirectory, escapedDestination);
+        const newDest = nodePath.join(escapedDestination, newName);
+
+        await fsExtra.move(item, newDest, { overwrite: false });
+      })
+    );
   }
 
   async uploadFiles(params: UploadFilesParams): Promise<void> {
@@ -147,6 +283,40 @@ export class LocalFileManagerSDK extends AbstractFileManager {
   }
 
   /**
+   * Generates a unique copy name for a file or folder
+   * @param itemPath - Full path to the item
+   * @param isDirectory - Whether the item is a directory
+   * @param targetDir - Optional target directory (defaults to item's parent directory)
+   * @returns The unique name (not the full path)
+   */
+  protected async generateUniqueCopyName(
+    itemPath: string,
+    isDirectory: boolean,
+    targetDir?: string
+  ): Promise<string> {
+    const dir = targetDir || nodePath.dirname(itemPath);
+    const ext = isDirectory ? "" : nodePath.extname(itemPath);
+    const baseName = nodePath.basename(itemPath, ext);
+
+    let newName = `${baseName} copy${ext}`;
+    let newPath = nodePath.join(dir, newName);
+    let counter = 2;
+
+    // Iterate until we find a non-existing copy name
+    while (await this.isEntityExists(newPath)) {
+      newName = `${baseName} copy ${counter}${ext}`;
+      newPath = nodePath.join(dir, newName);
+      counter++;
+    }
+
+    return newName;
+  }
+
+  protected isDangerousPath(path: string) {
+    return /(\.\.\/|\.\/|^\/$)/.test(path);
+  }
+
+  /**
    * Escapes a path, but throws errors if invalid.
    * Use when you want strict validation.
    */
@@ -156,7 +326,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
 
     // Check for directory traversal attempts
-    if (/(\.\.\/|\.\/|^\/$)/.test(path)) {
+    if (this.isDangerousPath(path)) {
       if (throwError) throw new Error("Invalid path: Path cannot contain '../' or './'.");
       return this.basePath;
     }
@@ -220,12 +390,11 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       // Handle directories
       if (item.type === ENTITY_CONST.DIRECTORY) {
         // Check if we should fetch children
-        const loopChildren =
+        const skipChildren =
           options.withChildren === false ||
           (options.childrenDepth !== undefined && currentDepth >= options.childrenDepth);
 
-        if (loopChildren) {
-          // Return directory without children
+        if (skipChildren) {
           return item;
         }
 
@@ -238,7 +407,6 @@ export class LocalFileManagerSDK extends AbstractFileManager {
           options,
           onEachFile,
           onEachDirectory,
-          50,
           currentDepth + 1
         );
 
@@ -266,7 +434,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     options: DirectoryTreeOptions = {}
   ): Promise<FSItem[]> {
     const results: FSItem[] = [];
-    const items = this.safeReadDirSync(dir);
+    const items = await this.safeReadDirAsync(dir);
     if (!items) return results;
 
     for (const item of items) {
@@ -301,8 +469,8 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     options: DirectoryTreeOptions,
     onEachFile?: (item: FSItem, path: typeof nodePath, stats: fs.Stats) => void,
     onEachDirectory?: (item: FSItem, path: typeof nodePath, stats: fs.Stats) => void,
-    batchSize: number = 50,
-    currentDepth: number = 0
+    currentDepth: number = 0,
+    batchSize: number = 50
   ): Promise<(FSItem | null)[]> {
     const results: (FSItem | null)[] = [];
 
@@ -326,7 +494,6 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     const stats = await fsPromises.stat(fullPath);
     //TODO: Add support for symlinks
     // const stats = await fsPromises.lstat(fullPath);
-
     // if (stats.isSymbolicLink()) {
     // }
     const name = nodePath.basename(fullPath);
@@ -445,6 +612,15 @@ export class LocalFileManagerSDK extends AbstractFileManager {
         return null;
       }
       throw ex;
+    }
+  }
+
+  protected async isEntityExists(path: string): Promise<boolean> {
+    try {
+      await fsPromises.access(path, fs.constants.F_OK);
+      return true;
+    } catch {
+      return false;
     }
   }
 }

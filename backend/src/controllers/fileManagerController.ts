@@ -61,24 +61,10 @@ export class FileManagerController {
     }
   };
 
-  async rename(req: Request, res: Response, next: NextFunction) {
+  rename = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { path, newname } = req.body;
-      path = normaLisedPath(path);
-
-      if (!checkExtension(nodePath.extname(newname))) {
-        return next(new AppError(`Wrong File Format ${newname}`, 400));
-      }
-      if (!checkVariables([path, newname])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-
-      const editPath = [...path.split("/")];
-      editPath.pop();
-      editPath.push(newname);
-      const renamePath = editPath.join("/");
-
-      await fs.promises.rename(`${coreFolder}/${path}`, `${coreFolder}/${renamePath}`);
+      await this.filemanagerService.rename({ newname, path });
 
       res.status(200).json({
         status: "success",
@@ -87,24 +73,27 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async createFile(req: Request, res: Response, next: NextFunction) {
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let { items } = req.body;
+
+      await this.filemanagerService.delete({ items });
+
+      res.status(200).json({
+        status: "success",
+        message: "File or folder successfully deleted!",
+      });
+    } catch (err: any) {
+      next(new AppError(err.message, 400));
+    }
+  };
+
+  createFile = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { path, file } = req.body;
-      path = escapePathWithErrors(path);
-      file = escapePathWithErrors(file);
-
-      if (!checkExtension(nodePath.extname(file))) {
-        return next(new AppError(`Wrong File Format ${file}`, 400));
-      }
-      if (!checkVariables([path, file])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-
-      const filePath = nodePath.join(coreFolder, path, file);
-      const fd = await fs.promises.open(filePath, "wx");
-      await fd.close();
+      await this.filemanagerService.createFile({ path, file });
 
       res.status(200).json({
         status: "success",
@@ -113,17 +102,12 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async createFolder(req: Request, res: Response, next: NextFunction) {
+  createFolder = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let { path, folder, mask } = req.body;
-      path = escapePathWithErrors(path);
-      folder = escapePathWithErrors(folder);
-      mask = typeof mask === "undefined" ? 0o777 : mask;
-
-      const folderPath = nodePath.join(coreFolder, path, folder);
-      await fs.promises.mkdir(folderPath, { mode: mask });
+      const { path, folder, mask } = req.body;
+      await this.filemanagerService.createFolder({ path, folder, mask });
 
       res.status(200).json({
         status: "success",
@@ -135,44 +119,12 @@ export class FileManagerController {
       }
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async delete(req: Request, res: Response, next: NextFunction) {
-    try {
-      let { items } = req.body;
-      if (!checkVariables([items])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-
-      const errorDeleted: any[] = [];
-      await Promise.all(
-        items.map(async (item: string) => {
-          try {
-            await fsExtra.remove(nodePath.join(coreFolder, escapePathWithErrors(item)));
-          } catch (err) {
-            errorDeleted.push({ item, err });
-          }
-        })
-      );
-
-      if (errorDeleted.length > 0) {
-        return next(new AppError(`Could not delete files: ${errorDeleted.length}`, 400));
-      }
-
-      res.status(200).json({
-        status: "success",
-        message: "File or folder successfully deleted!",
-      });
-    } catch (err: any) {
-      next(new AppError(err.message, 400));
-    }
-  }
-
-  async emptyDir(req: Request, res: Response, next: NextFunction) {
+  emptyDir = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { path } = req.body;
-      path = escapePathWithErrors(path);
-      await fsExtra.emptyDir(nodePath.join(coreFolder, path));
+      await this.filemanagerService.emptyDir({ path });
       res.status(200).json({
         status: "success",
         message: "All files and folders inside folder removed!",
@@ -180,22 +132,12 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async duplicate(req: Request, res: Response, next: NextFunction) {
+  duplicate = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { path } = req.body;
-      path = escapePathWithErrors(path);
-      if (!checkVariables([path])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-
-      const nameParts = path.split(".");
-      const timestamp = Date.now();
-      const nameNew =
-        nameParts.length > 1 ? `${nameParts[0]}_${timestamp}.${nameParts[1]}` : `${nameParts[0]}_${timestamp}`;
-
-      await fsExtra.copy(nodePath.join(coreFolder, path), nodePath.join(coreFolder, nameNew));
+      await this.filemanagerService.duplicate({ path });
 
       res.status(200).json({
         status: "success",
@@ -204,33 +146,12 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async copy(req: Request, res: Response, next: NextFunction) {
+  copy = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { items, destination } = req.body;
-      destination = escapePathWithErrors(destination);
-
-      if (!checkVariables([items, destination])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-
-      const errorCopy: any[] = [];
-      await Promise.all(
-        items.map(async (item: string) => {
-          const newItem = escapePathWithErrors(item);
-          const newDest = nodePath.join(coreFolder, destination, nodePath.basename(item));
-          try {
-            await fsExtra.copy(nodePath.join(coreFolder, newItem), newDest);
-          } catch (err) {
-            errorCopy.push({ newItem, err });
-          }
-        })
-      );
-
-      if (errorCopy.length > 0) {
-        return next(new AppError("Failed to copy files", 400));
-      }
+      await this.filemanagerService.copy({ items, destination });
 
       res.status(200).json({
         status: "success",
@@ -239,24 +160,12 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async move(req: Request, res: Response, next: NextFunction) {
+  move = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { items, destination } = req.body;
-      destination = escapePathWithErrors(destination);
-
-      if (!checkVariables([items, destination])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-
-      await Promise.all(
-        items.map(async (item: string) => {
-          const newItem = escapePathWithErrors(item);
-          const newDest = nodePath.join(coreFolder, destination, nodePath.basename(item));
-          await fsExtra.move(newItem, newDest, { overwrite: true });
-        })
-      );
+      await this.filemanagerService.move({ items, destination });
 
       res.status(200).json({
         status: "success",
@@ -265,7 +174,7 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
   async unzip(req: Request, res: Response, next: NextFunction) {
     try {

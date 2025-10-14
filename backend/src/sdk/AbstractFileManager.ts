@@ -185,7 +185,7 @@ export abstract class AbstractFileManager {
   /**
    * Duplicate a file or folder
    */
-  abstract duplicate(params: DuplicateParams): Promise<void>;
+  abstract duplicate(params: DuplicateParams): Promise<string>;
 
   /**
    * Empty a directory (remove all contents but keep the directory)
