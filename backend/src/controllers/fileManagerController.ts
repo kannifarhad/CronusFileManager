@@ -205,14 +205,14 @@ export class FileManagerController {
 
   getFile = async (req: Request, res: Response) => {
     try {
-      const relativePath = req.originalUrl;
+      const relativePath = decodeURIComponent(req.originalUrl);
       if (!relativePath) {
         return res.status(400);
       }
       const fullPath = await this.filemanagerService.getLink({ path: relativePath });
       res.sendFile(fullPath);
     } catch (err: any) {
-      res.send();
+      return res.status(400);
     }
   };
 
