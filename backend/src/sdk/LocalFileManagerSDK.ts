@@ -250,27 +250,114 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     );
   }
 
-  async uploadFiles(params: UploadFilesParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async unzip({ file, destination = "" }: UnzipParams) {
+    if (!this.checkVariables([file])) {
+      throw new Error("Variables not set!");
+    }
+    const escapedFile = this.normalizePath(file);
+    const escapedDestination = destination === "" ? escapedFile.split(".").shift()! : this.normalizePath(destination);
+
+    const zip = fs.createReadStream(escapedFile).pipe(unzipper.Parse({ forceStream: true }));
+
+    for await (const entry of zip) {
+      if (this.checkExtension(nodePath.extname(entry.path))) {
+        const outPath = nodePath.join(escapedDestination, entry.path);
+        await fs.promises.mkdir(nodePath.dirname(outPath), { recursive: true });
+        entry.pipe(fs.createWriteStream(outPath));
+      } else {
+        entry.autodrain();
+      }
+    }
   }
 
-  async unzip(params: UnzipParams): Promise<void> {
-    throw new Error("Method not implemented.");
+  async archive({ files, destination, name }: ArchiveParams): Promise<string> {
+    if (!this.checkVariables([destination, name]) || !Array.isArray(files)) {
+      throw new Error("Variables not set!");
+    }
+    const escapedDestination = this.normalizePath(destination);
+    const normalisedFiles = files
+      .map((itemPath) => this.normalizePath(itemPath))
+      .filter((item) => this.isEntityExists(item));
+
+    if (this.isDangerousPath(name)) {
+      throw new Error(`Newname contains traversal attempts. ${name}`);
+    }
+
+    const output = fs.createWriteStream(nodePath.join(escapedDestination, `${name}.zip`));
+    const archive = archiver("zip", { zlib: { level: 9 } });
+
+    archive.pipe(output);
+    archive.on("error", (err) => {
+      throw new Error(err.message);
+    });
+
+    for (const item of normalisedFiles) {
+      const fileName = nodePath.basename(item);
+      if ((await fs.promises.lstat(item)).isDirectory()) {
+        archive.directory(item, fileName);
+      } else {
+        archive.file(item, { name: fileName });
+      }
+    }
+
+    await archive.finalize();
+    await output.on("close", () => {});
+    return nodePath.join(destination, `${name}.zip`);
   }
 
-  async archive(params: ArchiveParams): Promise<string> {
-    throw new Error("Method not implemented.");
+  async saveImage({ file, isnew, path }: SaveImageParams): Promise<void> {
+    if (!this.checkVariables([path]) || !Array.isArray(file)) {
+      throw new Error("Variables not set!");
+    }
+    const escapedPath = this.normalizePath(path);
+
+    file = file.split(";base64,").pop()!;
+    if (!this.checkExtension(nodePath.extname(escapedPath))) {
+      throw new Error(`Wrong File Format ${path}`);
+    }
+
+    if (isnew) {
+      const nameParts = path.split(".");
+      const timestamp = Date.now();
+      path = `${nameParts[0]}_${timestamp}.${nameParts[1]}`;
+    }
+
+    await fs.promises.mkdir(nodePath.dirname(escapedPath), { recursive: true });
+    await fs.promises.writeFile(escapedPath, file, { encoding: "base64" });
+  }
+
+  async uploadFiles({ files, fileMaps = [], path }: UploadFilesParams) {
+    const escapedPath = this.normalizePath(path);
+
+    if (!files || files.length === 0) {
+      throw new Error("No files have been sent or files list is empty");
+    }
+
+    await Promise.all(
+      files.map(async (file) => {
+        const fileOriginalName = Buffer.from(file.originalname, "latin1").toString("utf8");
+        if (!this.checkExtension(nodePath.extname(fileOriginalName))) return;
+
+        const data = await fs.promises.readFile(file.path!);
+        const relativePath = fileMaps.find((map) => map.name === fileOriginalName)?.path ?? `/${fileOriginalName}`;
+
+        if (this.isDangerousPath(relativePath)) return;
+
+        const fullPath = nodePath.join(escapedPath, relativePath);
+        await fs.promises.mkdir(nodePath.dirname(fullPath), { recursive: true });
+        await fs.promises.writeFile(fullPath, data);
+      })
+    );
+  }
+  async getLink({ path }: GetLinkParams): Promise<string> {
+    const escapedPath = this.normalizePath(path);
+    if (await this.isEntityExists(escapedPath)) {
+      return escapedPath;
+    }
+    throw new Error("File doesnt exists");
   }
 
   async getThumb(params: GetThumbParams): Promise<Buffer | NodeJS.ReadableStream> {
-    throw new Error("Method not implemented.");
-  }
-
-  async getLink(params: GetLinkParams): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-
-  async saveImage(params: SaveImageParams): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -279,7 +366,8 @@ export class LocalFileManagerSDK extends AbstractFileManager {
   }
 
   async exists(path: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    const escapedPath = this.normalizePath(path);
+    return this.isEntityExists(escapedPath);
   }
 
   /**
@@ -289,11 +377,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
    * @param targetDir - Optional target directory (defaults to item's parent directory)
    * @returns The unique name (not the full path)
    */
-  protected async generateUniqueCopyName(
-    itemPath: string,
-    isDirectory: boolean,
-    targetDir?: string
-  ): Promise<string> {
+  protected async generateUniqueCopyName(itemPath: string, isDirectory: boolean, targetDir?: string): Promise<string> {
     const dir = targetDir || nodePath.dirname(itemPath);
     const ext = isDirectory ? "" : nodePath.extname(itemPath);
     const baseName = nodePath.basename(itemPath, ext);

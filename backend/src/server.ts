@@ -6,16 +6,14 @@
  * @link        http://filemanager.kanni.pro
  */
 
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application } from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import bodyParser from "body-parser";
-import path from "path";
 import AppError from "./utilits/appError";
 import globalErrorHandler from "./controllers/errorController";
 import { FILE_STORAGE_MAIN_FOLDER } from "./config/fileStorage";
-import fileManager from './routes/fileManager';
-import { getDirname } from "./utilits/filemanager";
+import fileManagerRoutes, { fileManagerController } from "./routes/fileManager";
 // import bucketManager from './routes/bucketManager';
 
 const app: Application = express();
@@ -40,11 +38,11 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+
 // Routes
-app.use('/fm', fileManager);
+app.use("/fm", fileManagerRoutes);
+app.use(`/${FILE_STORAGE_MAIN_FOLDER}`, fileManagerController.getFile);
 // app.use('/s3', bucketManager);
-const __dirname = getDirname(import.meta.url);
-app.use(`/${FILE_STORAGE_MAIN_FOLDER}`, express.static(path.join(__dirname, FILE_STORAGE_MAIN_FOLDER)));
 
 // 404 handler
 app.all(/.*/, (req, res, next) => {

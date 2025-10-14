@@ -6,25 +6,10 @@
  * @link        http://filemanager.kanni.pro
  */
 
-import unzipper from "unzipper";
-import archiver from "archiver";
-import nodePath from "path";
-import fs from "graceful-fs";
-import fsExtra from "fs-extra";
 import { Request, Response, NextFunction } from "express";
-import { directoryTree, searchDirectoryTree } from "../utilits/directory-tree.js";
-import {
-  checkExtension,
-  escapePathWithErrors,
-  checkVariables,
-  normaLisedPath,
-  getDirname,
-} from "../utilits/filemanager.js";
 import AppError from "../utilits/appError.js";
 import AbstractFileManager from "../sdk/LocalFileManagerSDK.js";
-
-const __dirname = getDirname(import.meta.url);
-const coreFolder = nodePath.resolve(`${__dirname}/../`);
+import { FileUpload } from "../sdk/AbstractFileManager.js";
 
 export class FileManagerController {
   protected filemanagerService: AbstractFileManager;
@@ -176,28 +161,10 @@ export class FileManagerController {
     }
   };
 
-  async unzip(req: Request, res: Response, next: NextFunction) {
+  unzip = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { file, destination } = req.body;
-
-      if (!checkVariables([file, destination])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-
-      file = escapePathWithErrors(file);
-      destination = !destination || destination === "" ? file.split(".").shift()! : escapePathWithErrors(destination);
-
-      const zip = fs.createReadStream(nodePath.join(coreFolder, file)).pipe(unzipper.Parse({ forceStream: true }));
-
-      for await (const entry of zip) {
-        if (checkExtension(nodePath.extname(entry.path))) {
-          const outPath = nodePath.join(coreFolder, destination, entry.path);
-          await fs.promises.mkdir(nodePath.dirname(outPath), { recursive: true });
-          entry.pipe(fs.createWriteStream(outPath));
-        } else {
-          entry.autodrain();
-        }
-      }
+      await this.filemanagerService.unzip({ file, destination });
 
       res.status(200).json({
         status: "success",
@@ -206,65 +173,26 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async archive(req: Request, res: Response, next: NextFunction) {
+  archive = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { files, destination, name } = req.body;
-      destination = escapePathWithErrors(destination);
-      name = escapePathWithErrors(name);
+      await this.filemanagerService.archive({ files, destination, name });
 
-      const output = fs.createWriteStream(nodePath.join(coreFolder, destination, `${name}.zip`));
-      const archive = archiver("zip", { zlib: { level: 9 } });
-
-      archive.pipe(output);
-      archive.on("error", (err) => {
-        throw new AppError(err.message, 400);
-      });
-
-      for (const item of files) {
-        const newItem = nodePath.join(coreFolder, escapePathWithErrors(item));
-        const fileName = nodePath.basename(newItem);
-        if ((await fs.promises.lstat(newItem)).isDirectory()) {
-          archive.directory(newItem, fileName);
-        } else {
-          archive.file(newItem, { name: fileName });
-        }
-      }
-
-      await archive.finalize();
-
-      output.on("close", () => {
-        res.status(200).json({
-          status: "success",
-          message: "Archive successfully created!",
-        });
+      res.status(200).json({
+        status: "success",
+        message: "Archive successfully created!",
       });
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async saveImage(req: Request, res: Response, next: NextFunction) {
+  saveImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { path, file, isnew } = req.body;
-      path = escapePathWithErrors(path);
-      file = file.split(";base64,").pop()!;
-      if (!checkExtension(nodePath.extname(path))) {
-        return next(new AppError(`Wrong File Format ${path}`, 400));
-      }
-      if (!checkVariables([path, file])) {
-        return next(new AppError("Variables not set!", 400));
-      }
-      if (isnew) {
-        const nameParts = path.split(".");
-        const timestamp = Date.now();
-        path = `${nameParts[0]}_${timestamp}.${nameParts[1]}`;
-      }
-
-      const filePath = nodePath.join(coreFolder, path);
-      await fs.promises.mkdir(nodePath.dirname(filePath), { recursive: true });
-      await fs.promises.writeFile(filePath, file, { encoding: "base64" });
+      await this.filemanagerService.saveImage({ path, file, isnew });
 
       res.status(200).json({
         status: "success",
@@ -273,37 +201,30 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 
-  async uploadFiles(req: Request & { files?: Express.Multer.File[] }, res: Response, next: NextFunction) {
+  getFile = async (req: Request, res: Response) => {
+    try {
+      const relativePath = req.originalUrl;
+      if (!relativePath) {
+        return res.status(400);
+      }
+      const fullPath = await this.filemanagerService.getLink({ path: relativePath });
+      res.sendFile(fullPath);
+    } catch (err: any) {
+      res.send();
+    }
+  };
+
+  uploadFiles = async (req: Request, res: Response, next: NextFunction) => {
     try {
       let { path, fileMaps } = req.body;
-      path = escapePathWithErrors(path);
-
-      let pathMappings: Array<{ name: string; path: string }> = [];
-      if (fileMaps) {
-        pathMappings = JSON.parse(fileMaps) ?? [];
-      }
-
-      if (!req.files || req.files.length === 0) {
-        return next(new AppError("No files have been sent or files list is empty", 400));
-      }
-
-      await Promise.all(
-        req.files.map(async (file) => {
-          if (!checkExtension(nodePath.extname(file.originalname))) return;
-
-          const data = await fs.promises.readFile(file.path);
-
-          const relativePath =
-            pathMappings.find((map) => map.name === file.originalname)?.path ?? `/${file.originalname}`;
-
-          const fullPath = nodePath.join(coreFolder, path, relativePath);
-
-          await fs.promises.mkdir(nodePath.dirname(fullPath), { recursive: true });
-          await fs.promises.writeFile(fullPath, data);
-        })
-      );
+      const { files } = req;
+      await this.filemanagerService.uploadFiles({
+        path,
+        files: files as FileUpload[],
+        fileMaps: JSON.parse(fileMaps),
+      });
 
       res.status(200).json({
         status: "success",
@@ -312,8 +233,7 @@ export class FileManagerController {
     } catch (err: any) {
       next(new AppError(err.message, 400));
     }
-  }
+  };
 }
 
-// ✅ Export default instance for routers
 export default FileManagerController;
