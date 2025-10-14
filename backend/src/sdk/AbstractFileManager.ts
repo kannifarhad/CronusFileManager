@@ -59,7 +59,7 @@ export interface FileUpload {
   buffer: Buffer;
   mimetype: string;
   size: number;
-  path?: string; // For local file uploads
+  path: string; // For local file uploads
 }
 
 export interface UploadFilesParams {
