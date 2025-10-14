@@ -1,33 +1,46 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
+  "name": "cronus_backend",
+  "version": "2.0.0",
   "description": "",
-  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon  -r dotenv/config server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.665.0",
-    "@aws-sdk/lib-storage": "^3.667.0",
-    "@aws-sdk/s3-request-presigner": "^3.670.0",
-    "archiver": "^3.1.1",
-    "body-parser": "^1.19.0",
+    "@aws-sdk/client-s3": "^3.908.0",
+    "@aws-sdk/lib-storage": "^3.908.0",
+    "@aws-sdk/s3-request-presigner": "^3.908.0",
+    "archiver": "^7.0.1",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.17.1",
-    "express-rate-limit": "^5.0.0",
-    "fs-extra": "^9.0.0",
-    "graceful-fs": "^4.2.3",
-    "multer": "^1.4.2",
-    "node-cron": "^3.0.3",
-    "unzipper": "^0.10.10",
-    "xss-clean": "^0.1.1"
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "fs-extra": "^11.3.2",
+    "graceful-fs": "^4.2.11",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "unzipper": "^0.12.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "@types/archiver": "^6.0.3",
+    "@types/body-parser": "^1.19.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/express-rate-limit": "^6.0.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/graceful-fs": "^4.1.9",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.7.2",
+    "@types/node-cron": "^3.0.11",
+    "@types/unzipper": "^0.10.11",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }

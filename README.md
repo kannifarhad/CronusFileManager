@@ -35,11 +35,19 @@ We are excited to announce the upcoming release of our library, which will bring
 - **Folder Tree Upload**: ✅
     You will be able to upload an entire folder tree, including all files and subfolders, making bulk uploads more efficient.
 
+- **Frontend Build Optimization with Vite**: ✅
+    Migrated the frontend from Create React App (react-scripts) to Vite, resulting in significantly faster build times, improved hot module replacement (HMR), and a more efficient local development experience.
+
+- **SDK-Based Backend Architecture**: 🕑
+    To simplify integration across different dashboards, the backend will leverage SDKs for both the local file system and S3 storage.
+    The API routes will remain identical — the differentiation between storage types will be determined dynamically via request headers.
+
+- **Search**: ✅
+    Implementation of searching folders and files inside selected disk volume
+    
 - **Bug Fixes and Performance Improvements**: 🕑
     We will address numerous bugs, fix performance issues, and refactor the overall structure for better maintainability and efficiency.
 
-- **Search**: 🕑
-    Implementation of searching folders and files inside selected disk volume
 
 - **Trash Box**: 🔜
     Implement trash box feature that will hold removed items for 30 days with possibility of recovery 
