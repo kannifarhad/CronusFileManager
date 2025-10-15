@@ -144,7 +144,6 @@ export class LocalFileManagerSDK extends AbstractFileManager {
 
     const normalisedPaths = items.map((path) => this.normalizePath(path));
     const errors: Array<{ path: string; error: string }> = [];
-
     await Promise.allSettled(
       normalisedPaths.map(async (item: string) => {
         try {
@@ -853,7 +852,6 @@ export class LocalFileManagerSDK extends AbstractFileManager {
 
     // Check for directory traversal attempts
     const sanitazedPath = sanitizePath(path, { strict });
-
     return nodePath.join(this.coreFolder, sanitazedPath);
   }
 

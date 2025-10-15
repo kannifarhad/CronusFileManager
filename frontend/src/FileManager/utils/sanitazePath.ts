@@ -1,4 +1,3 @@
-// Utility to sanitize file paths
 /**
  * Enhanced path sanitization with comprehensive security checks
  * @param rawPath - The raw path string to sanitize
@@ -17,22 +16,22 @@ interface SanitizePathOptions {
   allowUNC?: boolean;
 }
 
+// Pre-compiled regex patterns for better performance
 const PATTERNS = {
   nullByte: /\0/g,
   uncPath: /^\\\\[^\\]+\\[^\\]+/,
   backslash: /\\/g,
   absolutePath: /^([a-zA-Z]:)?\/+/,
-  driveLetter: /^[a-zA-Z]:/,
-  traversal: /(?:^|\/)\.\.(\/|$)|^\.|\/\./g,
+  // Fixed: More comprehensive traversal detection
+  traversal: /(?:^|\/|\\)\.\.(?:\/|\\|$)|(?:^|\/|\\)\.(?:\/|\\|$)/,
   multiSlash: /\/+/g,
   trailingSlash: /\/+$/,
   reservedNames: /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\..*)?$/i,
   dangerousChars: /[^\w\s\-./]/g,
-  emptySegments: /\/+/g,
 } as const;
 
-export function sanitizePath(rawPath: string, options: SanitizePathOptions = {}): string {
-  const { allowAbsolute = false, strict = false, maxLength = 4096, allowUNC = false } = options;
+function sanitizePath(rawPath: string, options: SanitizePathOptions = {}): string {
+  const { allowAbsolute = true, strict = false, maxLength = 4096, allowUNC = false } = options;
 
   // Input validation
   if (typeof rawPath !== "string") {
@@ -58,40 +57,47 @@ export function sanitizePath(rawPath: string, options: SanitizePathOptions = {})
     path = path.replace(PATTERNS.uncPath, "");
   }
 
-  // Normalize separators and handle absolute paths in one pass
+  // Normalize separators FIRST before checking for traversal
   path = path.replace(PATTERNS.backslash, "/");
 
+  // Handle absolute paths
   const isAbsolute = PATTERNS.absolutePath.test(path);
   if (isAbsolute && !allowAbsolute) {
     if (strict) throw new Error("Absolute paths are not allowed");
     path = path.replace(PATTERNS.absolutePath, "");
   }
 
-  // Check for traversal patterns before processing
-  if (PATTERNS.traversal.test(path)) {
+  // Check for traversal patterns AFTER normalization
+  // This catches patterns like: /../, /../../, ../folder, folder/.., etc.
+  const hasTraversal = PATTERNS.traversal.test(path);
+
+  if (hasTraversal || path.includes("..")) {
     if (strict) throw new Error("Path contains directory traversal patterns");
 
-    // Single pass: split, filter, join
+    // Single pass: split, filter dangerous segments, and clean
     const segments = path.split("/");
     const cleaned: string[] = [];
 
     for (let i = 0; i < segments.length; i++) {
       const segment = segments[i].trim();
-      if (segment && segment !== "." && segment !== "..") {
-        // Check for reserved names and dangerous chars in one go
-        const hasReserved = PATTERNS.reservedNames.test(segment);
-        const cleanSegment = segment.replace(PATTERNS.dangerousChars, "");
 
-        if (cleanSegment) {
-          cleaned.push(hasReserved && !strict ? `_${cleanSegment}` : cleanSegment);
-        }
+      // Skip empty, current directory (.), and parent directory (..) references
+      if (!segment || segment === "." || segment === "..") {
+        continue;
+      }
+
+      // Check for reserved names and dangerous chars
+      const hasReserved = PATTERNS.reservedNames.test(segment);
+      const cleanSegment = segment.replace(PATTERNS.dangerousChars, "");
+
+      if (cleanSegment) {
+        cleaned.push(hasReserved && !strict ? `_${cleanSegment}` : cleanSegment);
       }
     }
 
     path = cleaned.join("/");
   } else {
     // Fast path when no traversal detected
-    // Still need to clean segments for reserved names and dangerous chars
     const segments = path.split("/");
     const cleaned: string[] = [];
 
@@ -124,11 +130,51 @@ export function sanitizePath(rawPath: string, options: SanitizePathOptions = {})
     path = path.slice(0, -1);
   }
 
-  // Final validation
-  if (!allowAbsolute && (path.includes("..") || path.startsWith("/"))) {
-    if (strict) throw new Error("Path validation failed after sanitization");
-    path = path.replace(/\.\./g, "").replace(/^\/+/, "");
+  // CRITICAL: Final validation to ensure no traversal patterns remain
+  if (path.includes("..")) {
+    if (strict) throw new Error("Path validation failed: traversal patterns detected after sanitization");
+    // Remove any remaining .. patterns
+    path = path
+      .split("/")
+      .filter((seg) => seg !== "..")
+      .join("/");
+  }
+
+  // Final check for leading slash in non-absolute mode
+  if (!allowAbsolute && path.startsWith("/")) {
+    if (strict) throw new Error("Path validation failed: absolute path not allowed");
+    path = path.replace(/^\/+/, "");
   }
 
   return path;
 }
+
+/**
+ * Validate if a path is safe after sanitization
+ */
+function isPathSafe(path: string): boolean {
+  try {
+    const sanitized = sanitizePath(path, { strict: true });
+    return sanitized === path;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Normalize and join path segments safely
+ */
+function joinPaths(...segments: string[]): string {
+  // Single pass: filter empty, sanitize, and join
+  const cleaned: string[] = [];
+
+  for (let i = 0; i < segments.length; i++) {
+    const sanitized = sanitizePath(segments[i]);
+    if (sanitized) cleaned.push(sanitized);
+  }
+
+  return cleaned.join("/");
+}
+
+export { sanitizePath, isPathSafe, joinPaths };
+export type { SanitizePathOptions };
