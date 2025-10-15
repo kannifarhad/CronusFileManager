@@ -59,7 +59,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     this.basePath = `/${this.config.rootFolder}`;
   }
 
-  async getFolderTree({ prefix = "", withChildren = true, includeFiles = false }: FolderTreeOptions) {
+  async getFolderTree({ prefix = "/", withChildren = true, includeFiles = false }: FolderTreeOptions) {
     try {
       return await this.directoryTree(prefix, {
         withChildren,
@@ -117,24 +117,21 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError(`Invalid file extension in '${newname}'`, "INVALID_EXTENSION", path);
     }
 
-    if (this.isDangerousPath(newname)) {
-      throw new FileManagerError(`New name '${newname}' contains path traversal attempts`, "DANGEROUS_PATH", path);
-    }
+    const sanitazedName = sanitizePath(newname, { strict: true });
+    const normalizedPath = this.normalizePath(path);
 
-    const escapedPath = this.normalizePath(path);
-
-    if (!(await this.isEntityExists(escapedPath))) {
+    if (!(await this.isEntityExists(normalizedPath))) {
       throw new FileManagerError(`Item '${path}' does not exist`, "ITEM_NOT_FOUND", path);
     }
 
-    const renamePath = nodePath.join(nodePath.dirname(escapedPath), newname);
+    const renamePath = nodePath.join(nodePath.dirname(normalizedPath), sanitazedName);
 
     if (await this.isEntityExists(renamePath)) {
       throw new FileManagerError(`Item with name '${newname}' already exists`, "ITEM_EXISTS", path);
     }
 
     try {
-      await fsExtra.rename(escapedPath, renamePath);
+      await fsExtra.rename(normalizedPath, renamePath);
     } catch (error: any) {
       throw new FileManagerError(`Failed to rename '${path}' to '${newname}': ${error.message}`, "RENAME_FAILED", path);
     }
@@ -176,12 +173,8 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError(`Invalid or unaccepted file format '${file}'`, "INVALID_EXTENSION");
     }
 
-    if (this.isDangerousPath(file)) {
-      throw new FileManagerError(`Filename '${file}' contains path traversal attempts`, "DANGEROUS_PATH");
-    }
-
-    const escapedPath = this.normalizePath(path);
-    const fullFilePath = nodePath.join(escapedPath, file);
+    const normalizedPath = this.normalizePath(path);
+    const fullFilePath = nodePath.join(normalizedPath, sanitizePath(file, { strict: true }));
 
     if (await this.isEntityExists(fullFilePath)) {
       throw new FileManagerError(`File '${file}' already exists in '${path}'`, "FILE_EXISTS", fullFilePath);
@@ -203,24 +196,22 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("Path and folder name are required", "MISSING_PARAMETERS");
     }
 
-    if (this.isDangerousPath(folder)) {
-      throw new FileManagerError(`Folder name '${folder}' contains path traversal attempts`, "DANGEROUS_PATH");
-    }
+    const normalisedPath = this.normalizePath(path);
+    const sanitisedFolderName = sanitizePath(folder, { strict: true });
 
-    const newFolderPath = nodePath.join(path, folder);
-    const escapedPath = this.normalizePath(newFolderPath);
+    const newFolderPath = nodePath.join(normalisedPath, sanitisedFolderName);
 
-    if (await this.isEntityExists(escapedPath)) {
-      throw new FileManagerError(`Folder '${folder}' already exists in '${path}'`, "FOLDER_EXISTS", escapedPath);
+    if (await this.isEntityExists(newFolderPath)) {
+      throw new FileManagerError(`Folder '${folder}' already exists in '${path}'`, "FOLDER_EXISTS", normalisedPath);
     }
 
     try {
-      await fsExtra.mkdir(escapedPath, { mode: mask });
+      await fsExtra.mkdir(newFolderPath, { mode: mask });
     } catch (error: any) {
       throw new FileManagerError(
         `Failed to create folder '${folder}': ${error.message}`,
         "CREATE_FOLDER_FAILED",
-        escapedPath
+        path + folder
       );
     }
   }
@@ -230,45 +221,40 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
 
-    const escapedPath = this.normalizePath(path);
+    const normalisedPath = this.normalizePath(path);
 
-    if (!(await this.isEntityExists(escapedPath))) {
+    if (!(await this.isEntityExists(normalisedPath))) {
       throw new FileManagerError(`Directory '${path}' does not exist`, "DIRECTORY_NOT_FOUND", path);
     }
 
     try {
-      await fsExtra.emptyDir(escapedPath);
+      await fsExtra.emptyDir(normalisedPath);
     } catch (error: any) {
       throw new FileManagerError(`Failed to empty directory '${path}': ${error.message}`, "EMPTY_DIR_FAILED", path);
     }
   }
 
-  async duplicate({ path: targetPath }: DuplicateParams) {
-    if (!this.checkVariables([targetPath])) {
+  async duplicate({ path }: DuplicateParams) {
+    if (!this.checkVariables([path])) {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
 
-    const escapedPath = this.normalizePath(targetPath);
+    const normalisedPath = this.normalizePath(path);
 
-    if (!(await this.isEntityExists(escapedPath))) {
-      throw new FileManagerError(`Item '${targetPath}' does not exist`, "ITEM_NOT_FOUND", targetPath);
+    if (!(await this.isEntityExists(normalisedPath))) {
+      throw new FileManagerError(`Item '${path}' does not exist`, "ITEM_NOT_FOUND", path);
     }
 
     try {
-      const stats = await fsExtra.stat(escapedPath);
-      const isDirectory = stats.isDirectory();
-      const copyName = await this.generateUniqueCopyName(escapedPath, isDirectory);
-      const dir = nodePath.dirname(escapedPath);
-      const copyPath = nodePath.join(dir, copyName);
+      const dublicatePath = await this.generateUniqueNameInDirectoryV2({
+        fullPath: normalisedPath,
+        prefix: "copy",
+      });
 
-      await fsExtra.copy(escapedPath, copyPath);
-      return copyName;
+      await fsExtra.copy(normalisedPath, dublicatePath);
+      return dublicatePath;
     } catch (error: any) {
-      throw new FileManagerError(
-        `Failed to duplicate '${targetPath}': ${error.message}`,
-        "DUPLICATE_FAILED",
-        targetPath
-      );
+      throw new FileManagerError(`Failed to duplicate '${path}': ${error.message}`, "DUPLICATE_FAILED", normalisedPath);
     }
   }
 
@@ -299,30 +285,16 @@ export class LocalFileManagerSDK extends AbstractFileManager {
             return;
           }
 
-          const stats = await fsExtra.stat(normalizedPath);
-          const isDirectory = stats.isDirectory();
-
           // Get the original name
-          const ext = isDirectory ? "" : nodePath.extname(normalizedPath);
+          const ext = nodePath.extname(normalizedPath) ?? "";
           const baseName = nodePath.basename(normalizedPath, ext);
           const originalName = `${baseName}${ext}`;
 
           // Check if file with same name exists in destination
-          const destPath = nodePath.join(escapedDestination, originalName);
-          const needsUniqueName = await this.isEntityExists(destPath);
-
-          let finalName: string;
-          let finalDest: string;
-
-          if (needsUniqueName) {
-            // Generate unique name only if conflict exists
-            finalName = await this.generateUniqueNameInDirectory(escapedDestination, baseName, ext, isDirectory);
-            finalDest = nodePath.join(escapedDestination, finalName);
-          } else {
-            // Use original name if no conflict
-            finalName = originalName;
-            finalDest = destPath;
-          }
+          const finalDest = await this.generateUniqueNameInDirectoryV2({
+            fullPath: nodePath.join(escapedDestination, originalName),
+            prefix: "copy",
+          });
 
           await fsExtra.copy(normalizedPath, finalDest, { overwrite: false });
         } catch (err: any) {
@@ -367,30 +339,16 @@ export class LocalFileManagerSDK extends AbstractFileManager {
             return;
           }
 
-          const stats = await fsExtra.stat(normalizedPath);
-          const isDirectory = stats.isDirectory();
-
           // Get the original name
-          const ext = isDirectory ? "" : nodePath.extname(normalizedPath);
+          const ext = nodePath.extname(normalizedPath) ?? "";
           const baseName = nodePath.basename(normalizedPath, ext);
           const originalName = `${baseName}${ext}`;
 
           // Check if file with same name exists in destination
-          const destPath = nodePath.join(escapedDestination, originalName);
-          const needsUniqueName = await this.isEntityExists(destPath);
-
-          let finalName: string;
-          let finalDest: string;
-
-          if (needsUniqueName) {
-            // Generate unique name only if conflict exists
-            finalName = await this.generateUniqueNameInDirectory(escapedDestination, baseName, ext, isDirectory);
-            finalDest = nodePath.join(escapedDestination, finalName);
-          } else {
-            // Use original name if no conflict
-            finalName = originalName;
-            finalDest = destPath;
-          }
+          const finalDest = await this.generateUniqueNameInDirectoryV2({
+            fullPath: nodePath.join(escapedDestination, originalName),
+            prefix: "copy",
+          });
 
           await fsExtra.move(normalizedPath, finalDest, { overwrite: false });
         } catch (err: any) {
@@ -413,16 +371,17 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("File path is required", "MISSING_PARAMETERS");
     }
 
-    const escapedFile = this.normalizePath(file);
+    const normalisedArchivePath = this.normalizePath(file);
 
-    if (!(await this.isEntityExists(escapedFile))) {
+    if (!(await this.isEntityExists(normalisedArchivePath))) {
       throw new FileManagerError(`Archive '${file}' does not exist`, "FILE_NOT_FOUND", file);
     }
 
-    const escapedDestination = destination === "" ? escapedFile.split(".").shift()! : this.normalizePath(destination);
+    const normalisedDestination =
+      destination === "" ? normalisedArchivePath.split(".").shift()! : this.normalizePath(destination);
 
     try {
-      const zip = fsExtra.createReadStream(escapedFile).pipe(unzipper.Parse({ forceStream: true }));
+      const zip = fsExtra.createReadStream(normalisedArchivePath).pipe(unzipper.Parse({ forceStream: true }));
 
       for await (const entry of zip) {
         const entryPath = entry.path as string;
@@ -432,24 +391,13 @@ export class LocalFileManagerSDK extends AbstractFileManager {
           continue;
         }
 
-        // Check if file already exists
-        const fullOutPath = nodePath.join(escapedDestination, entryPath);
-
-        if (await this.isEntityExists(fullOutPath)) {
-          // Generate unique name
-          const dir = nodePath.dirname(fullOutPath);
-          const ext = nodePath.extname(entryPath);
-          const baseName = nodePath.basename(entryPath, ext);
-
-          const uniqueName = await this.generateUniqueNameInDirectory(dir, baseName, ext, false);
-          const outPath = nodePath.join(dir, uniqueName);
-
-          await fsExtra.ensureDir(nodePath.dirname(outPath));
-          entry.pipe(fsExtra.createWriteStream(outPath));
-        } else {
-          await fsExtra.ensureDir(nodePath.dirname(fullOutPath));
-          entry.pipe(fsExtra.createWriteStream(fullOutPath));
-        }
+        // Check if file with same name exists in destination
+        const fullOutPath = await this.generateUniqueNameInDirectoryV2({
+          fullPath: nodePath.join(normalisedDestination, entryPath),
+          prefix: "copy",
+        });
+        await fsExtra.ensureDir(nodePath.dirname(fullOutPath));
+        entry.pipe(fsExtra.createWriteStream(fullOutPath));
       }
     } catch (error: any) {
       throw new FileManagerError(`Failed to unzip '${file}': ${error.message}`, "UNZIP_FAILED", file);
@@ -461,17 +409,14 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("Destination, name, and files are required", "MISSING_PARAMETERS");
     }
 
-    if (this.isDangerousPath(name)) {
-      throw new FileManagerError(`Archive name '${name}' contains path traversal attempts`, "DANGEROUS_PATH");
-    }
+    const sanitazedName = sanitizePath(name, { strict: true });
+    const normalisedDestination = this.normalizePath(destination);
 
-    const escapedDestination = this.normalizePath(destination);
-
-    if (!(await this.isEntityExists(escapedDestination))) {
+    if (!(await this.isEntityExists(normalisedDestination))) {
       throw new FileManagerError(`Destination '${destination}' does not exist`, "DESTINATION_NOT_FOUND", destination);
     }
 
-    const archivePath = nodePath.join(escapedDestination, `${name}.zip`);
+    const archivePath = nodePath.join(normalisedDestination, `${sanitazedName}.zip`);
 
     try {
       const output = fsExtra.createWriteStream(archivePath);
@@ -527,20 +472,18 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("Path and file data are required", "MISSING_PARAMETERS");
     }
 
-    let imagePath = path;
     const fileData = typeof file === "string" ? file.split(";base64,").pop()! : file;
 
-    if (!this.checkExtension(nodePath.extname(imagePath))) {
+    if (!this.checkExtension(nodePath.extname(path))) {
       throw new FileManagerError(`Invalid image format for '${path}'`, "INVALID_EXTENSION", path);
     }
-
-    if (isnew) {
-      const nameParts = imagePath.split(".");
-      const timestamp = Date.now();
-      imagePath = `${nameParts[0]}_${timestamp}.${nameParts[1]}`;
-    }
-
-    const escapedPath = this.normalizePath(imagePath);
+    const imagePath = this.normalizePath(path);
+    const escapedPath = isnew
+      ? await this.generateUniqueNameInDirectoryV2({
+          fullPath: imagePath,
+          prefix: "copy",
+        })
+      : imagePath;
 
     try {
       await fsExtra.ensureDir(nodePath.dirname(escapedPath));
@@ -563,9 +506,9 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("No files provided for upload", "NO_FILES");
     }
 
-    const escapedPath = this.normalizePath(path);
+    const normalizedPath = this.normalizePath(path);
 
-    if (!(await this.isEntityExists(escapedPath))) {
+    if (!(await this.isEntityExists(normalizedPath))) {
       throw new FileManagerError(`Destination '${path}' does not exist`, "DESTINATION_NOT_FOUND", path);
     }
 
@@ -585,29 +528,14 @@ export class LocalFileManagerSDK extends AbstractFileManager {
             fileMaps.find((map) => map.name === fileOriginalName)?.path ?? fileOriginalName
           );
 
-          if (this.isDangerousPath(relativePath)) {
-            errors.push({ file: fileOriginalName, error: "Path contains traversal attempts" });
-            return;
-          }
-
           const data = await fsExtra.readFile(file.path!);
-          const fullPath = nodePath.join(escapedPath, relativePath);
-
           // Check if file exists and generate unique name if needed
-          if (await this.isEntityExists(fullPath)) {
-            const dir = nodePath.dirname(fullPath);
-            const ext = nodePath.extname(fileOriginalName);
-            const baseName = nodePath.basename(fileOriginalName, ext);
-
-            const uniqueName = await this.generateUniqueNameInDirectory(dir, baseName, ext, false);
-            const uniquePath = nodePath.join(dir, uniqueName);
-
-            await fsExtra.ensureDir(nodePath.dirname(uniquePath));
-            await fsExtra.writeFile(uniquePath, data);
-          } else {
-            await fsExtra.ensureDir(nodePath.dirname(fullPath));
-            await fsExtra.writeFile(fullPath, data);
-          }
+          const fullPath = await this.generateUniqueNameInDirectoryV2({
+            fullPath: nodePath.join(normalizedPath, relativePath),
+            prefix: "copy",
+          });
+          await fsExtra.ensureDir(nodePath.dirname(fullPath));
+          await fsExtra.writeFile(fullPath, data);
         } catch (err: any) {
           errors.push({ file: file.originalname, error: err.message });
         }
@@ -628,13 +556,13 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
 
-    const escapedPath = this.normalizePath(path);
+    const normalizedPath = this.normalizePath(path);
 
-    if (!(await this.isEntityExists(escapedPath))) {
+    if (!(await this.isEntityExists(normalizedPath))) {
       throw new FileManagerError(`File '${path}' does not exist`, "FILE_NOT_FOUND", path);
     }
 
-    return escapedPath;
+    return normalizedPath;
   }
 
   async getThumb({ path }: GetThumbParams): Promise<Buffer | NodeJS.ReadableStream> {
@@ -642,14 +570,14 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
 
-    const escapedPath = this.normalizePath(path);
+    const normalizedPath = this.normalizePath(path);
 
-    if (!(await this.isEntityExists(escapedPath))) {
+    if (!(await this.isEntityExists(normalizedPath))) {
       throw new FileManagerError(`File '${path}' does not exist`, "FILE_NOT_FOUND", path);
     }
 
     try {
-      return fsExtra.createReadStream(escapedPath);
+      return fsExtra.createReadStream(normalizedPath);
     } catch (error: any) {
       throw new FileManagerError(`Failed to read file '${path}': ${error.message}`, "READ_FAILED", path);
     }
@@ -660,14 +588,14 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
 
-    const escapedPath = this.normalizePath(path);
+    const normalizedPath = this.normalizePath(path);
 
-    if (!(await this.isEntityExists(escapedPath))) {
+    if (!(await this.isEntityExists(normalizedPath))) {
       throw new FileManagerError(`Item '${path}' does not exist`, "ITEM_NOT_FOUND", path);
     }
 
     try {
-      return await this.getItemInfoAsync(escapedPath, {
+      return await this.getItemInfoAsync(normalizedPath, {
         normalizePath: true,
         removePath: this.coreFolder,
       });
@@ -682,62 +610,6 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       return await this.isEntityExists(escapedPath);
     } catch {
       return false;
-    }
-  }
-
-  /**
-   * Generates a unique copy name for a file or folder (for duplicate operation)
-   * This always adds "copy" to the name
-   */
-  protected async generateUniqueCopyName(itemPath: string, isDirectory: boolean, targetDir?: string): Promise<string> {
-    const dir = targetDir || nodePath.dirname(itemPath);
-    const ext = isDirectory ? "" : nodePath.extname(itemPath);
-    const baseName = nodePath.basename(itemPath, ext);
-
-    let newName = `${baseName} copy${ext}`;
-    let newPath = nodePath.join(dir, newName);
-    let counter = 2;
-
-    while (await this.isEntityExists(newPath)) {
-      newName = `${baseName} copy ${counter}${ext}`;
-      newPath = nodePath.join(dir, newName);
-      counter++;
-    }
-
-    return newName;
-  }
-
-  /**
-   * Generates a unique name in a directory (for copy/move/upload/unzip operations)
-   * Only adds numbering if there's a conflict, otherwise returns original name
-   */
-  protected async generateUniqueNameInDirectory(
-    targetDir: string,
-    baseName: string,
-    ext: string,
-    isDirectory: boolean
-  ): Promise<string> {
-    const originalName = `${baseName}${ext}`;
-    let newPath = nodePath.join(targetDir, originalName);
-
-    // If no conflict, return original name
-    if (!(await this.isEntityExists(newPath))) {
-      return originalName;
-    }
-
-    // There's a conflict, start adding numbers
-    let counter = 1;
-    let newName: string;
-
-    while (true) {
-      newName = `${baseName} (${counter})${ext}`;
-      newPath = nodePath.join(targetDir, newName);
-
-      if (!(await this.isEntityExists(newPath))) {
-        return newName;
-      }
-
-      counter++;
     }
   }
 
@@ -878,6 +750,47 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     return results;
   }
 
+  /**
+   * Generates a unique name in a directory (for copy/move/upload/unzip operations)
+   * Only adds numbering if there's a conflict, otherwise returns original name
+   */
+
+  protected async generateUniqueNameInDirectoryV2({
+    fullPath,
+    prefix = "copy",
+  }: {
+    fullPath: string;
+    prefix?: string;
+  }): Promise<string> {
+    // If there's no conflict, return the original full path
+    if (!(await this.isEntityExists(fullPath))) {
+      return fullPath;
+    }
+
+    const dir = nodePath.dirname(fullPath);
+    const ext = nodePath.extname(fullPath) || "";
+    const baseName = nodePath.basename(fullPath, ext);
+
+    // Try: "<baseName> copy"
+    let newPath = nodePath.join(dir, `${baseName} ${prefix}${ext}`);
+    if (prefix && !(await this.isEntityExists(newPath))) {
+      return newPath;
+    }
+
+    // If it exists, start iterating: "<baseName> copy (2)", "<baseName> copy (3)", etc.
+    let counter = 1;
+    while (true) {
+      let newName = `${baseName} ${prefix}(${counter})${ext}`;
+      newPath = nodePath.join(dir, newName);
+
+      if (!(await this.isEntityExists(newPath))) {
+        return newPath;
+      }
+
+      counter++;
+    }
+  }
+
   protected async getItemInfoAsync(fullPath: string, options: DirectoryTreeOptions): Promise<FSItem> {
     const stats = await fsExtra.stat(fullPath);
     //TODO: Add support for symlinks
@@ -923,6 +836,27 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     return normalizedPath;
   }
 
+  /**
+   * Returns a fully resolveda absolute and validated sanitized path.
+   */
+  protected normalizePath(path: string, strict: boolean = true): string {
+    const rootPath = nodePath.join(this.coreFolder, this.basePath);
+
+    if (typeof path !== "string" || path.trim() === "" || path.trim() === "/") {
+      return rootPath;
+    }
+
+    if (!path.startsWith(this.basePath)) {
+      if (strict) throw new FileManagerError(`Path must start with "${this.basePath}"`, "INVALID_BASE_PATH", path);
+      return rootPath;
+    }
+
+    // Check for directory traversal attempts
+    const sanitazedPath = sanitizePath(path, { strict });
+
+    return nodePath.join(this.coreFolder, sanitazedPath);
+  }
+
   protected permissionsConvert(mode: number): FSPermissions {
     const formatPerm = (shift: number): string => {
       const val = (mode >> shift) & 7;
@@ -954,39 +888,6 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     } catch {
       return false;
     }
-  }
-
-  protected isDangerousPath(path: string): boolean {
-    return /(\.\.\/|\.\/|^\/$)/.test(path);
-  }
-  /**
-   * Escapes a path, but throws errors if invalid.
-   * Use when you want strict validation.
-   */
-  protected escapePath(path: string, throwError: boolean = false): string {
-    if (typeof path !== "string" || path.trim() === "") {
-      return this.basePath;
-    }
-
-    // Check for directory traversal attempts
-    if (this.isDangerousPath(path)) {
-      if (throwError) throw new FileManagerError("Path contains traversal attempts", "DANGEROUS_PATH", path);
-      return this.basePath;
-    }
-
-    if (!path.startsWith(this.basePath)) {
-      if (throwError) throw new FileManagerError(`Path must start with "${this.basePath}"`, "INVALID_BASE_PATH", path);
-      return this.basePath;
-    }
-
-    return path;
-  }
-
-  /**
-   * Returns a fully resolved and validated normalized path.
-   */
-  protected normalizePath(path: string, throwError: boolean = true): string {
-    return nodePath.join(this.coreFolder, this.escapePath(path, throwError));
   }
 }
 

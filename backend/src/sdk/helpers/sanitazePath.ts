@@ -32,7 +32,7 @@ const PATTERNS = {
 } as const;
 
 export function sanitizePath(rawPath: string, options: SanitizePathOptions = {}): string {
-  const { allowAbsolute = false, strict = false, maxLength = 4096, allowUNC = false } = options;
+  const { allowAbsolute = true, strict = false, maxLength = 4096, allowUNC = false } = options;
 
   // Input validation
   if (typeof rawPath !== "string") {
