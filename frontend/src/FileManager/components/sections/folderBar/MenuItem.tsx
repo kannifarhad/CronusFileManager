@@ -5,7 +5,7 @@ import { StyledFolderMenuItem } from "./styled";
 import { type FolderList } from "../../../types";
 import { useFileManagerState } from "../../../store/FileManagerContext";
 import Icon from "../../elements/Icon";
-import { classNames } from "../../../utils/helpers";
+import { classNames } from "../../../utils";
 
 interface MenuItemProps {
   item: FolderList | null;

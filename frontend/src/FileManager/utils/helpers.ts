@@ -4,6 +4,7 @@ import { FILE_EXTENSION_MAP } from "../config";
 import type { ContentIconType } from "../components/elements/ContentIcons";
 import { OrderByFieldEnum, SortByFieldEnum, ItemType, ItemExtensionCategoryFilter } from "../types";
 import type { FileType, ItemsList, OrderByType, FolderType, FolderList } from "../types";
+import { sanitizePath } from "./sanitazePath";
 
 export const sortFilter = (filesList: ItemsList, order: OrderByType): ItemsList => {
   // Helper function to sort items based on the field and order
@@ -268,27 +269,56 @@ export interface DroppedFolder {
 }
 
 export type DroppedFilesTree = (DroppedFolder | DroppedFile)[];
+// Utility to sanitize file paths
+/**
+ * Validate if a path is safe after sanitization
+ */
+export function isPathSafe(path: string): boolean {
+  try {
+    const sanitized = sanitizePath(path, { strict: true });
+    return sanitized === path;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Normalize and join path segments safely
+ */
+export function joinPaths(...segments: string[]): string {
+  // Single pass: filter empty, sanitize, and join
+  const cleaned: string[] = [];
+
+  for (let i = 0; i < segments.length; i++) {
+    const sanitized = sanitizePath(segments[i]);
+    if (sanitized) cleaned.push(sanitized);
+  }
+
+  return cleaned.join("/");
+}
+
 // Helper function to create folder trees
 function addFileToTree(tree: DroppedFilesTree, file: DroppedFile): void {
-  const parts = file.path.split("/").filter(Boolean); // Split the path and remove empty parts
+  // Sanitize the file path first
+  const safePath = sanitizePath(file.path);
+
+  const parts = safePath.split("/").filter(Boolean); // Split the path and remove empty parts
   let currentFolder = tree;
 
   parts.forEach((part, index) => {
     const isFile = index === parts.length - 1;
 
     if (isFile) {
-      // If it's the file, add it to the folder with 'type' attribute
       currentFolder.push({
         ...file,
+        path: safePath, // ensure we store the sanitized path
         type: ItemType.FILE,
       });
     } else {
-      // Check if the folder already exists
       let folder = currentFolder.find(
         (item) => "name" in item && item.name === part && item.type === ItemType.FOLDER
       ) as DroppedFolder | undefined;
 
-      // If folder doesn't exist, create it
       if (!folder) {
         folder = {
           name: part,
@@ -300,7 +330,6 @@ function addFileToTree(tree: DroppedFilesTree, file: DroppedFile): void {
         currentFolder.unshift(folder);
       }
 
-      // Move deeper into the folder structure
       currentFolder = folder.children;
     }
   });
@@ -311,13 +340,14 @@ export function organizeFiles(files: DroppedFile[]): (DroppedFolder | DroppedFil
   const tree: (DroppedFolder | DroppedFile)[] = [];
 
   files.forEach((file, index) => {
-    if (file.path.includes("/")) {
-      // If the file has a folder path, process it
-      addFileToTree(tree, { ...file, index, size: file.size, name: file.name });
+    const sanitized = sanitizePath(file.path);
+
+    if (sanitized.includes("/")) {
+      addFileToTree(tree, { ...file, path: sanitized, index, size: file.size, name: file.name });
     } else {
-      // If no folder path, add it directly to root
       tree.push({
         ...file,
+        path: sanitized,
         index,
         type: ItemType.FILE,
         size: file.size,

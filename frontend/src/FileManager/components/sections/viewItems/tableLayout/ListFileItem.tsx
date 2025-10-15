@@ -2,7 +2,7 @@ import React, { memo, useCallback, useMemo, type CSSProperties } from "react";
 import { Checkbox } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
 import { StyledListTableCell, StyledListTableRow } from "../styled";
-import { convertDate, formatBytes, getFileIcon, classNames } from "../../../../utils/helpers";
+import { convertDate, formatBytes, getFileIcon, classNames } from "../../../../utils";
 import { type FileType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../../types";
 import { useFileManagerState } from "../../../../store/FileManagerContext";
 import ContentIcons from "../../../elements/ContentIcons";

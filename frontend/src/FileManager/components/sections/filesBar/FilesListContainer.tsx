@@ -5,7 +5,7 @@ import OverlayBlocks from "./OverlayBlocks";
 import { useFileManagerState } from "../../../store/FileManagerContext";
 import { ContextMenuTypeEnum } from "../../../types";
 import { StyledEmptyFolderContainer } from "../viewItems/styled";
-import useText from "../../../utils/hooks/useTexts";
+import useText from "../../../hooks/useTexts";
 
 const ContainerBar: React.FC = () => {
   const {

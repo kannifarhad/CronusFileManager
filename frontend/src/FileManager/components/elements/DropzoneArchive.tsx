@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList from "./ButtonGroupSimple";
-import { formatBytes } from "../../utils/helpers";
+import { formatBytes } from "../../utils";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
 import { useFileManagerState } from "../../store/FileManagerContext";
 

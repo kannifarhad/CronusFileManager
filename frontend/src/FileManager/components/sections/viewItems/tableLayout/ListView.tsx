@@ -8,7 +8,7 @@ import ListItemRender from "./ListItemRender";
 import { StyledListTable, StyledEmptyFolderContainer } from "../styled";
 import { useFileManagerState } from "../../../../store/FileManagerContext";
 import { type Items } from "../../../../types";
-import useText from "../../../../utils/hooks/useTexts";
+import useText from "../../../../hooks/useTexts";
 
 export const ROW_HEIGHT = 50;
 

@@ -2,7 +2,7 @@ import React, { forwardRef, useCallback, useMemo, useRef } from "react";
 import Dialog from "@mui/material/Dialog";
 import Zoom from "@mui/material/Zoom";
 import ImageEditor from "./ImageEditorComponent";
-import whiteTheme from "../../utils/assets/whiteTheme";
+import whiteTheme from "../../assets/whiteTheme";
 import ButtonList, { type ButtonGroupProps } from "./ButtonGroup";
 import { type FileEditPopupProps } from "../../types";
 import { ImageEditorContainer } from "./styledImageeditor";

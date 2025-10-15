@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList, { type ButtonItemType } from "./ButtonGroup";
-import { type DroppedFile, organizeFiles } from "../../utils/helpers";
+import { type DroppedFile, organizeFiles } from "../../utils";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
 import { useFileManagerState } from "../../store/FileManagerContext";
 import DropzoneFileList from "./DropzoneFileList";
@@ -51,6 +51,7 @@ export default function UploadFiles() {
     return <DropzoneFileList tree={fileTree} onRemove={removeFile} onRemoveFolder={removeFolder} />;
   }, [files, removeFile, removeFolder]);
 
+  console.log("files", files);
   const buttons: ButtonItemType[] = useMemo(
     () => [
       {

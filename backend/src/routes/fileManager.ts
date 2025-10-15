@@ -10,7 +10,7 @@ import express, { Router } from "express";
 import multer from "multer";
 import catchAsync from "../utilits/catchAsync";
 import _fileManagerController from "../controllers/fileManagerController";
-import { FILE_STORAGE_MAIN_FOLDER, FILE_STORAGE_TMP_FOLDER } from "../config/fileStorage";
+import { ALLOWED_FILE_EXTENSIONS, FILE_STORAGE_MAIN_FOLDER, FILE_STORAGE_TMP_FOLDER } from "../config/fileStorage";
 import { MAX_UPLOAD_FILE_AMOUNT, MAX_UPLOAD_FILE_SIZE } from "../config/common";
 import AppError from "../utilits/appError";
 import LocalFileManagerSDK from "../sdk/LocalFileManagerSDK";
@@ -33,6 +33,7 @@ const upload = multer({
 const localFileMangerService = new LocalFileManagerSDK({
   tempFolder: "tmp",
   rootFolder: FILE_STORAGE_MAIN_FOLDER,
+  allowedExtensions: ALLOWED_FILE_EXTENSIONS
 });
 
 export const fileManagerController = new _fileManagerController(localFileMangerService);

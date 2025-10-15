@@ -5,7 +5,7 @@ import FileManagerContainer from "./FileManagerContainer";
 import PopupDialog from "./components/elements/PopupDialog";
 import ImageEditPopup from "./components/elements/ImageEditor";
 import { useFileManagerState } from "./store/FileManagerContext";
-import useCurrentTheme from "./utils/hooks/useCurrentTheme";
+import useCurrentTheme from "./hooks/useCurrentTheme";
 
 const FileManager: React.FC<{ height: number }> = ({ height }) => {
   const { fullScreen } = useFileManagerState();

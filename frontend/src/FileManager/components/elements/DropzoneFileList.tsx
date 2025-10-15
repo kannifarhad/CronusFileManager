@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ListItemText, Collapse, ListItemIcon, ListItemSecondaryAction, Chip, useTheme } from "@mui/material";
-import { type DroppedFile, type DroppedFolder, type DroppedFilesTree, getFileIcon, formatBytes } from "../../utils/helpers";
+import { type DroppedFile, type DroppedFolder, type DroppedFilesTree, getFileIcon, formatBytes } from "../../utils";
 import { ItemType } from "../../types";
 import { StyledButton, StyledDropZoneFileList, StyledDropZoneFileListItem } from "./styled";
 import Icon from "./Icon";
