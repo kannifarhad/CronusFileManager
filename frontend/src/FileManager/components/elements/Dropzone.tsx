@@ -51,7 +51,6 @@ export default function UploadFiles() {
     return <DropzoneFileList tree={fileTree} onRemove={removeFile} onRemoveFolder={removeFolder} />;
   }, [files, removeFile, removeFolder]);
 
-  console.log("files", files);
   const buttons: ButtonItemType[] = useMemo(
     () => [
       {

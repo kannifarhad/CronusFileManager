@@ -23,5 +23,8 @@ export const ALLOWED_FILE_EXTENSIONS = [
   ".ai",
   ".psd",
   ".mp3",
+  ".mp4",
   ".avi",
+  ".heic",
+  ".webm"
 ];

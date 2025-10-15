@@ -9,8 +9,10 @@ export const FILE_EXTENSION_MAP = {
     ".doc": "doc",
     ".docx": "doc",
     ".xls": "xls",
+    ".xlsx": "xls",
     ".pdf": "pdf",
     ".ppt": "ppt",
+    ".pptx": "ppt",
     ".svg": "svg",
     ".xml": "xml",
     ".psd": "psd",
@@ -28,6 +30,6 @@ export const FILE_EXTENSION_MAP = {
     folderfull: "folderfull",
   },
   textFiles: [".txt"],
-  imageFiles: [".jpg", ".jpeg", ".png", ".svg", ".gif"],
+  imageFiles: [".jpg", ".jpeg", ".png", ".svg", ".gif", ".webm"],
   archiveFiles: [".zip", ".tar.gz"],
 };

@@ -31,6 +31,7 @@ import AbstractFileManager, {
   AbstractFileManagerConfig,
 } from "./AbstractFileManager";
 import { DirectoryTreeOptions, ENTITY_CONST, EntityType, FSItem, FSPermissions } from "./types";
+import { sanitizePath } from "./helpers/sanitazePath";
 
 export interface FileManagerConfig extends AbstractFileManagerConfig {
   tempFolder: string;
@@ -580,7 +581,9 @@ export class LocalFileManagerSDK extends AbstractFileManager {
             return;
           }
 
-          const relativePath = fileMaps.find((map) => map.name === fileOriginalName)?.path ?? `/${fileOriginalName}`;
+          const relativePath = sanitizePath(
+            fileMaps.find((map) => map.name === fileOriginalName)?.path ?? fileOriginalName
+          );
 
           if (this.isDangerousPath(relativePath)) {
             errors.push({ file: fileOriginalName, error: "Path contains traversal attempts" });
