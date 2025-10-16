@@ -113,8 +113,8 @@ export const StyledVolumeMenuItem = styled(ListItem)(({ theme }) => ({
 }));
 
 export const FileManagerFolderBarGrid = styled(Grid)(({ theme }) => ({
-  flex: 1,
   overflow: "auto",
+  flexShrink: 0,
   height: "100%",
   background: theme.cronus.folderBar.background,
   borderRight: `1px solid ${theme.cronus.folderBar.borderColor}`,

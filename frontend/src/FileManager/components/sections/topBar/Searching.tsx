@@ -6,7 +6,7 @@ import {
   FormControl,
   InputLabel,
   FormHelperText,
-  Grid2 as Grid,
+  Grid,
   FormControlLabel,
   Radio,
 } from "@mui/material";

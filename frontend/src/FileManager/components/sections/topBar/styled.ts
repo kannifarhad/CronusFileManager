@@ -1,6 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import { styled } from "@mui/material/styles";
-import { Grid2 as Grid, MenuItem, Popover, Select } from "@mui/material";
+import { Grid, MenuItem, Popover, Select } from "@mui/material";
 
 export const TopBarWrapper = styled(Grid)(({ theme }) => ({
   padding: "5px",
