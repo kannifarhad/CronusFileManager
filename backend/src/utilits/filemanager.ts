@@ -7,7 +7,7 @@
  */
 
 import nodePath from "path";
-import { FILE_STORAGE_MAIN_FOLDER } from "../config/fileStorage";
+import { FILE_STORAGE_MAIN_FOLDER } from "../config";
 import { fileURLToPath } from "url";
 
 // Recreate CommonJS globals for ESM

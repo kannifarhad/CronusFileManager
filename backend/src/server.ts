@@ -12,7 +12,7 @@ import rateLimit from "express-rate-limit";
 import bodyParser from "body-parser";
 import AppError from "./utilits/appError";
 import globalErrorHandler from "./controllers/errorController";
-import { FILE_STORAGE_MAIN_FOLDER } from "./config/fileStorage";
+import { FILE_STORAGE_MAIN_FOLDER } from "./config";
 import fileManagerRoutes, { fileManagerController } from "./routes/fileManager";
 // import bucketManager from './routes/bucketManager';
 

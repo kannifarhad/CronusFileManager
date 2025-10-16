@@ -41,7 +41,7 @@ export interface FileManagerConfig extends FileManagerSDKBaseConfig {
   tempFolder: string;
 }
 
-export class LocalFileManagerSDK extends FileManagerSDKBase {
+export class S3BucketFileManagerSDK extends FileManagerSDKBase {
   protected config: FileManagerConfig;
   protected coreFolder: string;
   private readonly basePath: string;
@@ -885,4 +885,4 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
   }
 }
 
-export default LocalFileManagerSDK;
+export default S3BucketFileManagerSDK;

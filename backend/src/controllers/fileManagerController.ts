@@ -8,12 +8,12 @@
 
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utilits/appError.js";
-import AbstractFileManager from "../sdk/LocalFileManagerSDK.js";
-import { FileUpload } from "../sdk/AbstractFileManager.js";
+import FileManagerSDKBase from "../sdk/LocalFileManagerSDK";
+import { FileUpload } from "../sdk/types";
 
 export class FileManagerController {
-  protected filemanagerService: AbstractFileManager;
-  constructor(filemanagerService: AbstractFileManager) {
+  protected filemanagerService: FileManagerSDKBase;
+  constructor(filemanagerService: FileManagerSDKBase) {
     this.filemanagerService = filemanagerService;
   }
 

@@ -11,8 +11,13 @@ import multer from "multer";
 import fsExtra from "fs-extra";
 import catchAsync from "../utilits/catchAsync";
 import _fileManagerController from "../controllers/fileManagerController";
-import { ALLOWED_FILE_EXTENSIONS, FILE_STORAGE_MAIN_FOLDER, FILE_STORAGE_TMP_FOLDER } from "../config/fileStorage";
-import { MAX_UPLOAD_FILE_AMOUNT, MAX_UPLOAD_FILE_SIZE } from "../config/common";
+import {
+  ALLOWED_FILE_EXTENSIONS,
+  FILE_STORAGE_MAIN_FOLDER,
+  FILE_STORAGE_TMP_FOLDER,
+  MAX_UPLOAD_FILE_AMOUNT,
+  MAX_UPLOAD_FILE_SIZE,
+} from "../config";
 import AppError from "../utilits/appError";
 import LocalFileManagerSDK from "../sdk/LocalFileManagerSDK";
 

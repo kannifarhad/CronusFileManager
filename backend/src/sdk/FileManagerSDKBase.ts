@@ -6,104 +6,26 @@
  * @link        http://filemanager.kanni.pro
  */
 
-import { FSItem } from "./types";
-
-export interface FolderTreeOptions {
-  prefix?: string;
-  withChildren?: boolean;
-  includeFiles?: boolean;
-}
-
-export interface RenameParams {
-  path: string;
-  newname: string;
-}
-
-export interface CreateFileParams {
-  path: string;
-  file: string;
-  contentType?: string;
-  fileContent?: string | Buffer;
-}
-
-export interface CreateFolderParams {
-  path: string;
-  folder: string;
-  mask?: number;
-}
-
-export interface DeleteParams {
-  items: string[];
-}
-
-export interface CopyParams {
-  items: string[];
-  destination: string;
-}
-
-export interface MoveParams {
-  items: string[];
-  destination: string;
-}
-
-export interface DuplicateParams {
-  path: string;
-}
-
-export interface EmptyDirParams {
-  path: string;
-}
-
-export interface FileUpload {
-  originalname: string;
-  buffer: Buffer;
-  mimetype: string;
-  size: number;
-  path: string; // For local file uploads
-}
-
-export interface UploadFilesParams {
-  path: string;
-  files: FileUpload[];
-  fileMaps?: Array<{ name: string; path: string }>;
-}
-
-export interface UnzipParams {
-  file: string;
-  destination: string;
-}
-
-export interface ArchiveParams {
-  files: string[];
-  destination: string;
-  name: string;
-}
-
-export interface GetLinkParams {
-  path: string;
-  expiresIn?: number; // seconds
-}
-
-export interface SaveImageParams {
-  path: string;
-  file: string; // base64 encoded
-  isnew?: boolean;
-}
-
-export interface SearchParams {
-  text: string;
-  path?: string;
-}
-
-export interface GetThumbParams {
-  path: string;
-}
-
-export interface AbstractFileManagerConfig {
-  allowedExtensions?: string[]; // Allowed file extensions
-  maxFileSize?: number; // Max file size in bytes
-  rootFolder: string;
-}
+import {
+  FSItem,
+  SearchParams,
+  RenameParams,
+  CreateFileParams,
+  CreateFolderParams,
+  DeleteParams,
+  CopyParams,
+  MoveParams,
+  DuplicateParams,
+  EmptyDirParams,
+  UploadFilesParams,
+  UnzipParams,
+  ArchiveParams,
+  GetThumbParams,
+  GetLinkParams,
+  SaveImageParams,
+  FileManagerSDKBaseConfig,
+  FolderTreeOptions,
+} from "./types";
 
 const defaultAllowedExtensions = [
   ".jpg",
@@ -127,10 +49,20 @@ const defaultAllowedExtensions = [
   ".avi",
 ];
 
-export abstract class AbstractFileManager {
-  protected config: AbstractFileManagerConfig;
+/**
+ * Custom error class for file manager operations
+ */
+export class FileManagerError extends Error {
+  constructor(message: string, public code?: string, public path?: string) {
+    super(message);
+    this.name = "FileManagerError";
+  }
+}
 
-  constructor(config: AbstractFileManagerConfig) {
+export abstract class FileManagerSDKBase {
+  protected config: FileManagerSDKBaseConfig;
+
+  constructor(config: FileManagerSDKBaseConfig) {
     this.config = {
       allowedExtensions: config.allowedExtensions || defaultAllowedExtensions,
       maxFileSize: config.maxFileSize || 100 * 1024 * 1024, // 100MB default
@@ -273,4 +205,4 @@ export abstract class AbstractFileManager {
   }
 }
 
-export default AbstractFileManager;
+export default FileManagerSDKBase;
