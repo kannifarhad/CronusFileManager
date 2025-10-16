@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import type { ButtonObject, CreateContextType, FileManagerState } from "../../types";
-import { ViewTypeEnum, ItemType, ItemExtensionCategoryFilter } from "../../types";
+import type { ButtonObject, CreateContextType, FileManagerState } from "../types";
+import { ViewTypeEnum, ItemType, ItemExtensionCategoryFilter } from "../types";
 
-import { checkSelectedFileType } from "../helpers";
+import { checkSelectedFileType } from "../utils";
 
 type GenerateButtonsStateProps = Pick<
   FileManagerState,

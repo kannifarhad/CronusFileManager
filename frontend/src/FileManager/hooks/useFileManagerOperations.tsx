@@ -13,7 +13,7 @@ import type {
   Operations,
   VolumeListItem,
   FileManagerState,
-} from "../../types";
+} from "../types";
 import {
   ActionTypes,
   ItemType,
@@ -23,9 +23,9 @@ import {
   ImagesThumbTypeEnum,
   ItemMoveActionTypeEnum,
   ItemExtensionCategoryFilter,
-} from "../../types";
-import { type SaveFileParams } from "../../apiSDKs/types";
-import { checkSelectedFileType, convertDate, formatBytes } from "../helpers";
+} from "../types";
+import { type SaveFileParams } from "../apiSDKs/types";
+import { checkSelectedFileType, convertDate, formatBytes } from "../utils";
 import useApiController from "./useApiController";
 
 export const useFileManagerOperations = ({

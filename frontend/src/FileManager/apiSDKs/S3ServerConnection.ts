@@ -30,7 +30,7 @@ class S3ServerConnection extends IServerConnection {
 
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
-      timeout: 2000,
+      timeout:  1000 * 30,
       headers: {
         "Content-Type": "application/json",
         "Bucket-Name": bucketName,

@@ -7,7 +7,7 @@ import {
 } from "../../elements/styled";
 import { useFileManagerState } from "../../../store/FileManagerContext";
 import { ContextMenuTypeEnum } from "../../../types";
-import useGenerateActionButtons from "../../../utils/hooks/useGenerateActionButtons";
+import useGenerateActionButtons from "../../../hooks/useGenerateActionButtons";
 import Icon from "../../elements/Icon";
 
 const ContextMenu: React.FC = () => {

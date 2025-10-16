@@ -35,8 +35,8 @@ const theme = createTheme({
         color: "",
       },
       extension: {
-        background: "#ccc",
-        color: "#fff",
+        background: "#dadadaff",
+        color: "#000000ff",
       },
       cuted: "",
     },

@@ -237,7 +237,7 @@ export abstract class AbstractFileManager {
    */
   protected checkExtension(extension: string): boolean {
     if (!extension || !this.config.allowedExtensions) return true;
-    return this.config.allowedExtensions.includes(extension);
+    return this.config.allowedExtensions.includes(extension.toLowerCase());
   }
 
   /**

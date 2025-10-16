@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useMemo } from "react";
 import { Box, Tooltip } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
-import { classNames, getFileIcon } from "../../../../utils/helpers";
+import { classNames, getFileIcon } from "../../../../utils";
 import ItemSelectButton from "./ItemSelectButton";
 import { StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox } from "../styled";
 import { useFileManagerState } from "../../../../store/FileManagerContext";

@@ -31,7 +31,7 @@ class Ec2ServerConnection extends IServerConnection {
 
     this.axiosInstance = axios.create({
       baseURL: `${baseURL}/fm`,
-      timeout: 2000,
+      timeout: 1000 * 30,
       headers: {
         "Content-Type": "application/json",
       },

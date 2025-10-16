@@ -10,7 +10,6 @@ const FileManagerWithProvider: React.FC<FileManagerProps> = forwardRef(
         console.log("refresh requested");
       },
     }));
-    console.log("FileManagerWithProvider rerender");
 
     return (
       <FileManagerProvider selectItemCallback={selectItemCallback} volumesList={volumesList}>

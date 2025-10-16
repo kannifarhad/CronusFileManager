@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ButtonList, { type ButtonItemType } from "./ButtonGroup";
-import { type DroppedFile, organizeFiles } from "../../utils/helpers";
+import { type DroppedFile, organizeFiles } from "../../utils";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
 import { useFileManagerState } from "../../store/FileManagerContext";
 import DropzoneFileList from "./DropzoneFileList";
@@ -17,6 +17,7 @@ export default function UploadFiles() {
     accept: {
       "image/*": [],
       "text/*": [],
+      "video/*": [],
       "application/pdf": [],
       "application/msword": [],
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
