@@ -270,32 +270,6 @@ export interface DroppedFolder {
 
 export type DroppedFilesTree = (DroppedFolder | DroppedFile)[];
 // Utility to sanitize file paths
-/**
- * Validate if a path is safe after sanitization
- */
-export function isPathSafe(path: string): boolean {
-  try {
-    const sanitized = sanitizePath(path, { strict: true });
-    return sanitized === path;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Normalize and join path segments safely
- */
-export function joinPaths(...segments: string[]): string {
-  // Single pass: filter empty, sanitize, and join
-  const cleaned: string[] = [];
-
-  for (let i = 0; i < segments.length; i++) {
-    const sanitized = sanitizePath(segments[i]);
-    if (sanitized) cleaned.push(sanitized);
-  }
-
-  return cleaned.join("/");
-}
 
 // Helper function to create folder trees
 function addFileToTree(tree: DroppedFilesTree, file: DroppedFile): void {

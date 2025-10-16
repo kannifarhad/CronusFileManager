@@ -17,6 +17,7 @@ export default function UploadFiles() {
     accept: {
       "image/*": [],
       "text/*": [],
+      "video/*": [],
       "application/pdf": [],
       "application/msword": [],
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],

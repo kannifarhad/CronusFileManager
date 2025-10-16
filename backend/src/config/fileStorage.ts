@@ -1,8 +1,9 @@
 import nodePath from "path";
 
 export const FILE_STORAGE_MAIN_FOLDER = "uploads";
-export const FILE_STORAGE_TRASH_FOLDER = "trash";
+export const FILE_STORAGE_TRASH_FOLDER = nodePath.join(FILE_STORAGE_MAIN_FOLDER, "trash");
 export const FILE_STORAGE_TMP_FOLDER = nodePath.join(FILE_STORAGE_MAIN_FOLDER, "tmp");
+export const PROTECTED_FOLDERS = [FILE_STORAGE_TMP_FOLDER, FILE_STORAGE_TRASH_FOLDER, `${FILE_STORAGE_MAIN_FOLDER}`];
 
 export const ALLOWED_FILE_EXTENSIONS = [
   ".jpg",
@@ -26,5 +27,5 @@ export const ALLOWED_FILE_EXTENSIONS = [
   ".mp4",
   ".avi",
   ".heic",
-  ".webm"
+  ".webm",
 ];
