@@ -1,3 +1,28 @@
+import { LocalFileManagerConfig } from "./LocalFileManagerSDK";
+import { S3FileManagerConfig } from "./S3BucketFileManagerSDK";
+
+export enum StorageProvider {
+  LOCAL = "local",
+  S3 = "s3",
+  // Future providers: AZURE = "azure", GCS = "gcs", etc.
+}
+
+export interface RequestContext {
+  storageProvider: StorageProvider;
+}
+
+interface StorageProviderConfig {
+  [StorageProvider.LOCAL]: LocalFileManagerConfig;
+  [StorageProvider.S3]: S3FileManagerConfig;
+}
+
+export interface FileManagerFactoryConfig {
+  providers: {
+    [key in StorageProvider]?: StorageProviderConfig[key];
+  };
+  defaultProvider: StorageProvider;
+}
+
 export const ENTITY_CONST = {
   DIRECTORY: "folder",
   FILE: "file",
@@ -8,14 +33,15 @@ export type EntityType = (typeof ENTITY_CONST)[keyof typeof ENTITY_CONST];
 export interface FSItem {
   id: string;
   name: string;
-  created: Date;
-  modified: Date;
+  created: string;
+  modified: string;
   path: string;
-  premissions: FSPermissions;
   type: EntityType;
   size?: number;
+  premissions?: FSPermissions;
   extension?: string;
   children?: FSItem[];
+  private?: boolean;
 }
 
 export interface DirectoryTreeOptions {

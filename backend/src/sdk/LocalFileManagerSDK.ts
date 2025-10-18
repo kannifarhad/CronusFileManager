@@ -37,16 +37,16 @@ import {
 } from "./types";
 import { sanitizePath } from "./helpers/sanitazePath";
 
-export interface FileManagerConfig extends FileManagerSDKBaseConfig {
+export interface LocalFileManagerConfig extends FileManagerSDKBaseConfig {
   tempFolder: string;
 }
 
 export class LocalFileManagerSDK extends FileManagerSDKBase {
-  protected config: FileManagerConfig;
-  protected coreFolder: string;
+  protected config: LocalFileManagerConfig;
+  private coreFolder: string;
   private readonly basePath: string;
 
-  constructor(config: FileManagerConfig) {
+  constructor(config: LocalFileManagerConfig) {
     super(config);
     this.config = config;
     this.coreFolder = process.cwd();
@@ -612,7 +612,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
    * Recursively collects files/folders for a directory path.
    * Optimized for performance with parallel processing and reduced I/O operations.
    */
-  protected async directoryTree(
+  private async directoryTree(
     path: string,
     options: DirectoryTreeOptions,
     onEachFile?: (item: FSItem, path: typeof nodePath, stats: fsExtra.Stats) => void,
@@ -684,7 +684,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
     }
   }
 
-  protected async searchDirectoryTree(
+  private async searchDirectoryTree(
     dir: string,
     searchString: string,
     options: DirectoryTreeOptions = {}
@@ -749,8 +749,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
    * Generates a unique name in a directory (for copy/move/upload/unzip operations)
    * Only adds numbering if there's a conflict, otherwise returns original name
    */
-
-  protected async generateUniqueNameInDirectoryV2({
+  private async generateUniqueNameInDirectoryV2({
     fullPath,
     prefix = "copy",
   }: {
@@ -786,7 +785,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
     }
   }
 
-  protected async getItemInfoAsync(fullPath: string, options: DirectoryTreeOptions): Promise<FSItem> {
+  private async getItemInfoAsync(fullPath: string, options: DirectoryTreeOptions): Promise<FSItem> {
     const stats = await fsExtra.stat(fullPath);
     //TODO: Add support for symlinks
     // const stats = await fsExtra.lstat(fullPath);
@@ -834,7 +833,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
   /**
    * Returns a fully resolveda absolute and validated sanitized path.
    */
-  protected normalizePath(path: string, strict: boolean = true): string {
+  private normalizePath(path: string, strict: boolean = true): string {
     const rootPath = nodePath.join(this.coreFolder, this.basePath);
 
     if (typeof path !== "string" || path.trim() === "" || path.trim() === "/") {
@@ -851,7 +850,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
     return nodePath.join(this.coreFolder, sanitazedPath);
   }
 
-  protected permissionsConvert(mode: number): FSPermissions {
+  private permissionsConvert(mode: number): FSPermissions {
     const formatPerm = (shift: number): string => {
       const val = (mode >> shift) & 7;
       return (val & 4 ? "r" : "") + (val & 2 ? "w" : "") + (val & 1 ? "x" : "");
@@ -864,7 +863,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
     };
   }
 
-  protected async safeReadDirAsync(path: string): Promise<string[] | null> {
+  private async safeReadDirAsync(path: string): Promise<string[] | null> {
     try {
       return await fsExtra.readdir(path);
     } catch (ex: any) {
@@ -875,7 +874,7 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
     }
   }
 
-  protected async isEntityExists(path: string): Promise<boolean> {
+  private async isEntityExists(path: string): Promise<boolean> {
     try {
       await fsExtra.access(path, fsExtra.constants.F_OK);
       return true;

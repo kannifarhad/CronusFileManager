@@ -157,7 +157,7 @@ export abstract class FileManagerSDKBase {
   /**
    * Get file/folder metadata
    */
-  abstract getMetadata(path: string): Promise<FSItem>;
+  abstract getMetadata(path: string): Promise<FSItem | null>;
 
   /**
    * Check if file or folder exists

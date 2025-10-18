@@ -14,7 +14,7 @@ import AppError from "./utilits/appError";
 import globalErrorHandler from "./controllers/errorController";
 import { FILE_STORAGE_MAIN_FOLDER } from "./config";
 import fileManagerRoutes, { fileManagerController } from "./routes/fileManager";
-// import bucketManager from './routes/bucketManager';
+import bucketManager from './routes/bucketManager';
 
 const app: Application = express();
 const port = 3131;
@@ -41,8 +41,8 @@ app.use(limiter);
 
 // Routes
 app.use("/fm", fileManagerRoutes);
+app.use('/s3', bucketManager);
 app.use(`/${FILE_STORAGE_MAIN_FOLDER}`, fileManagerController.getFile);
-// app.use('/s3', bucketManager);
 
 // 404 handler
 app.all(/.*/, (req, res, next) => {

@@ -27,6 +27,7 @@ import * as nodePath from "path";
 import { Request, Response, NextFunction } from "express";
 import { escapePath, checkExtension, checkVariables } from "../utilits/filemanager";
 import AppError from "../utilits/appError";
+import FileManagerSDKBase from "../sdk/FileManagerSDKBase";
 
 interface FileItem {
   path: string;
@@ -156,12 +157,9 @@ function getContentTypeByFile(fileName: string): string {
 }
 
 class S3Controller {
-  private s3Client: S3Client;
-  private bucketName: string;
-
-  constructor(s3Client: S3Client, bucketName: string) {
-    this.s3Client = s3Client;
-    this.bucketName = bucketName;
+  protected filemanagerService: FileManagerSDKBase;
+  constructor(filemanagerService: FileManagerSDKBase) {
+    this.filemanagerService = filemanagerService;
   }
 
   // PRIVATE METHODS//
