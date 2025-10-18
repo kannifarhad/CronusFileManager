@@ -10,9 +10,14 @@ import unzipper from "unzipper";
 import archiver from "archiver";
 import nodePath from "path";
 import fsExtra from "fs-extra";
+import FileManagerSDKBase, { FileManagerError } from "./FileManagerSDKBase";
 
-import AbstractFileManager, {
-  FolderTreeOptions,
+import {
+  DirectoryTreeOptions,
+  ENTITY_CONST,
+  EntityType,
+  FSItem,
+  FSPermissions,
   SearchParams,
   RenameParams,
   CreateFileParams,
@@ -28,38 +33,27 @@ import AbstractFileManager, {
   GetThumbParams,
   GetLinkParams,
   SaveImageParams,
-  AbstractFileManagerConfig,
-} from "./AbstractFileManager";
-import { DirectoryTreeOptions, ENTITY_CONST, EntityType, FSItem, FSPermissions } from "./types";
+  FileManagerSDKBaseConfig,
+} from "./types";
 import { sanitizePath } from "./helpers/sanitazePath";
 
-export interface FileManagerConfig extends AbstractFileManagerConfig {
+export interface LocalFileManagerConfig extends FileManagerSDKBaseConfig {
   tempFolder: string;
 }
 
-/**
- * Custom error class for file manager operations
- */
-class FileManagerError extends Error {
-  constructor(message: string, public code?: string, public path?: string) {
-    super(message);
-    this.name = "FileManagerError";
-  }
-}
-
-export class LocalFileManagerSDK extends AbstractFileManager {
-  protected config: FileManagerConfig;
-  protected coreFolder: string;
+export class LocalFileManagerSDK extends FileManagerSDKBase {
+  protected config: LocalFileManagerConfig;
+  private coreFolder: string;
   private readonly basePath: string;
 
-  constructor(config: FileManagerConfig) {
+  constructor(config: LocalFileManagerConfig) {
     super(config);
     this.config = config;
     this.coreFolder = process.cwd();
     this.basePath = `/${this.config.rootFolder}`;
   }
 
-  async getFolderTree({ prefix = "/", withChildren = true, includeFiles = false }: FolderTreeOptions) {
+  async getFolderTree({ prefix = "/", withChildren = true, includeFiles = false }) {
     try {
       return await this.directoryTree(prefix, {
         withChildren,
@@ -90,7 +84,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async search({ text, path = "" }: SearchParams): Promise<FSItem[]> {
+  async search({ text, path = "" }: SearchParams) {
     if (!text || text.trim().length === 0) {
       throw new FileManagerError("Search text cannot be empty", "INVALID_SEARCH_TEXT");
     }
@@ -137,7 +131,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async delete({ items }: DeleteParams): Promise<void> {
+  async delete({ items }: DeleteParams) {
     if (!Array.isArray(items) || items.length === 0) {
       throw new FileManagerError("No items provided for deletion", "NO_ITEMS");
     }
@@ -163,7 +157,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async createFile({ path, file }: CreateFileParams): Promise<void> {
+  async createFile({ path, file }: CreateFileParams) {
     if (!this.checkVariables([path, file])) {
       throw new FileManagerError("Path and filename are required", "MISSING_PARAMETERS");
     }
@@ -190,7 +184,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async createFolder({ path, folder, mask = 0o777 }: CreateFolderParams): Promise<void> {
+  async createFolder({ path, folder, mask = 0o777 }: CreateFolderParams) {
     if (!this.checkVariables([path, folder])) {
       throw new FileManagerError("Path and folder name are required", "MISSING_PARAMETERS");
     }
@@ -215,7 +209,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async emptyDir({ path }: EmptyDirParams): Promise<void> {
+  async emptyDir({ path }: EmptyDirParams) {
     if (!this.checkVariables([path])) {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
@@ -257,7 +251,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async copy({ items, destination }: CopyParams): Promise<void> {
+  async copy({ items, destination }: CopyParams) {
     if (!this.checkVariables([destination])) {
       throw new FileManagerError("Destination is required", "MISSING_PARAMETERS");
     }
@@ -311,7 +305,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async move({ items, destination }: MoveParams): Promise<void> {
+  async move({ items, destination }: MoveParams) {
     if (!this.checkVariables([destination])) {
       throw new FileManagerError("Destination is required", "MISSING_PARAMETERS");
     }
@@ -403,7 +397,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async archive({ files, destination, name }: ArchiveParams): Promise<string> {
+  async archive({ files, destination, name }: ArchiveParams) {
     if (!this.checkVariables([destination, name]) || !Array.isArray(files) || files.length === 0) {
       throw new FileManagerError("Destination, name, and files are required", "MISSING_PARAMETERS");
     }
@@ -421,7 +415,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
       const output = fsExtra.createWriteStream(archivePath);
       const archive = archiver("zip", { zlib: { level: 9 } });
 
-      return new Promise((resolve, reject) => {
+      await new Promise((resolve, reject) => {
         archive.pipe(output);
 
         archive.on("error", (err) => {
@@ -461,12 +455,14 @@ export class LocalFileManagerSDK extends AbstractFileManager {
           })
           .catch(reject);
       });
+
+      return archivePath;
     } catch (error: any) {
       throw new FileManagerError(`Failed to create archive: ${error.message}`, "ARCHIVE_FAILED", archivePath);
     }
   }
 
-  async saveImage({ file, isnew, path }: SaveImageParams): Promise<void> {
+  async saveImage({ file, isnew, path }: SaveImageParams) {
     if (!this.checkVariables([path]) || !file) {
       throw new FileManagerError("Path and file data are required", "MISSING_PARAMETERS");
     }
@@ -550,7 +546,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async getLink({ path }: GetLinkParams): Promise<string> {
+  async getLink({ path }: GetLinkParams) {
     if (!this.checkVariables([path])) {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
@@ -564,7 +560,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     return normalizedPath;
   }
 
-  async getThumb({ path }: GetThumbParams): Promise<Buffer | NodeJS.ReadableStream> {
+  async getThumb({ path }: GetThumbParams) {
     if (!this.checkVariables([path])) {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
@@ -582,7 +578,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async getMetadata(path: string): Promise<FSItem> {
+  async getMetadata(path: string) {
     if (!this.checkVariables([path])) {
       throw new FileManagerError("Path is required", "MISSING_PARAMETERS");
     }
@@ -603,7 +599,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  async exists(path: string): Promise<boolean> {
+  async exists(path: string) {
     try {
       const escapedPath = this.normalizePath(path, false);
       return await this.isEntityExists(escapedPath);
@@ -616,7 +612,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
    * Recursively collects files/folders for a directory path.
    * Optimized for performance with parallel processing and reduced I/O operations.
    */
-  protected async directoryTree(
+  private async directoryTree(
     path: string,
     options: DirectoryTreeOptions,
     onEachFile?: (item: FSItem, path: typeof nodePath, stats: fsExtra.Stats) => void,
@@ -688,7 +684,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  protected async searchDirectoryTree(
+  private async searchDirectoryTree(
     dir: string,
     searchString: string,
     options: DirectoryTreeOptions = {}
@@ -753,8 +749,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
    * Generates a unique name in a directory (for copy/move/upload/unzip operations)
    * Only adds numbering if there's a conflict, otherwise returns original name
    */
-
-  protected async generateUniqueNameInDirectoryV2({
+  private async generateUniqueNameInDirectoryV2({
     fullPath,
     prefix = "copy",
   }: {
@@ -790,7 +785,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  protected async getItemInfoAsync(fullPath: string, options: DirectoryTreeOptions): Promise<FSItem> {
+  private async getItemInfoAsync(fullPath: string, options: DirectoryTreeOptions): Promise<FSItem> {
     const stats = await fsExtra.stat(fullPath);
     //TODO: Add support for symlinks
     // const stats = await fsExtra.lstat(fullPath);
@@ -838,7 +833,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
   /**
    * Returns a fully resolveda absolute and validated sanitized path.
    */
-  protected normalizePath(path: string, strict: boolean = true): string {
+  private normalizePath(path: string, strict: boolean = true): string {
     const rootPath = nodePath.join(this.coreFolder, this.basePath);
 
     if (typeof path !== "string" || path.trim() === "" || path.trim() === "/") {
@@ -855,7 +850,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     return nodePath.join(this.coreFolder, sanitazedPath);
   }
 
-  protected permissionsConvert(mode: number): FSPermissions {
+  private permissionsConvert(mode: number): FSPermissions {
     const formatPerm = (shift: number): string => {
       const val = (mode >> shift) & 7;
       return (val & 4 ? "r" : "") + (val & 2 ? "w" : "") + (val & 1 ? "x" : "");
@@ -868,7 +863,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     };
   }
 
-  protected async safeReadDirAsync(path: string): Promise<string[] | null> {
+  private async safeReadDirAsync(path: string): Promise<string[] | null> {
     try {
       return await fsExtra.readdir(path);
     } catch (ex: any) {
@@ -879,7 +874,7 @@ export class LocalFileManagerSDK extends AbstractFileManager {
     }
   }
 
-  protected async isEntityExists(path: string): Promise<boolean> {
+  private async isEntityExists(path: string): Promise<boolean> {
     try {
       await fsExtra.access(path, fsExtra.constants.F_OK);
       return true;

@@ -8,13 +8,14 @@
 
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utilits/appError.js";
-import AbstractFileManager from "../sdk/LocalFileManagerSDK.js";
-import { FileUpload } from "../sdk/AbstractFileManager.js";
+import FileManagerSDKBase from "../sdk/LocalFileManagerSDK";
+import { FileUpload } from "../sdk/types";
+import { FileManagerFactory } from "../sdk/index";
 
 export class FileManagerController {
-  protected filemanagerService: AbstractFileManager;
-  constructor(filemanagerService: AbstractFileManager) {
-    this.filemanagerService = filemanagerService;
+  protected filemanagerService: FileManagerSDKBase;
+  constructor(factory: FileManagerFactory) {
+    this.filemanagerService = factory.createProxy();
   }
 
   folderTree = async (req: Request, res: Response, next: NextFunction) => {

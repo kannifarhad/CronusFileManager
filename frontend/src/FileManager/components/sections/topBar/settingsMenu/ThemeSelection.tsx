@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo } from "react";
-import { Grid2 as Grid, FormLabel, Box } from "@mui/material";
+import { Grid, FormLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { themeList } from "../../../../hooks/useCurrentTheme";
 import { useFileManagerState } from "../../../../store/FileManagerContext";

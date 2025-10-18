@@ -7,7 +7,7 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import AppError from "./appError";
+import AppError from "../../utilits/appError";
 
 /**
  * Wraps an async Express route handler and forwards rejected promises to next().

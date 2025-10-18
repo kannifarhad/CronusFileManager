@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Radio, FormControlLabel, Grid2 as Grid, FormLabel, Box } from "@mui/material";
+import { Radio, FormControlLabel, Grid, FormLabel, Box } from "@mui/material";
 import { StyledTopBarMenuItem } from "../styled";
 import { imageViewOptions } from "./constants";
 import { useFileManagerState } from "../../../../store/FileManagerContext";
