@@ -608,6 +608,10 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
     }
   }
 
+  // ============================================================================
+  // PRIVATE HELPER METHODS
+  // ============================================================================
+
   /**
    * Recursively collects files/folders for a directory path.
    * Optimized for performance with parallel processing and reduced I/O operations.
@@ -799,8 +803,8 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
     const treeItem: FSItem = {
       path: itemPath,
       name,
-      created: stats.birthtime,
-      modified: stats.mtime,
+      created: stats.birthtime.toISOString(),
+      modified: stats.mtime.toISOString(),
       id: `${type}_${stats.ino}`,
       premissions: this.permissionsConvert(stats.mode),
       type,

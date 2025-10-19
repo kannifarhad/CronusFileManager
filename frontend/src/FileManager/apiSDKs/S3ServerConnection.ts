@@ -21,19 +21,19 @@ class S3ServerConnection extends IServerConnection {
 
   private baseURL: string;
 
-  constructor(baseURL: string, bucketName: string) {
+  constructor(baseURL: string) {
     super();
     if (!baseURL) {
       throw new Error("Base URL is not defined.");
     }
-    this.baseURL = `${baseURL}/s3`;
+    this.baseURL = `${baseURL}/fm`;
 
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
-      timeout:  1000 * 30,
+      timeout: 1000 * 30,
       headers: {
         "Content-Type": "application/json",
-        "Bucket-Name": bucketName,
+        "x-storage-type": "s3",
       },
     });
 

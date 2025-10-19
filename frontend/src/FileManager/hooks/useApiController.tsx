@@ -4,9 +4,7 @@ import Ec2ServerConnection from "../apiSDKs/Ec2ServerConnection";
 import S3FrontConnection from "../apiSDKs/S3FrontConnection";
 import S3ServerConnection from "../apiSDKs/S3ServerConnection";
 
-export const useApiController = (
-  selectedVolume: FileManagerState["selectedVolume"]
-) => {
+export const useApiController = (selectedVolume: FileManagerState["selectedVolume"]) => {
   const connection = useMemo(() => {
     if (!selectedVolume) return null;
 
@@ -15,10 +13,7 @@ export const useApiController = (
         return new Ec2ServerConnection(selectedVolume.endpoint);
       }
       case VolumeTypes.S3BUCKET_BACK: {
-        return new S3ServerConnection(
-          selectedVolume.endpoint,
-          selectedVolume.bucket
-        );
+        return new S3ServerConnection(selectedVolume.endpoint);
       }
       case VolumeTypes.S3BUCKET_FRONT: {
         return new S3FrontConnection(selectedVolume);
