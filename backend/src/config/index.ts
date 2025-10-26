@@ -56,7 +56,7 @@ export const FILE_MANAGER_FACTORY_CONFIG: FileManagerFactoryConfig = {
       tempFolder: "tmp",
     },
     [StorageProvider.S3]: {
-      rootFolder: FILE_STORAGE_MAIN_FOLDER,
+      rootFolder: "",
       allowedExtensions: ALLOWED_FILE_EXTENSIONS,
       bucketName: S3_BUCKET_NAME || "",
       s3config,

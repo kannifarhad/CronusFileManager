@@ -17,6 +17,7 @@ import {
   CopyObjectCommand,
   GetObjectCommand,
   ListObjectsV2Command,
+  DeleteObjectCommand,
   DeleteObjectsCommand,
   CommonPrefix,
   _Object,
@@ -46,6 +47,7 @@ import {
   FolderTreeOptions,
   ENTITY_CONST,
 } from "./types";
+import { sanitizePath } from "./helpers/sanitazePath";
 
 export interface S3FileManagerConfig extends FileManagerSDKBaseConfig {
   s3config: S3ClientConfig;
@@ -236,10 +238,8 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
     }
 
     const normalizedDestination = this.normalizePath(destination);
-
-    if (!(await this.exists(normalizedDestination))) {
-      throw new FileManagerError(`Destination '${destination}' does not exist`, "DESTINATION_NOT_FOUND", destination);
-    }
+    // Ensure destination is treated as a folder
+    const destFolder = normalizedDestination.endsWith("/") ? normalizedDestination : normalizedDestination + "/";
 
     const errors: Array<{ path: string; error: string }> = [];
 
@@ -255,14 +255,25 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
 
           const isFolder = normalizedPath.endsWith("/");
           const fileName = this.getFileName(normalizedPath);
-          const destPath = this.joinS3Path(normalizedDestination, fileName);
+
+          // Build destination path
+          let destPath: string;
+          if (isFolder) {
+            destPath = this.joinS3Path(destFolder, fileName) + "/";
+          } else {
+            destPath = this.joinS3Path(destFolder, fileName);
+          }
 
           const needsUniqueName = await this.exists(destPath);
           let finalDest = destPath;
 
           if (needsUniqueName) {
-            const uniqueName = await this.generateUniqueNameInDirectory(normalizedDestination, fileName, isFolder);
-            finalDest = this.joinS3Path(normalizedDestination, uniqueName);
+            const uniqueName = await this.generateUniqueNameInDirectory(destFolder, fileName, isFolder);
+            if (isFolder) {
+              finalDest = this.joinS3Path(destFolder, uniqueName.replace(/\/$/, "")) + "/";
+            } else {
+              finalDest = this.joinS3Path(destFolder, uniqueName);
+            }
           }
 
           await this.copyObject(normalizedPath, finalDest, isFolder);
@@ -282,6 +293,7 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
   }
 
   async move({ items, destination }: MoveParams) {
+    // No destination check needed - S3 creates paths implicitly
     await this.copy({ items, destination });
     await this.delete({ items });
   }
@@ -358,17 +370,32 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
             return;
           }
 
-          const relativePath = fileMaps.find((map) => map.name === fileOriginalName)?.path ?? `/${fileOriginalName}`;
+          const relativePath = sanitizePath(
+            fileMaps.find((map) => map.name === fileOriginalName)?.path ?? `/${fileOriginalName}`,
+            { strict: false }
+          );
           const fullPath = this.joinS3Path(normalizedPath, relativePath.replace(/^\//, ""));
+
+          // Read file data - handle both buffer and path from multer
+          let fileData: Buffer;
+          if (file.buffer) {
+            fileData = file.buffer;
+          } else if (file.path) {
+            // Read from disk if multer saved to disk
+            const fs = await import("fs/promises");
+            fileData = await fs.readFile(file.path);
+          } else {
+            throw new Error("File has neither buffer nor path");
+          }
 
           if (await this.exists(fullPath)) {
             const dir = this.getParentPath(fullPath);
             const uniqueName = await this.generateUniqueNameInDirectory(dir, fileOriginalName, false);
             const uniquePath = this.joinS3Path(dir, uniqueName);
 
-            await this.uploadToS3(uniquePath, file.buffer, file.mimetype);
+            await this.uploadToS3(uniquePath, fileData, file.mimetype);
           } else {
-            await this.uploadToS3(fullPath, file.buffer, file.mimetype);
+            await this.uploadToS3(fullPath, fileData, file.mimetype);
           }
         } catch (err: any) {
           errors.push({ file: file.originalname, error: err.message });
@@ -595,14 +622,40 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
     try {
       const normalizedPath = this.normalizePath(path, false);
 
-      const command = new HeadObjectCommand({
-        Bucket: this.bucketName,
-        Key: normalizedPath,
-      });
+      // First, try HeadObjectCommand for files and folder markers
+      try {
+        const command = new HeadObjectCommand({
+          Bucket: this.bucketName,
+          Key: normalizedPath,
+        });
+        await this.s3Client.send(command);
+        return true;
+      } catch (headError: any) {
+        // If HeadObject fails, check if it's a folder (prefix with contents)
+        if (headError.name === "NotFound" || headError.$metadata?.httpStatusCode === 404) {
+          // Check if path is intended to be a folder
+          const folderPrefix = normalizedPath.endsWith("/") ? normalizedPath : normalizedPath + "/";
 
-      await this.s3Client.send(command);
-      return true;
-    } catch {
+          // List objects with this prefix to see if folder has contents
+          const listCommand = new ListObjectsV2Command({
+            Bucket: this.bucketName,
+            Prefix: folderPrefix,
+            MaxKeys: 1, // We just need to know if anything exists
+          });
+
+          const listResponse = await this.s3Client.send(listCommand);
+
+          // Folder exists if it has contents OR common prefixes (subfolders)
+          return !!(
+            (listResponse.Contents && listResponse.Contents.length > 0) ||
+            (listResponse.CommonPrefixes && listResponse.CommonPrefixes.length > 0)
+          );
+        }
+
+        // Other errors, rethrow
+        throw headError;
+      }
+    } catch (error) {
       return false;
     }
   }
@@ -745,37 +798,66 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
 
   private async copyObject(sourcePath: string, destPath: string, isFolder: boolean) {
     if (isFolder) {
+      // Ensure source ends with / and dest ends with /
+      const normalizedSource = sourcePath.endsWith("/") ? sourcePath : sourcePath + "/";
+      const normalizedDest = destPath.endsWith("/") ? destPath : destPath + "/";
+
       const listParams = {
         Bucket: this.bucketName,
-        Prefix: sourcePath,
+        Prefix: normalizedSource,
       };
 
       const listCommand = new ListObjectsV2Command(listParams);
       const listResponse = await this.s3Client.send(listCommand);
 
-      if (!listResponse.Contents) return;
+      if (!listResponse.Contents || listResponse.Contents.length === 0) {
+        // Empty folder - create the folder marker
+        await this.s3Client.send(
+          new PutObjectCommand({
+            Bucket: this.bucketName,
+            Key: normalizedDest,
+            Body: "",
+          })
+        );
+        return;
+      }
 
       await Promise.all(
         listResponse.Contents.map(async (object) => {
           const oldKey = object.Key || "";
-          const relativePath = oldKey.slice(sourcePath.length);
-          const newKey = destPath + relativePath;
+
+          // Get the relative path from source
+          const relativePath = oldKey.slice(normalizedSource.length);
+
+          // Build new key preserving structure
+          const newKey = normalizedDest + relativePath;
 
           await this.s3Client.send(
             new CopyObjectCommand({
               Bucket: this.bucketName,
               Key: newKey,
-              CopySource: `${this.bucketName}/${oldKey}`,
+              CopySource: encodeURIComponent(`${this.bucketName}/${oldKey}`),
             })
           );
         })
       );
+
+      // Create folder marker if it doesn't exist
+      if (!listResponse.Contents.some((obj) => obj.Key === normalizedSource)) {
+        await this.s3Client.send(
+          new PutObjectCommand({
+            Bucket: this.bucketName,
+            Key: normalizedDest,
+            Body: "",
+          })
+        );
+      }
     } else {
       await this.s3Client.send(
         new CopyObjectCommand({
           Bucket: this.bucketName,
           Key: destPath,
-          CopySource: `${this.bucketName}/${sourcePath}`,
+          CopySource: encodeURIComponent(`${this.bucketName}/${sourcePath}`),
         })
       );
     }
@@ -785,14 +867,13 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
     if (isFolder) {
       await this.deleteObjectsRecursively(path, false);
     } else {
-      await this.s3Client.send(
-        new DeleteObjectsCommand({
-          Bucket: this.bucketName,
-          Delete: {
-            Objects: [{ Key: path }],
-          },
-        })
-      );
+      // Use individual DeleteObjectCommand instead of DeleteObjectsCommand
+      // to avoid Content-MD5 requirement
+      const command = new DeleteObjectCommand({
+        Bucket: this.bucketName,
+        Key: path,
+      });
+      await this.s3Client.send(command);
     }
   }
 
@@ -816,11 +897,16 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
         objects = objects.filter((obj) => obj.Key !== prefix);
       }
 
+      // Delete objects one by one to avoid Content-MD5 requirement
+      // This is more compatible with S3-compatible services
       if (objects.length > 0) {
-        await this.s3Client.send(
-          new DeleteObjectsCommand({
-            Bucket: this.bucketName,
-            Delete: { Objects: objects },
+        await Promise.all(
+          objects.map(async (obj) => {
+            const command = new DeleteObjectCommand({
+              Bucket: this.bucketName,
+              Key: obj.Key,
+            });
+            await this.s3Client.send(command);
           })
         );
       }
@@ -932,15 +1018,32 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
     }
   }
 
+  // ============================================================================
+  // OVERRIDDEN METHODS FROM BASE CLASS
+  // ============================================================================
+
   private normalizePath(path: string, throwError: boolean = true): string {
+    // For S3, we don't need the strict rootFolder validation from base class
+    // S3 paths are relative to bucket root
+
+    if (typeof path !== "string" || path.trim() === "" || path === "/") {
+      return "";
+    }
+
+    return path;
+    // Check for path traversal attempts
+    if (/(\.\.\/|\.\.\\|\.\/|\.\\|^\/$)/.test(path)) {
+      if (throwError) {
+        throw new FileManagerError("Path contains traversal attempts", "DANGEROUS_PATH", path);
+      }
+      return "";
+    }
+
     // Remove leading slash if present
     let normalized = path.startsWith("/") ? path.substring(1) : path;
 
     // Remove any double slashes
     normalized = normalized.replace(/\/+/g, "/");
-
-    // Ensure folders end with /
-    // Files should not end with /
 
     return normalized;
   }

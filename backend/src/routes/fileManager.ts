@@ -12,11 +12,9 @@ import FileManagerController from "../controllers/fileManagerController";
 import { FILE_STORAGE_TMP_FOLDER, FILE_MANAGER_FACTORY_CONFIG } from "../config";
 import { FileManagerFactory } from "../sdk";
 import contextMiddleware from "../sdk/helpers/contextMiddleware";
-import cleanupUploadedFiles from "./middlewares/cleanupUploadedFiles";
-import { createMulterUploader } from "../utilits/createMulterUploader";
+import { uploadAndCleanup } from "./middlewares/uploadWithCleanup";
 
 const router: Router = express.Router();
-const upload = createMulterUploader(FILE_STORAGE_TMP_FOLDER);
 const fileManagerFactory = new FileManagerFactory(FILE_MANAGER_FACTORY_CONFIG);
 
 export const fileManagerController = new FileManagerController(fileManagerFactory);
@@ -38,6 +36,6 @@ router.post("/unzip", catchAsync(fileManagerController.unzip));
 router.post("/archive", catchAsync(fileManagerController.archive));
 router.post("/duplicate", catchAsync(fileManagerController.duplicate));
 router.post("/saveimage", catchAsync(fileManagerController.saveImage));
-router.post("/upload", upload.any(), cleanupUploadedFiles, catchAsync(fileManagerController.uploadFiles));
+router.post("/upload", uploadAndCleanup(FILE_STORAGE_TMP_FOLDER), catchAsync(fileManagerController.uploadFiles));
 
 export default router;
