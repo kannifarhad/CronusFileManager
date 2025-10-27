@@ -3,10 +3,10 @@ import React, { type ReactNode } from "react";
 import { type AlertColor } from "@mui/material";
 import { type Theme } from "@mui/system";
 import { type FileWithPath } from "react-dropzone";
-import { FILE_EXTENSION_MAP } from "./config";
-import { type SaveFileParams } from "./apiSDKs/types";
+import type { FileType, FolderList, FolderType, Items, ItemsList, SaveFileParams } from "./apiProviders";
 import { type ButtonItemType } from "./components/elements/ButtonGroup";
 import type { IconName } from "./components/elements/Icon";
+export * from "./apiProviders/types";
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -21,12 +21,6 @@ declare module "@mui/material/styles" {
     };
     cronus?: any;
   }
-}
-
-// Define enums
-export enum ItemType {
-  FOLDER = "folder",
-  FILE = "file",
 }
 
 export enum ItemMoveActionTypeEnum {
@@ -101,40 +95,6 @@ export enum ActionTypes {
 }
 
 // Define interfaces and types
-export interface Permissions {
-  group: string;
-  others: string;
-  owner: string;
-}
-
-export interface FolderType {
-  path: string;
-  name: string;
-  created: string;
-  id: string;
-  modified: string;
-  type: ItemType.FOLDER;
-  premissions?: Permissions;
-  children?: ItemsList | null;
-  size: number;
-  private?: boolean;
-}
-
-export interface FileType {
-  path: string;
-  name: string;
-  created: string;
-  modified: string;
-  type: ItemType.FILE;
-  id: string;
-  premissions?: Permissions;
-  size: number;
-  extension: keyof typeof FILE_EXTENSION_MAP.icons;
-  private?: boolean;
-}
-
-export type Items = FolderType | FileType;
-export type ItemsList = Items[];
 
 export type OrderByType = {
   field: OrderByFieldEnum;
@@ -144,10 +104,6 @@ export type OrderByType = {
 export interface BufferedItemsType {
   files: Set<Items>;
   type: ItemMoveActionTypeEnum | null;
-}
-
-export interface FolderList extends FolderType {
-  children?: FolderList[];
 }
 
 export interface HistoryStep {
@@ -322,25 +278,13 @@ export interface ServerInstance {
   type: VolumeTypes.SERVER;
 }
 export interface S3BucketInstance {
-  id: string;
-  name: string;
-  type: VolumeTypes.S3BUCKET_FRONT;
-  region: string;
-  endpoint: string;
-  bucket: string;
-  credentials: {
-    accessKeyId: string;
-    secretAccessKey: string;
-  };
-}
-export interface S3BucketInstanceV2 {
   type: VolumeTypes.S3BUCKET_BACK;
   endpoint: string;
-  bucket: string;
   id: string;
   name: string;
 }
-export type VolumeListItem = ServerInstance | S3BucketInstance | S3BucketInstanceV2;
+
+export type VolumeListItem = ServerInstance | S3BucketInstance;
 export type VolumeListType = VolumeListItem[];
 
 export interface ThemeItemConfig {

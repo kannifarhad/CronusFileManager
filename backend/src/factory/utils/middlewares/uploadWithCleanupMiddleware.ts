@@ -1,6 +1,6 @@
+import { Request, Response, NextFunction } from "express";
 import { StorageTypeContext } from "../storageTypeContext";
 import fsExtra from "fs-extra";
-import { Request, Response, NextFunction, Router } from "express";
 import multer from "multer";
 
 const createMulterUploader = (tmpFolder: string) => {
@@ -36,6 +36,47 @@ const createMulterUploader = (tmpFolder: string) => {
   return upload;
 };
 
+function setupCleanup(req: Request, res: Response) {
+  let cleanupDone = false;
+
+  const cleanup = async () => {
+    if (cleanupDone) return;
+    cleanupDone = true;
+
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files || files.length === 0) return;
+
+    await Promise.allSettled(
+      files.map(async (file) => {
+        try {
+          await fsExtra.remove(file.path);
+          console.log(`Cleaned up temp file: ${file.path}`);
+        } catch (err) {
+          console.error(`Failed to cleanup file ${file.path}:`, err);
+        }
+      })
+    );
+  };
+
+  // Intercept response methods
+  const originalSend = res.send.bind(res);
+  const originalJson = res.json.bind(res);
+
+  res.send = function (data: any) {
+    cleanup().finally(() => originalSend(data));
+    return res;
+  };
+
+  res.json = function (data: any) {
+    cleanup().finally(() => originalJson(data));
+    return res;
+  };
+
+  // Also cleanup on response events
+  res.on("finish", cleanup);
+  res.on("close", cleanup);
+}
+
 export function uploadAndCleanup(tmpFolder: string) {
   const upload = createMulterUploader(tmpFolder).any();
 
@@ -45,41 +86,11 @@ export function uploadAndCleanup(tmpFolder: string) {
     // Run Multer inside async context
     StorageTypeContext.run(currentContext, () => {
       upload(req, res, async (err: any) => {
-        if (err) return next(err);
+        if (err) {
+          return StorageTypeContext.run(currentContext, () => next(err));
+        }
 
-        // Cleanup function
-        const cleanup = async () => {
-          const files = req.files as Express.Multer.File[] | undefined;
-          if (!files || files.length === 0) return;
-
-          await Promise.all(
-            files.map(async (file) => {
-              try {
-                await fsExtra.remove(file.path);
-                console.log(`Cleaned up temp file: ${file.path}`);
-              } catch (err) {
-                console.error(`Failed to cleanup file ${file.path}:`, err);
-              }
-            })
-          );
-        };
-
-        // Intercept response finish/close/send/json
-        const originalSend = res.send.bind(res);
-        const originalJson = res.json.bind(res);
-
-        res.send = function (data: any) {
-          cleanup().finally(() => originalSend(data));
-          return res;
-        };
-
-        res.json = function (data: any) {
-          cleanup().finally(() => originalJson(data));
-          return res;
-        };
-
-        res.on("finish", cleanup);
-        res.on("close", cleanup);
+        setupCleanup(req, res);
 
         // Continue to controller
         StorageTypeContext.run(currentContext!, () => next());

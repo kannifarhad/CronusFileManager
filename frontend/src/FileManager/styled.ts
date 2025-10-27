@@ -17,6 +17,7 @@ export const FileManagerWrapper = styled(Box, {
       zIndex: "999",
       padding: "20px",
       background: "rgba(255, 255, 255, 0.7)",
+      boxSizing: "border-box",
     };
   }
   return {

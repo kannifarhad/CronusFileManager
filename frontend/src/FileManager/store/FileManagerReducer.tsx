@@ -1,7 +1,7 @@
 import { LOCASTORAGE_SETTINGS_KEY } from "../config";
-import { sortFilter, addFoldersToTree, writeJsonToLocalStorage } from "../utils";
-import { ItemMoveActionTypeEnum, HistoryStepTypeEnum, ActionTypes, VolumeTypes, ItemType } from "../types";
-import type { FileManagerAction, FileManagerState, FolderType } from "../types";
+import { sortFilter, writeJsonToLocalStorage } from "../utils";
+import { ItemMoveActionTypeEnum, HistoryStepTypeEnum, ActionTypes } from "../types";
+import type { FileManagerAction, FileManagerState } from "../types";
 
 import { initialState } from "./FileManagerContext";
 
@@ -44,12 +44,6 @@ export const fileManagerReducer = (state: FileManagerState, action: FileManagerA
       filesList = sortFilter(filesList, state.settings.orderFiles);
       let newfoldersList = state.foldersList;
 
-      if (state.selectedVolume?.type === VolumeTypes.S3BUCKET_FRONT && state.selectedFolder?.path !== "/") {
-        const newFolders: FolderType[] = filesList.filter((item) => item.type === ItemType.FOLDER);
-        if (newFolders.length > 0) {
-          newfoldersList = addFoldersToTree(state.foldersList, newFolders);
-        }
-      }
       return {
         ...state,
         filesList,

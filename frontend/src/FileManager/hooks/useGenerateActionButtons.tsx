@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import type { ButtonObject, CreateContextType, FileManagerState } from "../types";
 import { ViewTypeEnum, ItemType, ItemExtensionCategoryFilter } from "../types";
-
 import { checkSelectedFileType } from "../utils";
 
 type GenerateButtonsStateProps = Pick<
@@ -10,6 +9,8 @@ type GenerateButtonsStateProps = Pick<
 > & {
   itemsViewType: FileManagerState["settings"]["itemsViewType"];
 };
+
+
 const isSelectedFileType = (
   type: ItemExtensionCategoryFilter,
   contextMenu: CreateContextType["contextMenu"],
