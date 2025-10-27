@@ -4,7 +4,7 @@ import VolumesList from "./VolumesList";
 
 function FolderBar() {
   return (
-    <FileManagerFolderBarGrid item xs={8} sm={4}>
+    <FileManagerFolderBarGrid size={4}>
       <FileManagerFolderBarWrapper>
         <StyledFolderBar key="folderRoot">
           <VolumesList />

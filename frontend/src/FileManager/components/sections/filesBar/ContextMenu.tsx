@@ -28,6 +28,7 @@ const ContextMenu: React.FC = () => {
       onContextMenu={handleContextClose}
       onClose={handleContextClose}
       anchorReference="anchorPosition"
+      elevation={2}
       anchorPosition={
         contextMenu.mouseY !== null && contextMenu.mouseX !== null
           ? { top: contextMenu.mouseY, left: contextMenu.mouseX }

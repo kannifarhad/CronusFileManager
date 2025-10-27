@@ -1,5 +1,5 @@
 import React, { memo, useRef, useMemo, useCallback } from "react";
-import { Grid2 as Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import TopBarButtonGroups from "./TopBarButtonGroups";
 import TopBarRightMenus from "./TopBarRightMenus";
 import { SettingsMenuEnum } from "./settingsMenu/constants";

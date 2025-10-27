@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo } from "react";
-import { Grid2 as Grid, FormLabel, FormControl, InputLabel, Box } from "@mui/material";
+import { Grid, FormLabel, FormControl, InputLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { OrderByFieldEnum, SortByFieldEnum } from "../../../../types";
 import { orderOptions, sortOptions } from "./constants";

@@ -34,6 +34,7 @@ class Ec2ServerConnection extends IServerConnection {
       timeout: 1000 * 30,
       headers: {
         "Content-Type": "application/json",
+        "x-storage-type": "local",
       },
     });
 
