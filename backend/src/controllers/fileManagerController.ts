@@ -8,12 +8,12 @@
 
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utilits/appError.js";
-import FileManagerSDKBase from "../sdk/LocalFileManagerSDK";
-import { FileUpload } from "../sdk/types";
-import { FileManagerFactory } from "../sdk/index";
+import FileManagerProviderBase from "../factory/providers/LocalFileManagerProvider.js";
+import { FileUpload } from "../factory/types.js";
+import { FileManagerFactory } from "../factory/index";
 
 export class FileManagerController {
-  protected filemanagerService: FileManagerSDKBase;
+  protected filemanagerService: FileManagerProviderBase;
   constructor(factory: FileManagerFactory) {
     this.filemanagerService = factory.createProxy();
   }

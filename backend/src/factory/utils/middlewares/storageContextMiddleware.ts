@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { FileManagerFactory } from "..";
-import { RequestContext, StorageProvider } from "../types";
-import { AsyncContext } from "./context";
+import { FileManagerFactory } from "../..";
+import { RequestContext, StorageProvider } from "../../types";
+import { StorageTypeContext } from "../storageTypeContext";
 
-export const contextMiddleware = (factory: FileManagerFactory) => {
+export const storageContextMiddleware = (factory: FileManagerFactory) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const storageType = (req.headers["x-storage-type"] as StorageProvider) || factory["defaultProvider"];
 
@@ -16,10 +16,10 @@ export const contextMiddleware = (factory: FileManagerFactory) => {
       storageProvider: storageType,
     };
 
-    AsyncContext.run(context, () => {
+    StorageTypeContext.run(context, () => {
       next();
     });
   };
 };
 
-export default contextMiddleware;
+export default storageContextMiddleware;

@@ -1,11 +1,11 @@
-import FileManagerSDKBase from "./FileManagerSDKBase";
-import { AsyncContext } from "./helpers/context";
-import LocalFileManagerSDK from "./LocalFileManagerSDK";
-import S3BucketFileManagerSDK from "./S3BucketFileManagerSDK";
+import { StorageTypeContext } from "./utils/storageTypeContext";
+import FileManagerProviderBase from "./providers/FileManagerProviderBase";
+import LocalFileManagerProvider from "./providers/LocalFileManagerProvider";
+import S3BucketFileManagerProvider from "./providers/S3BucketFileManagerProvider";
 import { FileManagerFactoryConfig, StorageProvider } from "./types";
 
 export class FileManagerFactory {
-  private providers: Map<StorageProvider, FileManagerSDKBase> = new Map();
+  private providers: Map<StorageProvider, FileManagerProviderBase> = new Map();
   private defaultProvider: StorageProvider;
 
   constructor(config: FileManagerFactoryConfig) {
@@ -16,30 +16,30 @@ export class FileManagerFactory {
   private initializeProviders(providersConfig: FileManagerFactoryConfig["providers"]): void {
     // Initialize Local provider
     if (providersConfig[StorageProvider.LOCAL]) {
-      const localSDK = new LocalFileManagerSDK(providersConfig[StorageProvider.LOCAL]);
-      this.providers.set(StorageProvider.LOCAL, localSDK);
+      const localProvider = new LocalFileManagerProvider(providersConfig[StorageProvider.LOCAL]);
+      this.providers.set(StorageProvider.LOCAL, localProvider);
     }
 
     // Initialize S3 provider
     if (providersConfig[StorageProvider.S3]) {
-      const s3SDK = new S3BucketFileManagerSDK(providersConfig[StorageProvider.S3]);
-      this.providers.set(StorageProvider.S3, s3SDK);
+      const s3Provider = new S3BucketFileManagerProvider(providersConfig[StorageProvider.S3]);
+      this.providers.set(StorageProvider.S3, s3Provider);
     }
   }
 
-  getProvider(provider?: StorageProvider): FileManagerSDKBase {
+  getProvider(provider?: StorageProvider): FileManagerProviderBase {
     const targetProvider = provider || this.defaultProvider;
-    const sdk = this.providers.get(targetProvider);
+    const providerEntity = this.providers.get(targetProvider);
 
-    if (!sdk) {
+    if (!providerEntity) {
       throw new Error(`Storage provider '${targetProvider}' is not configured`);
     }
 
-    return sdk;
+    return providerEntity;
   }
 
-  resolveProvider(): FileManagerSDKBase {
-    const contextProvider = AsyncContext.getStorageProvider();
+  resolveProvider(): FileManagerProviderBase {
+    const contextProvider = StorageTypeContext.getStorageProvider();
     return this.getProvider(contextProvider);
   }
 
@@ -53,12 +53,12 @@ export class FileManagerFactory {
 
   /**
    * Creates a Proxy that auto-resolves provider on each method call
-   * Returns a type-safe proxy that looks like FileManagerSDKBase
+   * Returns a type-safe proxy that looks like FileManagerProviderBase
    */
-  createProxy(): FileManagerSDKBase {
+  createProxy(): FileManagerProviderBase {
     const self = this;
 
-    return new Proxy({} as FileManagerSDKBase, {
+    return new Proxy({} as FileManagerProviderBase, {
       get(target, prop: string | symbol, receiver) {
         // Resolve the actual provider from context
         const provider = self.resolveProvider();

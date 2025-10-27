@@ -1,6 +1,6 @@
 import nodePath from "path";
 import { S3ClientConfig } from "@aws-sdk/client-s3";
-import { FileManagerFactoryConfig, StorageProvider } from "../sdk/types";
+import { FileManagerFactoryConfig, StorageProvider } from "../factory/types";
 import dotenv from "dotenv";
 dotenv.config();
 

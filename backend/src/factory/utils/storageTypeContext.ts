@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from "async_hooks";
 import { RequestContext, StorageProvider } from "../types";
 
-export class AsyncContext {
+export class StorageTypeContext {
   private static storage = new AsyncLocalStorage<RequestContext>();
 
   static run<T>(context: RequestContext, callback: () => T): T {

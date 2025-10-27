@@ -23,9 +23,9 @@ import {
   GetThumbParams,
   GetLinkParams,
   SaveImageParams,
-  FileManagerSDKBaseConfig,
+  FileManagerProviderBaseConfig,
   FolderTreeOptions,
-} from "./types";
+} from "../types";
 
 const defaultAllowedExtensions = [
   ".jpg",
@@ -59,10 +59,10 @@ export class FileManagerError extends Error {
   }
 }
 
-export abstract class FileManagerSDKBase {
-  protected config: FileManagerSDKBaseConfig;
+export abstract class FileManagerProviderBase {
+  protected config: FileManagerProviderBaseConfig;
 
-  constructor(config: FileManagerSDKBaseConfig) {
+  constructor(config: FileManagerProviderBaseConfig) {
     this.config = {
       allowedExtensions: config.allowedExtensions || defaultAllowedExtensions,
       maxFileSize: config.maxFileSize || 100 * 1024 * 1024, // 100MB default
@@ -205,4 +205,4 @@ export abstract class FileManagerSDKBase {
   }
 }
 
-export default FileManagerSDKBase;
+export default FileManagerProviderBase;

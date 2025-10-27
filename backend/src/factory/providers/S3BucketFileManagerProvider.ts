@@ -25,7 +25,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import FileManagerSDKBase, { FileManagerError } from "./FileManagerSDKBase";
+import FileManagerProviderBase, { FileManagerError } from "./FileManagerProviderBase";
 import {
   FSItem,
   SearchParams,
@@ -43,18 +43,18 @@ import {
   GetThumbParams,
   GetLinkParams,
   SaveImageParams,
-  FileManagerSDKBaseConfig,
+  FileManagerProviderBaseConfig,
   FolderTreeOptions,
   ENTITY_CONST,
-} from "./types";
-import { sanitizePath } from "./helpers/sanitazePath";
+} from "../types";
+import { sanitizePath } from "../utils/sanitazePath";
 
-export interface S3FileManagerConfig extends FileManagerSDKBaseConfig {
+export interface S3FileManagerConfig extends FileManagerProviderBaseConfig {
   s3config: S3ClientConfig;
   bucketName: string;
 }
 
-export class S3BucketFileManagerSDK extends FileManagerSDKBase {
+export class S3BucketFileManagerProvider extends FileManagerProviderBase {
   protected bucketName: string;
   protected s3Client: S3Client;
 
@@ -1069,4 +1069,4 @@ export class S3BucketFileManagerSDK extends FileManagerSDKBase {
   }
 }
 
-export default S3BucketFileManagerSDK;
+export default S3BucketFileManagerProvider;

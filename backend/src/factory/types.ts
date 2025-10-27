@@ -1,5 +1,5 @@
-import { LocalFileManagerConfig } from "./LocalFileManagerSDK";
-import { S3FileManagerConfig } from "./S3BucketFileManagerSDK";
+import { LocalFileManagerConfig } from "./providers/LocalFileManagerProvider";
+import { S3FileManagerConfig } from "./providers/S3BucketFileManagerProvider";
 
 export enum StorageProvider {
   LOCAL = "local",
@@ -152,7 +152,7 @@ export interface GetThumbParams {
   path: string;
 }
 
-export interface FileManagerSDKBaseConfig {
+export interface FileManagerProviderBaseConfig {
   allowedExtensions?: string[]; // Allowed file extensions
   maxFileSize?: number; // Max file size in bytes
   rootFolder: string;

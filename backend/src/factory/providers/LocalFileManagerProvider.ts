@@ -10,7 +10,7 @@ import unzipper from "unzipper";
 import archiver from "archiver";
 import nodePath from "path";
 import fsExtra from "fs-extra";
-import FileManagerSDKBase, { FileManagerError } from "./FileManagerSDKBase";
+import FileManagerProviderBase, { FileManagerError } from "./FileManagerProviderBase";
 
 import {
   DirectoryTreeOptions,
@@ -33,15 +33,15 @@ import {
   GetThumbParams,
   GetLinkParams,
   SaveImageParams,
-  FileManagerSDKBaseConfig,
-} from "./types";
-import { sanitizePath } from "./helpers/sanitazePath";
+  FileManagerProviderBaseConfig,
+} from "../types";
+import { sanitizePath } from "../utils/sanitazePath";
 
-export interface LocalFileManagerConfig extends FileManagerSDKBaseConfig {
+export interface LocalFileManagerConfig extends FileManagerProviderBaseConfig {
   tempFolder: string;
 }
 
-export class LocalFileManagerSDK extends FileManagerSDKBase {
+export class LocalFileManagerProvider extends FileManagerProviderBase {
   protected config: LocalFileManagerConfig;
   private coreFolder: string;
   private readonly basePath: string;
@@ -888,4 +888,4 @@ export class LocalFileManagerSDK extends FileManagerSDKBase {
   }
 }
 
-export default LocalFileManagerSDK;
+export default LocalFileManagerProvider;

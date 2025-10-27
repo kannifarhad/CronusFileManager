@@ -10,17 +10,16 @@ import express, { Router } from "express";
 import catchAsync from "./middlewares/catchAsync";
 import FileManagerController from "../controllers/fileManagerController";
 import { FILE_STORAGE_TMP_FOLDER, FILE_MANAGER_FACTORY_CONFIG } from "../config";
-import { FileManagerFactory } from "../sdk";
-import contextMiddleware from "../sdk/helpers/contextMiddleware";
-import { uploadAndCleanup } from "./middlewares/uploadWithCleanup";
+import { FileManagerFactory } from "../factory";
+import storageContextMiddleware from "../factory/utils/middlewares/storageContextMiddleware";
+import { uploadAndCleanup } from "../factory/utils/middlewares/uploadWithCleanupMiddleware";
 
 const router: Router = express.Router();
 const fileManagerFactory = new FileManagerFactory(FILE_MANAGER_FACTORY_CONFIG);
-
 export const fileManagerController = new FileManagerController(fileManagerFactory);
 
-router.use(contextMiddleware(fileManagerFactory));
-
+// This middleware sets storage provider type depending on headers that had been sent from front-end.
+router.use(storageContextMiddleware(fileManagerFactory));
 // Routes
 router.get("/foldertree", catchAsync(fileManagerController.folderTree));
 router.post("/folder", catchAsync(fileManagerController.folderInfo));
