@@ -6,7 +6,7 @@ import { List as VirtualizedList, AutoSizer } from "react-virtualized";
 import DraggedElementsStack from "../gridLayout/DraggedElementsStack";
 import ListItemRender from "./ListItemRender";
 import { StyledListTable, StyledEmptyFolderContainer } from "../styled";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 import { type Items } from "../../../../types";
 import useText from "../../../../hooks/useTexts";
 

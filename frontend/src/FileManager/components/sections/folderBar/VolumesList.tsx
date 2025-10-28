@@ -1,6 +1,6 @@
 import { type FC, useEffect, memo } from "react";
 import { Box, List, useTheme } from "@mui/material";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import Icon from "../../elements/Icon";
 import { StyledVolumeMenuItem } from "./styled";
 import MenuItem from "./MenuItem";

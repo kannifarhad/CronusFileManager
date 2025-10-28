@@ -5,7 +5,7 @@ import {
   StyledContextMenu,
   StyledContextMenuItem,
 } from "../../elements/styled";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import { ContextMenuTypeEnum } from "../../../types";
 import useGenerateActionButtons from "../../../hooks/useGenerateActionButtons";
 import Icon from "../../elements/Icon";

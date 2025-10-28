@@ -252,6 +252,7 @@ export const useGenerateActionButtons = ({ state }: { state: CreateContextType }
     selectedFolder,
     foldersList,
   } = state;
+  
   const allButtons = useMemo(
     () =>
       generateAllButtons(operations, {

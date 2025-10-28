@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useCallback } from "react";
 import { StyledSelectCheckbox, StyledPrivateIcon } from "../styled";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 import { type Items } from "../../../../types";
 import { wasMultiSelectKeyUsed } from "../../../../utils";
 

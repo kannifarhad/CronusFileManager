@@ -3,7 +3,7 @@ import { sortFilter, writeJsonToLocalStorage } from "../utils";
 import { ItemMoveActionTypeEnum, HistoryStepTypeEnum, ActionTypes } from "../types";
 import type { FileManagerAction, FileManagerState } from "../types";
 
-import { initialState } from "./FileManagerContext";
+import { initialState } from ".";
 
 export const fileManagerReducer = (state: FileManagerState, action: FileManagerAction): FileManagerState => {
   switch (action.type) {

@@ -2,7 +2,7 @@ import { memo } from "react";
 import { Radio, FormControlLabel, Grid, FormLabel, Box } from "@mui/material";
 import { StyledTopBarMenuItem } from "../styled";
 import { imageViewOptions } from "./constants";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 
 const ImageViewOptions = () => {
   const {

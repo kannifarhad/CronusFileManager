@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import GridView from "./gridLayout/GridView";
 import ListView from "./tableLayout/ListView";
 import { ViewTypeEnum } from "../../../types";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import { Box } from "@mui/system";
 
 const ViewItems: React.FC = () => {

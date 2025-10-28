@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import MenuSubmenu from "./MenuSubmenu";
 import { StyledFolderMenuItem } from "./styled";
 import { type FolderList } from "../../../types";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import Icon from "../../elements/Icon";
 import { classNames } from "../../../utils";
 

@@ -37,7 +37,7 @@ export const useFileManagerOperations = ({
   selectItemCallback: ((filePath: string) => void) | undefined;
   selectedVolume: FileManagerState["selectedVolume"];
 }): Operations => {
-  const apiClient = useApiController(selectedVolume);
+  const apiClient = useApiController(selectedVolume)!;
 
   const setMessage = useCallback(
     (message: Omit<Message, "id">) => {
@@ -84,7 +84,7 @@ export const useFileManagerOperations = ({
           type: ActionTypes.SET_LOADING,
           payload: true,
         });
-        apiClient!.search({ text, path }).then((result) => {
+        apiClient.search({ text, path }).then((result) => {
           dispatch({
             type: ActionTypes.SET_SEARCH_RESULTS,
             payload: {
@@ -101,6 +101,7 @@ export const useFileManagerOperations = ({
           payload: theme,
         });
       },
+
       handleSelectVolume: (selectedVolumeItem: VolumeListItem) => {
         dispatch({
           type: ActionTypes.SET_SELECTED_VOLUME,
@@ -123,7 +124,7 @@ export const useFileManagerOperations = ({
             clearBuffer,
           },
         });
-        apiClient!
+        apiClient
           .getFilesList({ path: folder.path })
           .then((data) => {
             dispatch({
@@ -147,7 +148,7 @@ export const useFileManagerOperations = ({
       },
 
       handleInitFileManagerData: () => {
-        apiClient!.getFolderTree().then((result) => {
+        apiClient.getFolderTree().then((result) => {
           dispatch({
             type: ActionTypes.SET_FOLDERS_LIST,
             payload: result,
@@ -158,7 +159,7 @@ export const useFileManagerOperations = ({
       },
 
       handleReloadFolderTree: () => {
-        apiClient!
+        apiClient
           .getFolderTree()
           .then((result) => {
             dispatch({
@@ -320,9 +321,7 @@ export const useFileManagerOperations = ({
           return item.path;
         });
         const apiFunction =
-          bufferedItems.type === ItemMoveActionTypeEnum.CUT
-            ? apiClient!.cutFilesToFolder
-            : apiClient!.copyFilesToFolder;
+          bufferedItems.type === ItemMoveActionTypeEnum.CUT ? apiClient.cutFilesToFolder : apiClient.copyFilesToFolder;
 
         apiFunction({ items: files, destination: selectedFolder.path })
           .then(() => {
@@ -355,7 +354,7 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          apiClient!
+          apiClient
             .deleteItems({ items })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
@@ -405,7 +404,7 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          apiClient!
+          apiClient
             .emptyDir({ path })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
@@ -452,7 +451,7 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          apiClient!
+          apiClient
             .createNewFile({ path: selectedFolder.path, file: fileName })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
@@ -505,7 +504,7 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          apiClient!
+          apiClient
             .createNewFolder({ path: selectedFolder.path, folder: folderName })
             .then(() => {
               operations.handleReloadFolderTree();
@@ -560,7 +559,7 @@ export const useFileManagerOperations = ({
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
 
-          apiClient!
+          apiClient
             .renameFiles({ path: selectedFile.path, newname: folderName })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
@@ -623,7 +622,7 @@ export const useFileManagerOperations = ({
         const handleDuplicateSubmit = () => {
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-          apiClient!
+          apiClient
             .duplicateItem({ path: selectedFile.path })
             .then(() => {
               operations.handleSelectFolder(selectedFolder, true, true, false);
@@ -673,7 +672,7 @@ export const useFileManagerOperations = ({
         const handleArchiveSubmit = (fileName: string) => {
           handleClose();
           dispatch({ type: ActionTypes.SET_LOADING, payload: true });
-          apiClient!
+          apiClient
             .archive({
               files,
               destination: selectedFolder.path,
@@ -735,7 +734,7 @@ export const useFileManagerOperations = ({
             payload: true,
           });
 
-          apiClient!
+          apiClient
             .unzip({
               file: selectedFile.path,
               destination: selectedFolder.path,
@@ -780,7 +779,7 @@ export const useFileManagerOperations = ({
       handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => {
         const handleCloseEdit = () => dispatch({ type: ActionTypes.SET_FILEEDIT_DATA, payload: null });
         const handleSubmitEdit = (data: SaveFileParams) => {
-          apiClient!
+          apiClient
             .saveFile(data)
             .then(() => {
               handleCloseEdit();
@@ -926,7 +925,7 @@ export const useFileManagerOperations = ({
         });
         formData.append("fileMaps", JSON.stringify(fileMaps));
 
-        apiClient!
+        apiClient
           .uploadFile(formData)
           .then(() => {
             handleCloseEdit();
@@ -969,7 +968,7 @@ export const useFileManagerOperations = ({
           return;
         }
 
-        apiClient!
+        apiClient
           .cutFilesToFolder({ items: files, destination: destination.path })
           .then(() => {
             operations.handleSelectFolder(destination, true, true, false);

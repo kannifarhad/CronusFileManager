@@ -3,7 +3,7 @@ import { useDropzone } from "react-dropzone";
 import ButtonList, { type ButtonItemType } from "./ButtonGroup";
 import { type DroppedFile, organizeFiles } from "../../utils";
 import { StyledDropZoneSection, StyledAcceptedFilesList } from "./styled";
-import { useFileManagerState } from "../../store/FileManagerContext";
+import { useFileManagerState } from "../../context";
 import DropzoneFileList from "./DropzoneFileList";
 
 export default function UploadFiles() {

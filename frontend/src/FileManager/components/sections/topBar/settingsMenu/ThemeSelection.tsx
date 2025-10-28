@@ -3,7 +3,7 @@ import { memo } from "react";
 import { Grid, FormLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { themeList } from "../../../../hooks/useCurrentTheme";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 
 const ThemeSelection = () => {
   const {

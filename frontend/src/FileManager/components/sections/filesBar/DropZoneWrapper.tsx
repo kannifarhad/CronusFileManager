@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect } from "react";
 import Dropzone from "../../elements/Dropzone";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 
 function DropZoneWrapper() {
   const {

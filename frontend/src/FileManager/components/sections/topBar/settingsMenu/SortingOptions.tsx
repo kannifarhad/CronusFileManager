@@ -4,7 +4,7 @@ import { Grid, FormLabel, FormControl, InputLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { OrderByFieldEnum, SortByFieldEnum } from "../../../../types";
 import { orderOptions, sortOptions } from "./constants";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 
 const SortingOptions = () => {
   const {

@@ -4,7 +4,7 @@ import { useDroppable, useDraggable } from "@dnd-kit/core";
 import ItemSelectButton from "./ItemSelectButton";
 import { convertDate, classNames } from "../../../../utils";
 import { StyledFileItem, StyledItemTitle, StyledItemInfoBox } from "../styled";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 import { type FolderType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../../types";
 import ContentIcons from "../../../elements/ContentIcons";
 

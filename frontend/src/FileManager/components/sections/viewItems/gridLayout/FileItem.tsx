@@ -4,7 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { classNames, getFileIcon } from "../../../../utils";
 import ItemSelectButton from "./ItemSelectButton";
 import { StyledFileItem, StyledItemExtension, StyledItemTitle, StyledItemInfoBox } from "../styled";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 import { type FileType, ItemMoveActionTypeEnum, ContextMenuTypeEnum, ImagesThumbTypeEnum } from "../../../../types";
 import { FILE_EXTENSION_MAP } from "../../../../config";
 import ContentIcons from "../../../elements/ContentIcons";

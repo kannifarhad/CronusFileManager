@@ -2,7 +2,7 @@ import React, { useEffect, useRef, memo, useState } from "react";
 import { AlertTitle, IconButton, Collapse, LinearProgress } from "@mui/material";
 import { type Message, ActionTypes } from "../../types";
 import { StyledInfoBox } from "./styled";
-import { useFileManagerDispatch } from "../../store/FileManagerContext";
+import { useFileManagerDispatch } from "../../context";
 import Icon from "./Icon";
 
 interface InfoBoxesProps {

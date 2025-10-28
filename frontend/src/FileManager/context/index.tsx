@@ -54,15 +54,18 @@ export function FileManagerProvider({
   selectItemCallback: ((filePath: string) => void) | undefined;
   volumesList: VolumeListType;
 }) {
+  
   const [state, dispatch] = useReducer(fileManagerReducer, {
     ...initialState,
     volumesList,
   });
+
   const operations = useFileManagerOperations({
     dispatch,
     selectItemCallback,
     selectedVolume: state.selectedVolume,
   });
+
   const value = useMemo(() => ({ ...state, operations }), [state, operations]);
 
   return (
