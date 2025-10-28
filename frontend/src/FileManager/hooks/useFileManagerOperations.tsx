@@ -1,78 +1,44 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo } from "react";
 import type {
   FolderType,
   Items,
-  OrderByType,
   HistoryType,
   HistoryStep,
   FolderList,
-  Message,
   BufferedItemsType,
   ItemsList,
   FileType,
   Operations,
-  VolumeListItem,
-  FileManagerState,
 } from "../types";
 import {
   ActionTypes,
   ItemType,
   HistoryStepTypeEnum,
   ContextMenuTypeEnum,
-  ViewTypeEnum,
-  ImagesThumbTypeEnum,
   ItemMoveActionTypeEnum,
   ItemExtensionCategoryFilter,
 } from "../types";
 import { type SaveFileParams } from "../apiProviders/types";
 import { checkSelectedFileType, convertDate, formatBytes } from "../utils";
 import useApiController from "./useApiController";
+import useSystemOperations from "./useSystemOperations";
+import { useSelectSystemVolume } from "../context";
 
 export const useFileManagerOperations = ({
   dispatch,
   selectItemCallback,
-  selectedVolume,
 }: {
   dispatch: any;
   selectItemCallback: ((filePath: string) => void) | undefined;
-  selectedVolume: FileManagerState["selectedVolume"];
 }): Operations => {
+  const { setMessage, setLoading, handleApiError } = useSystemOperations();
+  const selectedVolume = useSelectSystemVolume();
   const apiClient = useApiController(selectedVolume)!;
-
-  const setMessage = useCallback(
-    (message: Omit<Message, "id">) => {
-      dispatch({
-        type: ActionTypes.SET_MESSAGES,
-        payload: {
-          id: String(Date.now()),
-          ...message,
-        },
-      });
-    },
-    [dispatch]
-  );
-
-  const handleApiError = useCallback(
-    (error: any, errorMessage: string) => {
-      dispatch({
-        type: ActionTypes.SET_LOADING,
-        payload: false,
-      });
-      dispatch({
-        type: ActionTypes.SET_MESSAGES,
-        payload: {
-          id: String(Date.now()),
-          title: errorMessage,
-          type: "error",
-          message: error?.message || "Unknown error",
-        },
-      });
-    },
-    [dispatch]
-  );
 
   const operations: Operations = useMemo(
     () => ({
+      //NOT MIGRATED
+
       handleSelectCallback: (path: string) => {
         if (selectItemCallback) {
           selectItemCallback(path);
@@ -80,10 +46,7 @@ export const useFileManagerOperations = ({
       },
 
       handleSearchItems: (text: string, path?: string) => {
-        dispatch({
-          type: ActionTypes.SET_LOADING,
-          payload: true,
-        });
+        setLoading(true);
         apiClient.search({ text, path }).then((result) => {
           dispatch({
             type: ActionTypes.SET_SEARCH_RESULTS,
@@ -92,20 +55,6 @@ export const useFileManagerOperations = ({
               result,
             },
           });
-        });
-      },
-
-      handleSelectTheme: (theme: string) => {
-        dispatch({
-          type: ActionTypes.SET_SELECTED_THEME,
-          payload: theme,
-        });
-      },
-
-      handleSelectVolume: (selectedVolumeItem: VolumeListItem) => {
-        dispatch({
-          type: ActionTypes.SET_SELECTED_VOLUME,
-          payload: selectedVolumeItem,
         });
       },
 
@@ -124,6 +73,7 @@ export const useFileManagerOperations = ({
             clearBuffer,
           },
         });
+
         apiClient
           .getFilesList({ path: folder.path })
           .then((data) => {
@@ -213,27 +163,6 @@ export const useFileManagerOperations = ({
         dispatch({
           type: ActionTypes.CLEAR_BUFFER,
           payload: null,
-        });
-      },
-
-      handleSetViewItemType: (view: ViewTypeEnum) => {
-        dispatch({
-          type: ActionTypes.SET_ITEM_VIEW,
-          payload: view,
-        });
-      },
-
-      handleSetOrder: (order: OrderByType) => {
-        dispatch({
-          type: ActionTypes.SET_SORT_ORDER_BY,
-          payload: order,
-        });
-      },
-
-      handleSetThumbView: (view: ImagesThumbTypeEnum) => {
-        dispatch({
-          type: ActionTypes.SET_IMAGE_SETTINGS,
-          payload: view,
         });
       },
 
@@ -352,7 +281,7 @@ export const useFileManagerOperations = ({
 
         const handleDeleteSubmit = () => {
           handleClose();
-          dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+          setLoading(true);
 
           apiClient
             .deleteItems({ items })
@@ -402,7 +331,7 @@ export const useFileManagerOperations = ({
 
         const handleEmptySubmit = () => {
           handleClose();
-          dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+          setLoading(true);
 
           apiClient
             .emptyDir({ path })
@@ -449,7 +378,7 @@ export const useFileManagerOperations = ({
 
         const handleNewFileSubmit = (fileName: string) => {
           handleClose();
-          dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+          setLoading(true);
 
           apiClient
             .createNewFile({ path: selectedFolder.path, file: fileName })
@@ -502,7 +431,7 @@ export const useFileManagerOperations = ({
 
         const handleNewFolderSubmit = (folderName: string) => {
           handleClose();
-          dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+          setLoading(true);
 
           apiClient
             .createNewFolder({ path: selectedFolder.path, folder: folderName })
@@ -557,7 +486,7 @@ export const useFileManagerOperations = ({
         const includesFolder = selectedFile.type === ItemType.FOLDER;
         const handleRenameSubmit = (folderName: string) => {
           handleClose();
-          dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+          setLoading(true);
 
           apiClient
             .renameFiles({ path: selectedFile.path, newname: folderName })
@@ -621,7 +550,7 @@ export const useFileManagerOperations = ({
 
         const handleDuplicateSubmit = () => {
           handleClose();
-          dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+          setLoading(true);
           apiClient
             .duplicateItem({ path: selectedFile.path })
             .then(() => {
@@ -671,7 +600,7 @@ export const useFileManagerOperations = ({
 
         const handleArchiveSubmit = (fileName: string) => {
           handleClose();
-          dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+          setLoading(true);
           apiClient
             .archive({
               files,
@@ -729,10 +658,7 @@ export const useFileManagerOperations = ({
 
         const handleExtractSubmit = () => {
           handleClose();
-          dispatch({
-            type: ActionTypes.SET_LOADING,
-            payload: true,
-          });
+          setLoading(true);
 
           apiClient
             .unzip({
@@ -905,10 +831,6 @@ export const useFileManagerOperations = ({
         return apiClient.getThumb(selectedFile.path);
       },
 
-      handleToggleFullScreen: () => {
-        dispatch({ type: ActionTypes.TOGGLE_FULLSCREEN, payload: null });
-      },
-
       handleToggleUploadPopUp: (forceShow?: boolean) => {
         dispatch({ type: ActionTypes.TOGGLE_UPLOAD_POPUP, payload: forceShow });
       },
@@ -947,7 +869,7 @@ export const useFileManagerOperations = ({
       },
 
       handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => {
-        dispatch({ type: ActionTypes.SET_LOADING, payload: true });
+        setLoading(true);
         let includesFolder = false;
         const files: string[] = draggedItems.map((item: Items) => {
           if (item.type === ItemType.FOLDER) {
@@ -964,7 +886,8 @@ export const useFileManagerOperations = ({
             message: "",
             timer: 1500,
           });
-          dispatch({ type: ActionTypes.SET_LOADING, payload: false });
+          setLoading(false);
+
           return;
         }
 

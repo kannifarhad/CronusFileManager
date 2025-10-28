@@ -19,9 +19,7 @@ export function FileManagerProvider({
   return (
     <SystemProvider volumesList={volumesList}>
       <SettingsProvider>
-        <FileManagerProviderOld selectItemCallback={selectItemCallback} volumesList={volumesList}>
-          {children}
-        </FileManagerProviderOld>
+        <FileManagerProviderOld selectItemCallback={selectItemCallback}>{children}</FileManagerProviderOld>
       </SettingsProvider>
     </SystemProvider>
   );

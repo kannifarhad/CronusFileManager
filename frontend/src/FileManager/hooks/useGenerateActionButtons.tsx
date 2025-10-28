@@ -1,15 +1,15 @@
 import { useMemo } from "react";
-import type { ButtonObject, CreateContextType, FileManagerState } from "../types";
+import type { ButtonObject, CreateContextType, FileManagerState, SettingsStateType } from "../types";
 import { ViewTypeEnum, ItemType, ItemExtensionCategoryFilter } from "../types";
 import { checkSelectedFileType } from "../utils";
+import { useSelectItemsViewType } from "../context";
 
 type GenerateButtonsStateProps = Pick<
   FileManagerState,
   "selectedFiles" | "contextMenu" | "filesList" | "bufferedItems" | "history" | "selectedFolder" | "foldersList"
 > & {
-  itemsViewType: FileManagerState["settings"]["itemsViewType"];
+  itemsViewType: SettingsStateType["itemsViewType"];
 };
-
 
 const isSelectedFileType = (
   type: ItemExtensionCategoryFilter,
@@ -241,25 +241,17 @@ export const generateAllButtons = (operations: any, state: GenerateButtonsStateP
 };
 
 export const useGenerateActionButtons = ({ state }: { state: CreateContextType }) => {
-  const {
-    operations,
-    selectedFiles,
-    contextMenu,
-    filesList,
-    settings,
-    bufferedItems,
-    history,
-    selectedFolder,
-    foldersList,
-  } = state;
-  
+  const { operations, selectedFiles, contextMenu, filesList, bufferedItems, history, selectedFolder, foldersList } =
+    state;
+  const itemsViewType = useSelectItemsViewType();
+
   const allButtons = useMemo(
     () =>
       generateAllButtons(operations, {
         selectedFiles,
         contextMenu,
         filesList,
-        itemsViewType: settings.itemsViewType,
+        itemsViewType,
         bufferedItems,
         history,
         selectedFolder,
@@ -270,7 +262,7 @@ export const useGenerateActionButtons = ({ state }: { state: CreateContextType }
       selectedFiles,
       contextMenu,
       filesList,
-      settings.itemsViewType,
+      itemsViewType,
       bufferedItems,
       history,
       selectedFolder,

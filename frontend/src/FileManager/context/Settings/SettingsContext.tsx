@@ -1,5 +1,5 @@
 import { createContext, useReducer, type ReactNode, useMemo, useContext } from "react";
-import type { FileManagerAction, FileManagerState, SettingsStateType } from "../../types";
+import type { FileManagerAction, SettingsStateType } from "../../types";
 import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum, ViewTypeEnum } from "../../types";
 
 import settingsReducer from "./SettingsReducer";
@@ -8,13 +8,14 @@ import { LOCASTORAGE_SETTINGS_KEY } from "../../config";
 
 const settingsInitalState = {
   selectedTheme: null,
+  fullScreen: false,
   itemsViewType: ViewTypeEnum.GRID,
   showImages: ImagesThumbTypeEnum.ICONS,
   orderFiles: {
     field: OrderByFieldEnum.NAME,
     orderBy: SortByFieldEnum.ASC,
   },
-  ...readJsonFromLocalStorage<FileManagerState["settings"]>(LOCASTORAGE_SETTINGS_KEY),
+  ...readJsonFromLocalStorage<SettingsStateType>(LOCASTORAGE_SETTINGS_KEY),
 };
 
 const SettingsContext = createContext<SettingsStateType | undefined>(undefined);
@@ -60,4 +61,8 @@ export const useSelectSettingsTumbs = () => {
 
 export const useSelectSettingsTheme = () => {
   return useSettings().selectedTheme;
+};
+
+export const useSelectItemsViewType = () => {
+  return useSettings().itemsViewType;
 };

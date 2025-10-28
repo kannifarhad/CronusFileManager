@@ -35,6 +35,9 @@ export const settingsReducer = (state: SettingsStateType, action: FileManagerAct
       return settings;
     }
 
+    case SettingsActionTypes.TOGGLE_FULLSCREEN:
+      return { ...state, fullScreen: !state.fullScreen };
+
     default:
       return state;
   }

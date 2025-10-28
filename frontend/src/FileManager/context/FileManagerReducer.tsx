@@ -1,4 +1,4 @@
-import { sortFilter } from "../utils";
+// import { sortFilter } from "../utils";
 import { ItemMoveActionTypeEnum, HistoryStepTypeEnum, ActionTypes } from "../types";
 import type { FileManagerAction, FileManagerState } from "../types";
 
@@ -6,32 +6,12 @@ import { initialState } from "./index";
 
 export const fileManagerReducer = (state: FileManagerState, action: FileManagerAction): FileManagerState => {
   switch (action.type) {
-    case ActionTypes.SET_MESSAGES:
-      return { ...state, messages: [...state.messages, action.payload] };
-
-    case ActionTypes.REMOVE_MESSAGES:
-      return {
-        ...state,
-        messages: state.messages.filter((message) => message.id !== action.payload.id),
-      };
-
-    case ActionTypes.SET_LOADING:
-      return { ...state, loading: action.payload };
-
-    case ActionTypes.SET_SELECTED_VOLUME: {
-      const selectedVolume = action.payload;
-      // If selected volume had been changed then we need to reset rest of the data as well beside volumesList
-      if (selectedVolume.id !== state.selectedVolume?.id) {
-        const newState = {
-          ...initialState,
-          selectedVolume: action.payload,
-          volumesList: state.volumesList,
-          settings: state.settings,
-        };
-        return newState;
+    
+    case ActionTypes.TOGGLE_UPLOAD_POPUP:
+      if (action.payload && state.uploadPopup) {
+        return state;
       }
-      return state;
-    }
+      return { ...state, uploadPopup: !state.uploadPopup };
 
     // BELOW NOT REFACTORED
 
@@ -67,7 +47,7 @@ export const fileManagerReducer = (state: FileManagerState, action: FileManagerA
     case ActionTypes.SET_FILES_LIST: {
       const { data, message, loading } = action.payload;
       let filesList = Array.isArray(data) ? data : [];
-      filesList = sortFilter(filesList, state.settings.orderFiles);
+      // filesList = sortFilter(filesList, state.settings.orderFiles);
       let newfoldersList = state.foldersList;
 
       return {
@@ -83,7 +63,7 @@ export const fileManagerReducer = (state: FileManagerState, action: FileManagerA
     case ActionTypes.SET_SEARCH_RESULTS: {
       const { result, text } = action.payload;
       let filesList = Array.isArray(result) ? result : [];
-      filesList = sortFilter(filesList, state.settings.orderFiles);
+      // filesList = sortFilter(filesList, state.settings.orderFiles);
       // let newfoldersList = state.foldersList;
       // if (
       //   state.selectedVolume?.type === VolumeTypes.S3BUCKET_FRONT &&
@@ -211,12 +191,6 @@ export const fileManagerReducer = (state: FileManagerState, action: FileManagerA
 
     case ActionTypes.SET_FILEEDIT_DATA:
       return { ...state, fileEdit: action.payload };
-
-    case ActionTypes.TOGGLE_UPLOAD_POPUP:
-      if (action.payload && state.uploadPopup) {
-        return state;
-      }
-      return { ...state, uploadPopup: !state.uploadPopup };
 
     default:
       return state;
