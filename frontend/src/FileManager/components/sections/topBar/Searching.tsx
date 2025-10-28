@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import Icon from "../../elements/Icon";
 import { StyledTopBarMenuItem } from "./styled";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import useText from "../../../hooks/useTexts";
 
 const Searching = () => {

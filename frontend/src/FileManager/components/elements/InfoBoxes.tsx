@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, memo, useState } from "react";
 import { AlertTitle, IconButton, Collapse, LinearProgress } from "@mui/material";
-import { type Message, ActionTypes } from "../../types";
+import { type Message } from "../../types";
 import { StyledInfoBox } from "./styled";
-import { useFileManagerDispatch } from "../../store/FileManagerContext";
 import Icon from "./Icon";
+import useSystemOperations from "../../hooks/useSystemOperations";
 
 interface InfoBoxesProps {
   alert: Message;
 }
 
 const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
-  const dispatch = useFileManagerDispatch();
+  const { removeMessage } = useSystemOperations();
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [open, setOpen] = useState(true);
 
@@ -18,10 +18,7 @@ const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
     if (alert.timer) {
       closeTimer.current = setTimeout(() => {
         setOpen(false);
-        dispatch({
-          type: ActionTypes.REMOVE_MESSAGES,
-          payload: { id: alert.id },
-        });
+        removeMessage(alert.id);
       }, alert.timer);
     }
     return () => {
@@ -29,7 +26,7 @@ const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
         clearTimeout(closeTimer.current); // Cleanup the timer on unmount or when alert changes
       }
     };
-  }, [alert, dispatch]);
+  }, [alert, removeMessage]);
 
   return (
     <Collapse in={open}>
@@ -45,10 +42,7 @@ const InfoBoxes: React.FC<InfoBoxesProps> = ({ alert }) => {
                 size="small"
                 onClick={() => {
                   setOpen(false);
-                  dispatch({
-                    type: ActionTypes.REMOVE_MESSAGES,
-                    payload: { id: alert.id },
-                  });
+                  removeMessage(alert.id);
                   if (closeTimer.current) {
                     clearTimeout(closeTimer.current); // Cleanup the timer on unmount or when alert changes
                   }

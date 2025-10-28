@@ -1,21 +1,8 @@
 import React, { createContext, useReducer, type ReactNode, useMemo } from "react";
 import useFileManagerOperations from "../hooks/useFileManagerOperations";
-import type { FileManagerAction, CreateContextType, FileManagerState, VolumeListType } from "../types";
-import { ImagesThumbTypeEnum, OrderByFieldEnum, SortByFieldEnum, ViewTypeEnum } from "../types";
-
+import type { FileManagerAction, CreateContextType, FileManagerState } from "../types";
 import fileManagerReducer from "./FileManagerReducer";
-import { readJsonFromLocalStorage } from "../utils";
-import { LOCASTORAGE_SETTINGS_KEY } from "../config";
 
-const settingsInitalState = {
-  selectedTheme: null,
-  itemsViewType: ViewTypeEnum.GRID,
-  showImages: ImagesThumbTypeEnum.ICONS,
-  orderFiles: {
-    field: OrderByFieldEnum.NAME,
-    orderBy: SortByFieldEnum.ASC,
-  },
-};
 export const initialState: FileManagerState = {
   selectedFiles: new Set([]),
   bufferedItems: { files: new Set([]), type: null },
@@ -32,10 +19,6 @@ export const initialState: FileManagerState = {
   uploadPopup: null,
   volumesList: [],
   selectedVolume: null,
-  settings: {
-    ...settingsInitalState,
-    ...readJsonFromLocalStorage<FileManagerState["settings"]>(LOCASTORAGE_SETTINGS_KEY),
-  },
   search: {
     text: null,
     prevSelectedFolder: null,
@@ -45,24 +28,22 @@ export const initialState: FileManagerState = {
 const FileManagerStateContext = createContext<CreateContextType | undefined>(undefined);
 const FileManagerDispatchContext = createContext<React.Dispatch<FileManagerAction>>(() => {});
 
-export function FileManagerProvider({
+export function FileManagerProviderOld({
   children,
   selectItemCallback,
-  volumesList,
 }: {
   children: ReactNode;
   selectItemCallback: ((filePath: string) => void) | undefined;
-  volumesList: VolumeListType;
 }) {
   const [state, dispatch] = useReducer(fileManagerReducer, {
     ...initialState,
-    volumesList,
   });
+
   const operations = useFileManagerOperations({
     dispatch,
     selectItemCallback,
-    selectedVolume: state.selectedVolume,
   });
+
   const value = useMemo(() => ({ ...state, operations }), [state, operations]);
 
   return (

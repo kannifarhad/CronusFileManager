@@ -4,7 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { StyledListTableCell, StyledListTableRow } from "../styled";
 import { convertDate, formatBytes, getFileIcon, classNames } from "../../../../utils";
 import { type FileType, ItemMoveActionTypeEnum, ContextMenuTypeEnum } from "../../../../types";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 import ContentIcons from "../../../elements/ContentIcons";
 
 const ListFileItem: React.FC<{

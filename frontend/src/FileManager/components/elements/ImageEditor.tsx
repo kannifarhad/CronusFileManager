@@ -7,7 +7,7 @@ import ButtonList, { type ButtonGroupProps } from "./ButtonGroup";
 import { type FileEditPopupProps } from "../../types";
 import { ImageEditorContainer } from "./styledImageeditor";
 import { StyledFileEditFooter } from "./styled";
-import { useFileManagerState } from "../../store/FileManagerContext";
+import { useFileManagerState } from "../../context";
 
 const ImageEditContent: React.FC<FileEditPopupProps & { filePath: string }> = ({
   closeCallBack,

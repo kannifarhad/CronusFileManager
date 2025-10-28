@@ -2,13 +2,12 @@ import { memo } from "react";
 import { Radio, FormControlLabel, Grid, FormLabel, Box } from "@mui/material";
 import { StyledTopBarMenuItem } from "../styled";
 import { imageViewOptions } from "./constants";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useSelectSettingsTumbs } from "../../../../context";
+import useSettingsOperations from "../../../../hooks/useSettingsOperations";
 
 const ImageViewOptions = () => {
-  const {
-    settings,
-    operations: { handleSetThumbView },
-  } = useFileManagerState();
+  const showImages = useSelectSettingsTumbs();
+  const { handleSetThumbView } = useSettingsOperations();
 
   return (
     <Box sx={{ marginTop: "10px" }}>
@@ -17,14 +16,12 @@ const ImageViewOptions = () => {
         {imageViewOptions.map((option) => (
           <Grid size={6} key={option.name}>
             <StyledTopBarMenuItem
-              selected={option.value === settings.showImages}
+              selected={option.value === showImages}
               onClick={() => handleSetThumbView(option.value)}
             >
               <FormControlLabel
                 value={option.value}
-                control={
-                  <Radio name="imageViewOption" checked={option.value === settings.showImages} value={option.value} />
-                }
+                control={<Radio name="imageViewOption" checked={option.value === showImages} value={option.value} />}
                 label={option.name}
               />
             </StyledTopBarMenuItem>

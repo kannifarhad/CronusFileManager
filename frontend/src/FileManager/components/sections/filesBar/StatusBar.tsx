@@ -1,6 +1,6 @@
 import { memo, type FC, type MouseEvent } from "react";
 import { Box, Button, Collapse } from "@mui/material";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import { ItemMoveActionTypeEnum } from "../../../types";
 
 const StatusBar: FC = () => {

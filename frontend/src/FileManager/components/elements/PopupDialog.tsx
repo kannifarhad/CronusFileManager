@@ -2,7 +2,7 @@ import React, { useState, type ForwardRefRenderFunction, memo, useMemo } from "r
 import { Box, DialogActions, DialogContent, DialogTitle, Zoom, type ZoomProps } from "@mui/material";
 import InputField from "./InputField";
 import { StyledPopUpDialog } from "./styled";
-import { useFileManagerState } from "../../store/FileManagerContext";
+import { useFileManagerState } from "../../context";
 import { type PopupData } from "../../types";
 import CustomButtonGroup from "./ButtonGroup";
 

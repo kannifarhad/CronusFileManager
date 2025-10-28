@@ -2,7 +2,7 @@
 import { memo, useCallback, useState } from "react";
 import { DndContext, DragOverlay, useSensors, useSensor, PointerSensor } from "@dnd-kit/core";
 import { StyledGridViewContainer, StyledEmptyFolderContainer } from "../styled";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../../context";
 import { type Items } from "../../../../types";
 import DraggedElementsStack from "./DraggedElementsStack";
 import VirtualizedGrid from "./VirtualizedGrid";

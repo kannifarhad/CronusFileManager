@@ -5,7 +5,7 @@ import TopBarRightMenus from "./TopBarRightMenus";
 import { SettingsMenuEnum } from "./settingsMenu/constants";
 import { TopBarWrapper } from "./styled";
 import type { Button } from "../../../types";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import useGenerateActionButtons from "../../../hooks/useGenerateActionButtons";
 
 interface MenuRef {

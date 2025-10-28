@@ -4,7 +4,7 @@ import { FileManagerWrapper } from "./styled";
 import FileManagerContainer from "./FileManagerContainer";
 import PopupDialog from "./components/elements/PopupDialog";
 import ImageEditPopup from "./components/elements/ImageEditor";
-import { useFileManagerState } from "./store/FileManagerContext";
+import { useFileManagerState } from "./context";
 import useCurrentTheme from "./hooks/useCurrentTheme";
 
 const FileManager: React.FC<{ height: number }> = ({ height }) => {

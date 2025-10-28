@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import dark from "../themes/dark";
 import light from "../themes/light";
-import { useFileManagerState } from "../store/FileManagerContext";
 import { type ThemeItemList } from "../types";
+import { useSelectSettingsTheme } from "../context";
 
 export const themeList: ThemeItemList = [
   {
@@ -18,12 +18,11 @@ export const themeList: ThemeItemList = [
 ];
 
 export const useCurrentTheme = () => {
-  const { settings } = useFileManagerState();
+  const selectedTheme = useSelectSettingsTheme();
+
   const currentTheme = useMemo(
-    () =>
-      themeList.find((theme) => theme.id === settings.selectedTheme)?.theme ??
-      themeList[1].theme,
-    [settings.selectedTheme]
+    () => themeList.find((theme) => theme.id === selectedTheme)?.theme ?? themeList[1].theme,
+    [selectedTheme]
   );
   return currentTheme;
 };

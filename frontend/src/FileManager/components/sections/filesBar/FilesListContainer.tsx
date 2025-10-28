@@ -2,7 +2,7 @@ import React, { memo, useCallback, type MouseEvent } from "react";
 import ViewItems from "../viewItems/ViewItems";
 import { StyledFilesListContainer, StyledFilesListWrapper } from "./styled";
 import OverlayBlocks from "./OverlayBlocks";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState } from "../../../context";
 import { ContextMenuTypeEnum } from "../../../types";
 import { StyledEmptyFolderContainer } from "../viewItems/styled";
 import useText from "../../../hooks/useTexts";

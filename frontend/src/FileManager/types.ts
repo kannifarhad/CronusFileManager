@@ -3,10 +3,10 @@ import React, { type ReactNode } from "react";
 import { type AlertColor } from "@mui/material";
 import { type Theme } from "@mui/system";
 import { type FileWithPath } from "react-dropzone";
-import { FILE_EXTENSION_MAP } from "./config";
-import { type SaveFileParams } from "./apiSDKs/types";
+import type { FileType, FolderList, FolderType, Items, ItemsList, SaveFileParams } from "./apiProviders";
 import { type ButtonItemType } from "./components/elements/ButtonGroup";
 import type { IconName } from "./components/elements/Icon";
+export * from "./apiProviders/types";
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -21,12 +21,6 @@ declare module "@mui/material/styles" {
     };
     cronus?: any;
   }
-}
-
-// Define enums
-export enum ItemType {
-  FOLDER = "folder",
-  FILE = "file",
 }
 
 export enum ItemMoveActionTypeEnum {
@@ -73,68 +67,48 @@ export enum HistoryStepTypeEnum {
 
 export enum ActionTypes {
   SET_SELECTED_FILES = "SET_SELECTED_FILES",
-  SET_LOADING = "SET_LOADING",
   SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER",
-  SET_MESSAGES = "SET_MESSAGES",
-  SET_FILES_LIST = "SET_FILES_LIST",
   ADD_SELECTED_FILE = "ADD_SELECTED_FILE",
-  REMOVE_MESSAGES = "REMOVE_MESSAGES",
-  SET_CONTEXT_MENU = "SET_CONTEXT_MENU",
   CLEAR_BUFFER = "CLEAR_BUFFER",
-  UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
   SELECT_ALL_FILES = "SELECT_ALL_FILES",
+  UNSET_SELECTED_FILES = "UNSET_SELECTED_FILES",
   INVERSE_SELECTED_FILES = "INVERSE_SELECTED_FILES",
-  SET_SORT_ORDER_BY = "SET_SORT_ORDER_BY",
-  SET_IMAGE_SETTINGS = "SET_IMAGE_SETTINGS",
+
+  SET_FILES_LIST = "SET_FILES_LIST",
+  SET_CONTEXT_MENU = "SET_CONTEXT_MENU",
   COPY_FILES_TOBUFFER = "COPY_FILES_TOBUFFER",
   CUT_FILES_TOBUFFER = "CUT_FILES_TOBUFFER",
   SET_FOLDERS_LIST = "SET_FOLDERS_LIST",
   SET_HISTORY_INDEX = "SET_HISTORY_INDEX",
-  SET_ITEM_VIEW = "SET_ITEM_VIEW",
   SET_POPUP_DATA = "SET_POPUP_DATA",
   SET_FILEEDIT_DATA = "SET_FILEEDIT_DATA",
-  TOGGLE_FULLSCREEN = "TOGGLE_FULLSCREEN",
   TOGGLE_UPLOAD_POPUP = "TOGGLE_UPLOAD_POPUP",
-  SET_SELECTED_VOLUME = "SET_SELECTED_VOLUME",
-  SET_SELECTED_THEME = "SET_SELECTED_THEME",
   SET_SEARCH_RESULTS = "SET_SEARCH_RESULTS",
 }
 
+export enum SettingsActionTypes {
+  SET_IMAGE_SETTINGS = "SET_IMAGE_SETTINGS",
+  SET_SELECTED_THEME = "SET_SELECTED_THEME",
+  SET_ITEM_VIEW = "SET_ITEM_VIEW",
+  SET_SORT_ORDER_BY = "SET_SORT_ORDER_BY",
+  TOGGLE_FULLSCREEN = "TOGGLE_FULLSCREEN",
+}
+
+export enum SystemActionTypes {
+  SET_LOADING = "SET_LOADING",
+  REMOVE_MESSAGES = "REMOVE_MESSAGES",
+  SET_MESSAGES = "SET_MESSAGES",
+  SET_SELECTED_VOLUME = "SET_SELECTED_VOLUME",
+}
+
+export enum SelectionActionTypes {
+  SET_LOADING = "SET_LOADING",
+  REMOVE_MESSAGES = "REMOVE_MESSAGES",
+  SET_MESSAGES = "SET_MESSAGES",
+  SET_SELECTED_VOLUME = "SET_SELECTED_VOLUME",
+}
+
 // Define interfaces and types
-export interface Permissions {
-  group: string;
-  others: string;
-  owner: string;
-}
-
-export interface FolderType {
-  path: string;
-  name: string;
-  created: string;
-  id: string;
-  modified: string;
-  type: ItemType.FOLDER;
-  premissions?: Permissions;
-  children?: ItemsList | null;
-  size: number;
-  private?: boolean;
-}
-
-export interface FileType {
-  path: string;
-  name: string;
-  created: string;
-  modified: string;
-  type: ItemType.FILE;
-  id: string;
-  premissions?: Permissions;
-  size: number;
-  extension: keyof typeof FILE_EXTENSION_MAP.icons;
-  private?: boolean;
-}
-
-export type Items = FolderType | FileType;
-export type ItemsList = Items[];
 
 export type OrderByType = {
   field: OrderByFieldEnum;
@@ -144,10 +118,6 @@ export type OrderByType = {
 export interface BufferedItemsType {
   files: Set<Items>;
   type: ItemMoveActionTypeEnum | null;
-}
-
-export interface FolderList extends FolderType {
-  children?: FolderList[];
 }
 
 export interface HistoryStep {
@@ -181,16 +151,74 @@ export interface FileManagerState {
   uploadPopup: any;
   volumesList: VolumeListType;
   selectedVolume: VolumeListItem | null;
-  settings: {
-    selectedTheme: string | null;
-    itemsViewType: ViewTypeEnum;
-    showImages: ImagesThumbTypeEnum;
-    orderFiles: OrderByType;
-  };
   search: {
     text: string | null;
     prevSelectedFolder: FolderList | null;
   };
+}
+
+export interface SettingsStateType {
+  selectedTheme: string | null;
+  itemsViewType: ViewTypeEnum;
+  showImages: ImagesThumbTypeEnum;
+  orderFiles: OrderByType;
+  fullScreen: boolean;
+}
+export interface SettingsOperationsType {
+  handleSelectTheme: (theme: string) => void;
+  handleSetViewItemType: (view: ViewTypeEnum) => void;
+  handleSetOrder: (order: OrderByType) => void;
+  handleSetThumbView: (view: ImagesThumbTypeEnum) => void;
+  handleToggleFullScreen: () => void;
+}
+
+export interface SystemOperationsType {
+  setMessage: (message: Omit<Message, "id">) => void;
+  removeMessage: (id: string) => void;
+  handleApiError: (error: unknown, errorTitle: string) => void;
+  handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
+  setLoading: (value: boolean) => void;
+}
+export interface Operations {
+  handleSelectFolder: (value: FolderType, history?: boolean, clearBuffer?: boolean, showMessage?: boolean) => void;
+  handleAddSelected: (item: Items, multiSelect?: boolean) => void;
+  handleReloadFolderTree: () => void;
+  handleContextClick: (args: { item: Items | null; event: React.MouseEvent; menuType: ContextMenuTypeEnum }) => void;
+  handleClearBuffer: () => void;
+  handleContextClose: () => void;
+  handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => void;
+  handleUnsetSelected: () => void;
+  handleInverseSelected: () => void;
+  handleSelectAll: () => void;
+  handleGoBackWard: (history: HistoryType) => void;
+  handleGoForWard: (history: HistoryType) => void;
+  handleGotoParent: (folderList: FolderList) => void;
+  handleCopy: () => void;
+  handleCut: () => void;
+  handlePaste: (bufferedItems: BufferedItemsType, selectedFolder: FolderList) => void;
+  handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
+  handleEmptyFolder: (selectedFolder: FolderList) => void;
+  handleNewFile: (selectedFolder: FolderList) => void;
+  handleNewFolder: (selectedFolder: FolderList) => void;
+  handleRename: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
+  handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
+  handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => void;
+  handleToggleUploadPopUp: (forceShow?: boolean) => void;
+  handleUploadFiles: (files: FileWithPath[], selectedFolder: FolderList) => void;
+  handlingHistory: (historyInfo: HistoryStep, index: number) => void;
+  handleSelectCallback: (path: string) => void;
+  handleSearchItems: (text: string, path?: string) => void;
+  handleInitFileManagerData: () => void;
+  handleGetThumb: (file: FileType) => string | undefined;
+}
+
+export interface SystemStateType {
+  loading: boolean;
+  messages: Messages;
+  volumesList: VolumeListType;
+  selectedVolume: VolumeListItem | null;
 }
 
 export interface FileManagerAction {
@@ -221,47 +249,6 @@ export interface AvailableButtons {
   topbar: ButtonGroup[];
   file: ButtonGroup[];
   container: ButtonGroup[];
-}
-
-export interface Operations {
-  handleSelectFolder: (value: FolderType, history?: boolean, clearBuffer?: boolean, showMessage?: boolean) => void;
-  handleAddSelected: (item: Items, multiSelect?: boolean) => void;
-  handleReloadFolderTree: () => void;
-  handleContextClick: (args: { item: Items | null; event: React.MouseEvent; menuType: ContextMenuTypeEnum }) => void;
-  handleClearBuffer: () => void;
-  handleContextClose: () => void;
-  handleDragEnd: (draggedItems: ItemsList, destination: FolderType) => void;
-  handleSetViewItemType: (view: ViewTypeEnum) => void;
-  handleSetOrder: (order: OrderByType) => void;
-  handleSetThumbView: (view: ImagesThumbTypeEnum) => void;
-  handleUnsetSelected: () => void;
-  handleInverseSelected: () => void;
-  handleSelectAll: () => void;
-  handleGoBackWard: (history: HistoryType) => void;
-  handleGoForWard: (history: HistoryType) => void;
-  handleGotoParent: (folderList: FolderList) => void;
-  handleCopy: () => void;
-  handleCut: () => void;
-  handlePaste: (bufferedItems: BufferedItemsType, selectedFolder: FolderList) => void;
-  handleDelete: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
-  handleEmptyFolder: (selectedFolder: FolderList) => void;
-  handleNewFile: (selectedFolder: FolderList) => void;
-  handleNewFolder: (selectedFolder: FolderList) => void;
-  handleRename: (selectedFile: Items, selectedFolder: FolderList) => void;
-  handleDuplicate: (selectedFile: Items, selectedFolder: FolderList) => void;
-  handleCreateZip: (selectedFiles: Set<Items>, selectedFolder: FolderList) => void;
-  handleExtractZip: (selectedFile: Items, selectedFolder: FolderList) => void;
-  handleEditFile: (selectedFile: FileType, selectedFolder: FolderList) => void;
-  handleToggleFullScreen: () => void;
-  handleToggleUploadPopUp: (forceShow?: boolean) => void;
-  handleUploadFiles: (files: FileWithPath[], selectedFolder: FolderList) => void;
-  handlingHistory: (historyInfo: HistoryStep, index: number) => void;
-  handleSelectVolume: (selectedVolumeItem: VolumeListItem) => void;
-  handleSelectCallback: (path: string) => void;
-  handleSearchItems: (text: string, path?: string) => void;
-  handleInitFileManagerData: () => void;
-  handleSelectTheme: (theme: string) => void;
-  handleGetThumb: (file: FileType) => string | undefined;
 }
 
 export interface Message {
@@ -322,25 +309,13 @@ export interface ServerInstance {
   type: VolumeTypes.SERVER;
 }
 export interface S3BucketInstance {
-  id: string;
-  name: string;
-  type: VolumeTypes.S3BUCKET_FRONT;
-  region: string;
-  endpoint: string;
-  bucket: string;
-  credentials: {
-    accessKeyId: string;
-    secretAccessKey: string;
-  };
-}
-export interface S3BucketInstanceV2 {
   type: VolumeTypes.S3BUCKET_BACK;
   endpoint: string;
-  bucket: string;
   id: string;
   name: string;
 }
-export type VolumeListItem = ServerInstance | S3BucketInstance | S3BucketInstanceV2;
+
+export type VolumeListItem = ServerInstance | S3BucketInstance;
 export type VolumeListType = VolumeListItem[];
 
 export interface ThemeItemConfig {

@@ -1,10 +1,11 @@
 import { type FC, useEffect, memo } from "react";
 import { Box, List, useTheme } from "@mui/material";
-import { useFileManagerState } from "../../../store/FileManagerContext";
+import { useFileManagerState, useSystem } from "../../../context";
 import Icon from "../../elements/Icon";
 import { StyledVolumeMenuItem } from "./styled";
 import MenuItem from "./MenuItem";
 import { classNames } from "../../../utils";
+import useSystemOperations from "../../../hooks/useSystemOperations";
 
 const FolderTree = () => {
   const {
@@ -19,16 +20,11 @@ const FolderTree = () => {
   return <MenuItem item={foldersList} />;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-type VolumesListProps = {};
-
-const VolumesList: FC<VolumesListProps> = () => {
-  const {
-    volumesList,
-    operations: { handleSelectVolume },
-    selectedVolume,
-  } = useFileManagerState();
+const VolumesList: FC = () => {
+  const { volumesList, selectedVolume } = useSystem();
+  const { handleSelectVolume } = useSystemOperations();
   const theme = useTheme();
+
   return (
     <List style={{ padding: "0px" }}>
       {Array.isArray(volumesList) &&

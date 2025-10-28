@@ -4,13 +4,12 @@ import { Grid, FormLabel, FormControl, InputLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { OrderByFieldEnum, SortByFieldEnum } from "../../../../types";
 import { orderOptions, sortOptions } from "./constants";
-import { useFileManagerState } from "../../../../store/FileManagerContext";
+import useSettingsOperations from "../../../../hooks/useSettingsOperations";
+import { useSettingsOrder } from "../../../../context";
 
 const SortingOptions = () => {
-  const {
-    settings,
-    operations: { handleSetOrder },
-  } = useFileManagerState();
+  const orderFiles = useSettingsOrder();
+  const { handleSetOrder } = useSettingsOperations();
 
   return (
     <Box>
@@ -20,14 +19,14 @@ const SortingOptions = () => {
           <FormControl fullWidth variant="filled" size="small">
             <InputLabel id="files-orderby-label">Field</InputLabel>
             <SettingsSelect
-              value={settings.orderFiles?.field}
+              value={orderFiles?.field}
               label="Field"
               size="small"
               labelId="files-orderby-label"
               onClick={(event: any) => {
                 if (event.target.dataset.value) {
                   handleSetOrder({
-                    ...settings.orderFiles,
+                    ...orderFiles,
                     field: event.target.dataset.value as OrderByFieldEnum,
                   });
                 }
@@ -45,14 +44,14 @@ const SortingOptions = () => {
           <FormControl fullWidth variant="filled" size="small">
             <InputLabel id="files-orderby-label">Order</InputLabel>
             <SettingsSelect
-              value={settings.orderFiles?.orderBy}
+              value={orderFiles?.orderBy}
               label="Order"
               size="small"
               labelId="files-orderby-label"
               onClick={(event: any) => {
                 if (event.target.dataset.value) {
                   handleSetOrder({
-                    ...settings.orderFiles,
+                    ...orderFiles,
                     orderBy: event.target.dataset.value as SortByFieldEnum,
                   });
                 }
