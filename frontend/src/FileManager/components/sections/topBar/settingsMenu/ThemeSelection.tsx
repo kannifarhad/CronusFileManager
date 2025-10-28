@@ -3,13 +3,12 @@ import { memo } from "react";
 import { Grid, FormLabel, Box } from "@mui/material";
 import { SettingsSelect, SettingsSelectOption } from "../styled";
 import { themeList } from "../../../../hooks/useCurrentTheme";
-import { useFileManagerState } from "../../../../context";
+import { useSelectSettingsTheme } from "../../../../context";
+import useSettingsOperations from "../../../../hooks/useSettingsOperations";
 
 const ThemeSelection = () => {
-  const {
-    settings,
-    operations: { handleSelectTheme },
-  } = useFileManagerState();
+  const selectedTheme = useSelectSettingsTheme();
+  const { handleSelectTheme } = useSettingsOperations();
 
   return (
     <Box sx={{ marginTop: "10px" }}>
@@ -17,7 +16,7 @@ const ThemeSelection = () => {
       <Grid container sx={{ marginTop: "5px" }} spacing={1}>
         <SettingsSelect
           fullWidth
-          value={settings.selectedTheme ?? themeList[1].id}
+          value={selectedTheme ?? themeList[1].id}
           size="small"
           labelId="theme-selection-label"
           onClick={(event: any) => {
